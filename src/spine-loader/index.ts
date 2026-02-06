@@ -105,8 +105,18 @@ function initBehaviors(container: HTMLElement) {
             const diff = newSize - oldSize;
 
             // Get current Loop State
-            let currentLeft = parseFloat(container.style.left || '0');
-            let currentTop = parseFloat(container.style.top || '0');
+            let currentLeft = container.style.left ? parseFloat(container.style.left) : NaN;
+            let currentTop = container.style.top ? parseFloat(container.style.top) : NaN;
+
+            // V18.62: Fix Zoom Jump - If left/top are not set (initial bottom-right), use actual offset
+            if (isNaN(currentLeft)) {
+                currentLeft = container.offsetLeft;
+                container.style.right = 'auto';
+            }
+            if (isNaN(currentTop)) {
+                currentTop = container.offsetTop;
+                container.style.bottom = 'auto';
+            }
 
             // Shift Left/Top by half the difference to keep center
             container.style.left = `${currentLeft - (diff / 2)}px`;
