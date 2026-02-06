@@ -1,0 +1,1615 @@
+{
+    "characters": [
+        {
+            "id": "100101",
+            "name": "Gynt",
+            "defaultCostumeId": "100101",
+            "costumes": [
+                {
+                    "id": "100101",
+                    "name": "Lugo Hunter",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "100201",
+            "name": "Fred",
+            "defaultCostumeId": "100201",
+            "costumes": [
+                {
+                    "id": "100201",
+                    "name": "Lugo Defense Force",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "100301",
+            "name": "Lisianne",
+            "defaultCostumeId": "100301",
+            "costumes": [
+                {
+                    "id": "100301",
+                    "name": "Wandering Priest",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "100401",
+            "name": "Remnunt",
+            "defaultCostumeId": "100401",
+            "costumes": [
+                {
+                    "id": "100401",
+                    "name": "Combat Doctor",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "100501",
+            "name": "Wiggle",
+            "defaultCostumeId": "100501",
+            "costumes": [
+                {
+                    "id": "100501",
+                    "name": "Bomb Fanatic",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "100502",
+                    "name": "Bomb in the Hoodie",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "100601",
+            "name": "Lucrezia",
+            "defaultCostumeId": "100601",
+            "costumes": [
+                {
+                    "id": "100601",
+                    "name": "Seductive Wings",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "100801",
+            "name": "Bernie",
+            "defaultCostumeId": "100801",
+            "costumes": [
+                {
+                    "id": "100801",
+                    "name": "Righteous Raider Girl",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "101101",
+            "name": "Seir",
+            "defaultCostumeId": "101101",
+            "costumes": [
+                {
+                    "id": "101101",
+                    "name": "Demon's Daughter",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "101102",
+                    "name": "B-Rank Idol",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "101103",
+                    "name": "New Hire",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "101201",
+            "name": "Jayden",
+            "defaultCostumeId": "101201",
+            "costumes": [
+                {
+                    "id": "101201",
+                    "name": "Beautiful Girl Devotee",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "101202",
+                    "name": "Manga Research Club",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "101301",
+            "name": "Emma",
+            "defaultCostumeId": "101301",
+            "costumes": [
+                {
+                    "id": "101301",
+                    "name": "Haggard Delinquent",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "101302",
+                    "name": "School Queen",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "101401",
+            "name": "Samay",
+            "defaultCostumeId": "101401",
+            "costumes": [
+                {
+                    "id": "101401",
+                    "name": "Kind Liberator",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "101402",
+                    "name": "Kind Student",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "101501",
+            "name": "Kry",
+            "defaultCostumeId": "101501",
+            "costumes": [
+                {
+                    "id": "101501",
+                    "name": "Liberated Marauder",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "101502",
+                    "name": "Violent Student",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "101601",
+            "name": "Celia",
+            "defaultCostumeId": "101601",
+            "costumes": [
+                {
+                    "id": "101601",
+                    "name": "The Curse",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "060402",
+                    "name": "Descendant of the Great Witch",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "060403",
+                    "name": "Masquerade Bunny",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "103201",
+            "name": "Carlson",
+            "defaultCostumeId": "103201",
+            "costumes": [
+                {
+                    "id": "103201",
+                    "name": "The Mercenary Knight",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "103301",
+            "name": "Lydia",
+            "defaultCostumeId": "103301",
+            "costumes": [
+                {
+                    "id": "103301",
+                    "name": "Apprentice Spearman",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "103401",
+            "name": "Rigenette",
+            "defaultCostumeId": "103401",
+            "costumes": [
+                {
+                    "id": "103401",
+                    "name": "Little Hunter",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "103501",
+            "name": "Beatrice",
+            "defaultCostumeId": "103501",
+            "costumes": [
+                {
+                    "id": "103501",
+                    "name": "The Mighty Warrior of the Tribe",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "103601",
+            "name": "Maria",
+            "defaultCostumeId": "103601",
+            "costumes": [
+                {
+                    "id": "103601",
+                    "name": "Archmage",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "103701",
+            "name": "Arines",
+            "defaultCostumeId": "103701",
+            "costumes": [
+                {
+                    "id": "103701",
+                    "name": "Priest of Vitality",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "000101",
+            "name": "Lathel",
+            "defaultCostumeId": "000101",
+            "costumes": [
+                {
+                    "id": "000101",
+                    "name": "Herb Tracker",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000102",
+                    "name": "Lonely Survivor",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000103",
+                    "name": "Homunculus",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000104",
+                    "name": "Dark Knight",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000105",
+                    "name": "Promise of Vengance",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000106",
+                    "name": "Pool Party",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "000201",
+            "name": "Justia",
+            "defaultCostumeId": "000201",
+            "costumes": [
+                {
+                    "id": "000201",
+                    "name": "Knight of Blood",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000202",
+                    "name": "White Reaper",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000203",
+                    "name": "Blood Glutton",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000204",
+                    "name": "Kendo Club",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000206",
+                    "name": "Pool Party",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000296",
+                    "name": "Hot Summer Dream",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "000301",
+            "name": "Scheherazade",
+            "defaultCostumeId": "000301",
+            "costumes": [
+                {
+                    "id": "000301",
+                    "name": "The Lapis Witch",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000303",
+                    "name": "The Magic School Professor",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000304",
+                    "name": "Code Name S",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000306",
+                    "name": "Pool Party",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "000401",
+            "name": "Gray",
+            "defaultCostumeId": "000401",
+            "costumes": [
+                {
+                    "id": "000401",
+                    "name": "The Sharpshooter of the Mist",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000402",
+                    "name": "B-Rank Manager",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000403",
+                    "name": "Vanguard",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000406",
+                    "name": "Pool Party",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "000501",
+            "name": "Rou",
+            "defaultCostumeId": "000501",
+            "costumes": [
+                {
+                    "id": "000501",
+                    "name": "White Cat",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000502",
+                    "name": "Red Hat",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000504",
+                    "name": "Nature's Claw",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000506",
+                    "name": "Stray Cat",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "000601",
+            "name": "Olstein",
+            "defaultCostumeId": "000601",
+            "costumes": [
+                {
+                    "id": "000601",
+                    "name": "The Fiend Scholar",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000604",
+                    "name": "Sage of Blue Clouds",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "000701",
+            "name": "Eclipse",
+            "defaultCostumeId": "000701",
+            "costumes": [
+                {
+                    "id": "000701",
+                    "name": "Dimension Witch",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000706",
+                    "name": "Nightmare Bunny",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000707",
+                    "name": "Beach Vacation",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000708",
+                    "name": "Dream Bride",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "000801",
+            "name": "Rubia",
+            "defaultCostumeId": "000801",
+            "costumes": [
+                {
+                    "id": "000801",
+                    "name": "Thorn of the Desert",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000804",
+                    "name": "The Empress of the Ocean",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000806",
+                    "name": "Maid Name C",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "000807",
+                    "name": "Maid Bikini",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "001001",
+            "name": "Sylvia",
+            "defaultCostumeId": "001001",
+            "costumes": [
+                {
+                    "id": "001001",
+                    "name": "Desert Flower",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "001002",
+                    "name": "The Sword Queen",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "001004",
+                    "name": "Admiral",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "001006",
+                    "name": "Bikini Agent",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "001101",
+            "name": "Teresse",
+            "defaultCostumeId": "001101",
+            "costumes": [
+                {
+                    "id": "001101",
+                    "name": "Angel of Destruction",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "001106",
+                    "name": "Medical Club",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "001107",
+                    "name": "Beachside Angel",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "001197",
+                    "name": "Milky Bikini",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "001201",
+            "name": "Liatris",
+            "defaultCostumeId": "001201",
+            "costumes": [
+                {
+                    "id": "001201",
+                    "name": "Rodev's Star",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "001206",
+                    "name": "Neon Stalker",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "001207",
+                    "name": "Maid Name R",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "002401",
+            "name": "Diana",
+            "defaultCostumeId": "002401",
+            "costumes": [
+                {
+                    "id": "002401",
+                    "name": "Adventurer of the Unknown",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "002406",
+                    "name": "Anti-dystopia",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "003001",
+            "name": "Layla",
+            "defaultCostumeId": "003001",
+            "costumes": [
+                {
+                    "id": "003001",
+                    "name": "Anvil of Creation",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "003101",
+            "name": "Elpis",
+            "defaultCostumeId": "003101",
+            "costumes": [
+                {
+                    "id": "003101",
+                    "name": "Hand of Salvation",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "003201",
+            "name": "Loen",
+            "defaultCostumeId": "003201",
+            "costumes": [
+                {
+                    "id": "003201",
+                    "name": "Last Hope",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/",
+                    "spineAlias": "npc300501"
+                },
+                {
+                    "id": "003202",
+                    "name": "Track and Field Team",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "003203",
+                    "name": "Celebrity Bunny",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "003301",
+            "name": "Nebris",
+            "defaultCostumeId": "003301",
+            "costumes": [
+                {
+                    "id": "003301",
+                    "name": "Labyrinth Gatekeeper",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "003302",
+                    "name": "Laid-back Lifeguard",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "003303",
+                    "name": "New Hire",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "003401",
+            "name": "Morpeah",
+            "defaultCostumeId": "003401",
+            "costumes": [
+                {
+                    "id": "003401",
+                    "name": "Beach Vacation",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "003402",
+                    "name": "Daydream Bunny",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "003403",
+                    "name": "Apostle",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "003501",
+            "name": "Sacred Justia",
+            "defaultCostumeId": "003501",
+            "costumes": [
+                {
+                    "id": "003501",
+                    "name": "Reclaimed Destiny",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "003601",
+            "name": "Olivier",
+            "defaultCostumeId": "003601",
+            "costumes": [
+                {
+                    "id": "003601",
+                    "name": "Faithful Wings",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "003602",
+                    "name": "Apostle (Kelian)",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "003603",
+                    "name": "Fallen Wings",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "003701",
+            "name": "Blade",
+            "defaultCostumeId": "003701",
+            "costumes": [
+                {
+                    "id": "003701",
+                    "name": "Apostle",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "003702",
+                    "name": "Onsen Swordfighter",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "003703",
+                    "name": "Young Lady",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "003801",
+            "name": "Liberta",
+            "defaultCostumeId": "003801",
+            "costumes": [
+                {
+                    "id": "003801",
+                    "name": "Dark Saintess",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "003802",
+                    "name": "Onsen Manager",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "003892",
+                    "name": "Hedonist",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "003901",
+            "name": "Sonya",
+            "defaultCostumeId": "003901",
+            "costumes": [
+                {
+                    "id": "003901",
+                    "name": "Shadowed Dream",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "003902",
+                    "name": "Little Pumpkin Girl",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "004001",
+            "name": "Darian",
+            "defaultCostumeId": "004001",
+            "costumes": [
+                {
+                    "id": "004001",
+                    "name": "Prophetic Dream",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "004002",
+                    "name": "Bittersweet Bunny",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "004101",
+            "name": "Tyr",
+            "defaultCostumeId": "004101",
+            "costumes": [
+                {
+                    "id": "004101",
+                    "name": "Starlight Guardian",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "004102",
+                    "name": "Innocent Bunny",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "020001",
+            "name": "Eris",
+            "defaultCostumeId": "020001",
+            "costumes": [
+                {
+                    "id": "020001",
+                    "name": "Esteemed Adventurer",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "020002",
+                    "name": "Your Very Own Cat",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "020101",
+            "name": "Roxy",
+            "defaultCostumeId": "020101",
+            "costumes": [
+                {
+                    "id": "020101",
+                    "name": "Respected Master",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "020102",
+                    "name": "Emerging Desire",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "020201",
+            "name": "Yomi",
+            "defaultCostumeId": "020201",
+            "costumes": [
+                {
+                    "id": "020201",
+                    "name": "Gentle Destroyer",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "020301",
+            "name": "Yozakura",
+            "defaultCostumeId": "020301",
+            "costumes": [
+                {
+                    "id": "020301",
+                    "name": "Fist of Conviction",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "020401",
+            "name": "Yumi",
+            "defaultCostumeId": "020401",
+            "costumes": [
+                {
+                    "id": "020401",
+                    "name": "Dancing Snowflake",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "020501",
+            "name": "Hikage",
+            "defaultCostumeId": "020501",
+            "costumes": [
+                {
+                    "id": "020501",
+                    "name": "Kind Ruthlessness",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "020601",
+            "name": "Goblin Slayer",
+            "defaultCostumeId": "020601",
+            "costumes": [
+                {
+                    "id": "020601",
+                    "name": "Orcbolg",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "020701",
+            "name": "Priestess",
+            "defaultCostumeId": "020701",
+            "costumes": [
+                {
+                    "id": "020701",
+                    "name": "Earth Mother Believer",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "020801",
+            "name": "High Elf Archer",
+            "defaultCostumeId": "020801",
+            "costumes": [
+                {
+                    "id": "020801",
+                    "name": "Daughter of Starwind",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "020901",
+            "name": "Sword Maiden",
+            "defaultCostumeId": "020901",
+            "costumes": [
+                {
+                    "id": "020901",
+                    "name": "Supreme God Archbishop",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "060301",
+            "name": "Alec",
+            "defaultCostumeId": "060301",
+            "costumes": [
+                {
+                    "id": "060301",
+                    "name": "The Destruction",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "060302",
+                    "name": "Sword Breaker",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "060501",
+            "name": "Anastasia",
+            "defaultCostumeId": "060501",
+            "costumes": [
+                {
+                    "id": "060501",
+                    "name": "Gentle Maid",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "060502",
+                    "name": "Fire Graffiti",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "060601",
+            "name": "Lecliss",
+            "defaultCostumeId": "060601",
+            "costumes": [
+                {
+                    "id": "060601",
+                    "name": "Killer Doll",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "060602",
+                    "name": "Android Queen",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "060701",
+            "name": "Rafina",
+            "defaultCostumeId": "060701",
+            "costumes": [
+                {
+                    "id": "060701",
+                    "name": "Steel Engine",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "060702",
+                    "name": "Code Name A",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "060706",
+                    "name": "Game Club",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "060801",
+            "name": "Elise",
+            "defaultCostumeId": "060801",
+            "costumes": [
+                {
+                    "id": "060801",
+                    "name": "Lovely Lady",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "060802",
+                    "name": "Code Name O",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "061001",
+            "name": "Helena",
+            "defaultCostumeId": "061001",
+            "costumes": [
+                {
+                    "id": "061001",
+                    "name": "Top Idol",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "061002",
+                    "name": "B-Rank Idol",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "061101",
+            "name": "Eleaneer",
+            "defaultCostumeId": "061101",
+            "costumes": [
+                {
+                    "id": "061101",
+                    "name": "Piercing Magic Bow",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "061102",
+                    "name": "B-Rank Idol",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "061103",
+                    "name": "Shadow Bunny",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "061302",
+            "name": "Dalvi",
+            "defaultCostumeId": "061302",
+            "costumes": [
+                {
+                    "id": "061302",
+                    "name": "Bright Moon",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "061305",
+                    "name": "Summer Vacation",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "061402",
+            "name": "Zenith",
+            "defaultCostumeId": "061402",
+            "costumes": [
+                {
+                    "id": "061402",
+                    "name": "Robin Hood",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "061404",
+                    "name": "Poolside Guardian",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "061492",
+                    "name": "Stranger Bunny",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "062001",
+            "name": "Andrew",
+            "defaultCostumeId": "062001",
+            "costumes": [
+                {
+                    "id": "062001",
+                    "name": "Loyal Butler",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "062002",
+                    "name": "Specialist",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "063001",
+            "name": "Ingrid",
+            "defaultCostumeId": "063001",
+            "costumes": [
+                {
+                    "id": "063001",
+                    "name": "Kardis' Bullet",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "063301",
+            "name": "Cynthia",
+            "defaultCostumeId": "063301",
+            "costumes": [
+                {
+                    "id": "063301",
+                    "name": "Warmth within the Severe Cold",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "063401",
+            "name": "Julie",
+            "defaultCostumeId": "063401",
+            "costumes": [
+                {
+                    "id": "063401",
+                    "name": "Healer",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "065102",
+            "name": "Yuri",
+            "defaultCostumeId": "065102",
+            "costumes": [
+                {
+                    "id": "065102",
+                    "name": "Whitebolt",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "065103",
+                    "name": "Comeback Idol",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "065802",
+            "name": "Nartas",
+            "defaultCostumeId": "065802",
+            "costumes": [
+                {
+                    "id": "065802",
+                    "name": "Anonymous Sage",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "066401",
+            "name": "Angelica",
+            "defaultCostumeId": "066401",
+            "costumes": [
+                {
+                    "id": "066401",
+                    "name": "The Fallen",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "066402",
+                    "name": "Pool Party",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "066403",
+                    "name": "Neon Savior",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "066801",
+            "name": "Refithea",
+            "defaultCostumeId": "066801",
+            "costumes": [
+                {
+                    "id": "066801",
+                    "name": "The Gluttonous",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "066802",
+                    "name": "Pure White Blessing",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "066803",
+                    "name": "Poolside Fairy",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "066902",
+            "name": "Glacia",
+            "defaultCostumeId": "066902",
+            "costumes": [
+                {
+                    "id": "066902",
+                    "name": "Alice",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "066906",
+                    "name": "Disciplinary Committee",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "067002",
+            "name": "Ventana",
+            "defaultCostumeId": "067002",
+            "costumes": [
+                {
+                    "id": "067002",
+                    "name": "Snow White",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "067003",
+                    "name": "Comeback Idol",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "067004",
+                    "name": "Onsen Practitioner",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "067101",
+            "name": "Granhildr",
+            "defaultCostumeId": "067101",
+            "costumes": [
+                {
+                    "id": "067101",
+                    "name": "The Void",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "067102",
+                    "name": "Comeback Idol",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "067103",
+                    "name": "Boo Ghost",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "067201",
+            "name": "Venaka",
+            "defaultCostumeId": "067201",
+            "costumes": [
+                {
+                    "id": "067201",
+                    "name": "DJ",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "067202",
+                    "name": "Wind Dancer",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "067301",
+            "name": "Levia",
+            "defaultCostumeId": "067301",
+            "costumes": [
+                {
+                    "id": "067301",
+                    "name": "Track and Field Captain",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "067302",
+                    "name": "Night of Jealousy",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "067303",
+                    "name": "Overheat",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "067401",
+            "name": "Michaela",
+            "defaultCostumeId": "067401",
+            "costumes": [
+                {
+                    "id": "067401",
+                    "name": "Beachside Justice",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "067402",
+                    "name": "Queen of Signatures",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "067403",
+                    "name": "Acting Archbishop",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "067502",
+            "name": "Luvencia",
+            "defaultCostumeId": "067502",
+            "costumes": [
+                {
+                    "id": "067502",
+                    "name": "Deal Snatcher",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "067503",
+                    "name": "Wild Dog",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "067601",
+            "name": "Wilhelmina",
+            "defaultCostumeId": "067601",
+            "costumes": [
+                {
+                    "id": "067601",
+                    "name": "Iron Monarch",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "067603",
+                    "name": "Water Park Queen",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "067604",
+                    "name": "Frozen Queen",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "067701",
+            "name": "Granadair",
+            "defaultCostumeId": "067701",
+            "costumes": [
+                {
+                    "id": "067701",
+                    "name": "Shrine Maiden of Purification",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "067702",
+                    "name": "Granadair: Queen of Gluttis",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                }
+            ]
+        },
+        {
+            "id": "003801",
+            "name": "Liberta",
+            "defaultCostumeId": "003801",
+            "costumes": [
+                {
+                    "id": "003801",
+                    "name": "Dark Saintess",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "003802",
+                    "name": "Onsen Manager",
+                    "isBuiltIn": false,
+                    "src": "https://raw.githubusercontent.com/Jelosus2/BD2-L2D-Viewer/main/src/assets/spines/"
+                },
+                {
+                    "id": "003892",
+                    "name": "Hedonist",
+                    "isBuiltIn": true,
+                    "src": ""
+                }
+            ]
+        }
+    ]
+}

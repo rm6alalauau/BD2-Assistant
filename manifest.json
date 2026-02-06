@@ -1,0 +1,65 @@
+{
+  "manifest_version": 3,
+  "name": "BD2 Assistant",
+  "version": "1.0.0",
+  "description": "A desktop pet extension for The BD2 Pulse that notifies you of new redemption codes.",
+  "permissions": [
+    "storage",
+    "alarms",
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess"
+  ],
+  "host_permissions": [
+    "https://thebd2pulse.com/*",
+    "https://api.thebd2pulse.com/*",
+    "https://loj2urwaua.execute-api.ap-northeast-1.amazonaws.com/*",
+    "https://raw.githubusercontent.com/*"
+  ],
+  "background": {
+    "service_worker": "src/background/index.ts",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "src/popup/index.html",
+    "default_title": "Pet Settings",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "src/content/bridge.ts",
+        "src/content/sync_handler.ts"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/*",
+        "lib/*",
+        "live2d_models/*",
+        "live2d_models/*/*",
+        "live2d_models/*/*",
+        "live2d_models/*/*/*",
+        "models.json",
+        "icons/*"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}
