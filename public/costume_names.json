@@ -1,0 +1,1197 @@
+{
+  "Gynt": {
+    "Lugo Hunter": {
+      "zh-TW": "盧戈獵人",
+      "zh-CN": "卢戈猎人",
+      "ko": "루고 사냥꾼",
+      "ja": "ルーゴ狩人"
+    }
+  },
+  "Fred": {
+    "Lugo Defense Force": {
+      "zh-TW": "盧戈守衛隊",
+      "zh-CN": "卢戈守卫队",
+      "ko": "루고 수비대",
+      "ja": "ルーゴ守備隊"
+    }
+  },
+  "Lisianne": {
+    "Wandering Priest": {
+      "zh-TW": "流浪神職人員",
+      "zh-CN": "流浪神职人员",
+      "ko": "방랑 성직자",
+      "ja": "放浪の聖職者"
+    }
+  },
+  "Remnunt": {
+    "Combat Doctor": {
+      "zh-TW": "戰鬥醫師",
+      "zh-CN": "战斗医师",
+      "ko": "전투 의사",
+      "ja": "戦闘医師"
+    }
+  },
+  "Wiggle": {
+    "Bomb Fanatic": {
+      "zh-TW": "炸彈狂",
+      "zh-CN": "炸弹狂",
+      "ko": "폭탄광",
+      "ja": "爆弾狂"
+    },
+    "Bomb in the Hoodie": {
+      "zh-TW": "帽T下的炸彈",
+      "zh-CN": "帽T下的炸弹",
+      "ko": "밤 인 더 후드",
+      "ja": "ボムインザフード"
+    }
+  },
+  "Lucrezia": {
+    "Seductive Wings": {
+      "zh-TW": "誘惑的翅膀",
+      "zh-CN": "诱惑的翅膀",
+      "ko": "유혹의 날개",
+      "ja": "誘惑の翼"
+    }
+  },
+  "Bernie": {
+    "Righteous Raider Girl": {
+      "zh-TW": "義賊少女",
+      "zh-CN": "义贼少女",
+      "ko": "의적 소녀",
+      "ja": "義賊少女"
+    }
+  },
+  "Seir": {
+    "Demon's Daughter": {
+      "zh-TW": "惡魔之女",
+      "zh-CN": "恶魔之女",
+      "ko": "악마의 딸",
+      "ja": "悪魔の娘"
+    },
+    "B-Rank Idol": {
+      "zh-TW": "B級偶像",
+      "zh-CN": "B级偶像",
+      "ko": "B급 아이돌",
+      "ja": "B級アイドル"
+    },
+    "New Hire": {
+      "zh-TW": "新進員工",
+      "zh-CN": "新进员工",
+      "ko": "신입사원",
+      "ja": "新入社員"
+    }
+  },
+  "Jayden": {
+    "Beautiful Girl Devotee": {
+      "zh-TW": "美少女信奉者",
+      "zh-CN": "美少女信奉者",
+      "ko": "미소녀 신봉자",
+      "ja": "美少女信者"
+    },
+    "Manga Research Club": {
+      "zh-TW": "漫畫研究社",
+      "zh-CN": "漫画研究社",
+      "ko": "만화연구부",
+      "ja": "漫画研究部"
+    }
+  },
+  "Emma": {
+    "Haggard Delinquent": {
+      "zh-TW": "難伺候的問題學生",
+      "zh-CN": "难伺候的问题学生",
+      "ko": "까칠한 불량아",
+      "ja": "刺々しい不良"
+    },
+    "School Queen": {
+      "zh-TW": "學校女王",
+      "zh-CN": "学校女王",
+      "ko": "학교의 여왕",
+      "ja": "学校のクイーン"
+    }
+  },
+  "Samay": {
+    "Kind Liberator": {
+      "zh-TW": "溫柔的解放者",
+      "zh-CN": "温柔的解放者",
+      "ko": "다정한 해방자",
+      "ja": "優しき解放者"
+    },
+    "Kind Student": {
+      "zh-TW": "和藹的學生",
+      "zh-CN": "和蔼的学生",
+      "ko": "상냥한 학생",
+      "ja": "優しき学生"
+    }
+  },
+  "Kry": {
+    "Liberated Marauder": {
+      "zh-TW": "解放的掠奪者",
+      "zh-CN": "解放的掠夺者",
+      "ko": "해방된 약탈자",
+      "ja": "開放された略奪者"
+    },
+    "Violent Student": {
+      "zh-TW": "克萊服裝",
+      "zh-CN": "克莱服装",
+      "ko": "난폭한 학생",
+      "ja": "乱暴な学生"
+    }
+  },
+  "Celia": {
+    "The Curse": {
+      "zh-TW": "詛咒之星",
+      "zh-CN": "诅咒之星",
+      "ko": "저주의 별",
+      "ja": "呪いの星"
+    },
+    "Descendant of the Great Witch": {
+      "zh-TW": "大魔女的後裔",
+      "zh-CN": "大魔女的后裔",
+      "ko": "대마녀의 후예",
+      "ja": "大魔女の末裔"
+    },
+    "Masquerade Bunny": {
+      "zh-TW": "化裝舞會兔女郎",
+      "zh-CN": "化装舞会兔女郎",
+      "ko": "마스커레이드 바니",
+      "ja": "マスカレイド・バニー"
+    }
+  },
+  "Carlson": {
+    "The Mercenary Knight": {
+      "zh-TW": "傭兵騎士",
+      "zh-CN": "佣兵骑士",
+      "ko": "용병 기사",
+      "ja": "傭兵騎士"
+    }
+  },
+  "Lydia": {
+    "Apprentice Spearman": {
+      "zh-TW": "實習槍兵",
+      "zh-CN": "实习枪兵",
+      "ko": "견습 창병",
+      "ja": "見習い槍兵"
+    }
+  },
+  "Rigenette": {
+    "Little Hunter": {
+      "zh-TW": "小獵人",
+      "zh-CN": "小猎人",
+      "ko": "꼬마 사냥꾼",
+      "ja": "チビ狩人"
+    }
+  },
+  "Beatrice": {
+    "The Mighty Warrior of the Tribe": {
+      "zh-TW": "部族的大戰士",
+      "zh-CN": "部族的大战士",
+      "ko": "부족의 대전사",
+      "ja": "部族の大戦士"
+    }
+  },
+  "Maria": {
+    "Archmage": {
+      "zh-TW": "大魔法師",
+      "zh-CN": "大魔法师",
+      "ko": "대마법사",
+      "ja": "大魔術師"
+    }
+  },
+  "Arines": {
+    "Priest of Vitality": {
+      "zh-TW": "活力的祭司",
+      "zh-CN": "活力的祭司",
+      "ko": "활력의 사제",
+      "ja": "活力の司祭"
+    }
+  },
+  "Lathel": {
+    "Herb Tracker": {
+      "zh-TW": "草藥獵人",
+      "zh-CN": "草药猎人",
+      "ko": "약초 추적자",
+      "ja": "薬草採集者"
+    },
+    "Lonely Survivor": {
+      "zh-TW": "孤獨的生存者",
+      "zh-CN": "孤独的生存者",
+      "ko": "론리 서바이버",
+      "ja": "ロンリーサバイバー"
+    },
+    "Homunculus": {
+      "zh-TW": "霍爾蒙克斯",
+      "zh-CN": "霍尔蒙克斯",
+      "ko": "호문쿨루스",
+      "ja": "ホムンクルス"
+    },
+    "Dark Knight": {
+      "zh-TW": "暗黑騎士",
+      "zh-CN": "暗黑骑士",
+      "ko": "암흑 기사",
+      "ja": "暗黒騎士"
+    },
+    "Promise of Vengance": {
+      "zh-TW": "復仇的誓約",
+      "zh-CN": "复仇的誓约",
+      "ko": "복수의 맹세",
+      "ja": "復讐の誓い"
+    },
+    "Pool Party": {
+      "zh-TW": "泳池派對",
+      "zh-CN": "泳池派对",
+      "ko": "풀 파티",
+      "ja": "プールパーティ"
+    }
+  },
+  "Justia": {
+    "Knight of Blood": {
+      "zh-TW": "血騎士",
+      "zh-CN": "血骑士",
+      "ko": "피의 기사",
+      "ja": "鮮血の騎士"
+    },
+    "White Reaper": {
+      "zh-TW": "皎潔死神",
+      "zh-CN": "皎洁死神",
+      "ko": "하얀 사신",
+      "ja": "白い死神"
+    },
+    "Blood Glutton": {
+      "zh-TW": "血之貪食者",
+      "zh-CN": "血之贪食者",
+      "ko": "피의 탐식자",
+      "ja": "血の貪食者"
+    },
+    "Kendo Club": {
+      "zh-TW": "劍道社",
+      "zh-CN": "剑道社",
+      "ko": "검도부",
+      "ja": "剣道部"
+    },
+    "Pool Party": {
+      "zh-TW": "泳池派對",
+      "zh-CN": "泳池派对",
+      "ko": "풀 파티",
+      "ja": "プールパーティ"
+    },
+    "Hot Summer Dream": {
+      "zh-TW": "仲夏之夢",
+      "zh-CN": "仲夏之梦",
+      "ja": "真夏の夢",
+      "ko": "한여름의 꿈",
+      "en": "Hot Summer Dream"
+    }
+  },
+  "Scheherazade": {
+    "The Lapis Witch": {
+      "zh-TW": "蒼藍魔女",
+      "zh-CN": "苍蓝魔女",
+      "ko": "푸른 마녀",
+      "ja": "蒼の魔女"
+    },
+    "The Magic School Professor": {
+      "zh-TW": "魔法學校教授",
+      "zh-CN": "魔法学校教授",
+      "ko": "마법학교 교수",
+      "ja": "魔法学校教授"
+    },
+    "Code Name S": {
+      "zh-TW": "代號S",
+      "zh-CN": "代号S",
+      "ko": "코드네임 S",
+      "ja": "コードネームS"
+    },
+    "Pool Party": {
+      "zh-TW": "泳池派對",
+      "zh-CN": "泳池派对",
+      "ko": "풀 파티",
+      "ja": "プールパーティ"
+    }
+  },
+  "Gray": {
+    "The Sharpshooter of the Mist": {
+      "zh-TW": "迷霧神射手",
+      "zh-CN": "迷雾神射手",
+      "ko": "안개의 명사수",
+      "ja": "霧の名射手"
+    },
+    "B-Rank Manager": {
+      "zh-TW": "B級老闆",
+      "zh-CN": "B级老板",
+      "ko": "B급 사장",
+      "ja": "B級社長"
+    },
+    "Vanguard": {
+      "zh-TW": "先鋒大將",
+      "zh-CN": "先锋大将",
+      "ko": "선봉장",
+      "ja": "先鋒隊"
+    },
+    "Pool Party": {
+      "zh-TW": "泳池派對",
+      "zh-CN": "泳池派对",
+      "ko": "풀 파티",
+      "ja": "プールパーティ"
+    }
+  },
+  "Rou": {
+    "White Cat": {
+      "zh-TW": "白色貓咪",
+      "zh-CN": "白色猫咪",
+      "ko": "하얀 고양이",
+      "ja": "白猫"
+    },
+    "Red Hat": {
+      "zh-TW": "小紅帽",
+      "zh-CN": "小红帽",
+      "ko": "빨간 모자",
+      "ja": "赤ずきん"
+    },
+    "Nature's Claw": {
+      "zh-TW": "自然的腳爪",
+      "zh-CN": "自然的脚爪",
+      "ko": "자연의 발톱",
+      "ja": "自然の爪"
+    },
+    "Stray Cat": {
+      "zh-TW": "流浪貓",
+      "zh-CN": "流浪猫",
+      "ko": "스트레이 캣",
+      "ja": "ストレイ・キャット"
+    }
+  },
+  "Olstein": {
+    "The Fiend Scholar": {
+      "zh-TW": "魔獸學家",
+      "zh-CN": "魔兽学家",
+      "ko": "마물학자",
+      "ja": "魔物学者"
+    },
+    "Sage of Blue Clouds": {
+      "zh-TW": "青雲道士",
+      "zh-CN": "青云道士",
+      "ko": "청운의 도사",
+      "ja": "青雲の道士"
+    }
+  },
+  "Eclipse": {
+    "Dimension Witch": {
+      "zh-TW": "空間魔女",
+      "zh-CN": "空间魔女",
+      "ko": "공간의 마녀",
+      "ja": "空間の魔女"
+    },
+    "Nightmare Bunny": {
+      "zh-TW": "惡夢兔女郎",
+      "zh-CN": "恶梦兔女郎",
+      "ko": "나이트메어 바니",
+      "ja": "ナイトメア・バニー"
+    },
+    "Beach Vacation": {
+      "zh-TW": "海邊度假",
+      "zh-CN": "海边度假",
+      "ko": "비치 바캉스",
+      "ja": "ビーチバカンス"
+    },
+    "Dream Bride": {
+      "zh-TW": "夢中的新娘",
+      "zh-CN": "梦中的新娘",
+      "ko": "꿈속의 신부",
+      "ja": "夢の中の花嫁"
+    }
+  },
+  "Rubia": {
+    "Thorn of the Desert": {
+      "zh-TW": "沙漠之刺",
+      "zh-CN": "沙漠之刺",
+      "ko": "사막의 가시",
+      "ja": "砂漠のトゲ"
+    },
+    "The Empress of the Ocean": {
+      "zh-TW": "大海女帝",
+      "zh-CN": "大海女帝",
+      "ko": "바다의 여제",
+      "ja": "海の女帝"
+    },
+    "Maid Name C": {
+      "zh-TW": "女僕代號C",
+      "zh-CN": "女仆代号C",
+      "ko": "메이드네임 C",
+      "ja": "メイドネームC"
+    },
+    "Maid Bikini": {
+      "zh-TW": "女僕比基尼",
+      "zh-CN": "女仆比基尼",
+      "ko": "메이드 비키니",
+      "ja": "メイドビキニ"
+    }
+  },
+  "Sylvia": {
+    "Desert Flower": {
+      "zh-TW": "沙漠之花",
+      "zh-CN": "沙漠之花",
+      "ko": "사막의 꽃",
+      "ja": "砂漠の花"
+    },
+    "The Sword Queen": {
+      "zh-TW": "劍后",
+      "zh-CN": "剑后",
+      "ko": "검후",
+      "ja": "剣后"
+    },
+    "Admiral": {
+      "zh-TW": "海軍上將",
+      "zh-CN": "海军上将",
+      "ko": "해군 대장",
+      "ja": "海軍隊長"
+    },
+    "Bikini Agent": {
+      "zh-TW": "比基尼特務",
+      "zh-CN": "比基尼特工",
+      "ko": "비키니 에이전트",
+      "ja": "ビキニエージェント"
+    }
+  },
+  "Teresse": {
+    "Angel of Destruction": {
+      "zh-TW": "破壞的天使",
+      "zh-CN": "破坏的天使",
+      "ko": "파괴의 천사",
+      "ja": "破壊の天使"
+    },
+    "Medical Club": {
+      "zh-TW": "保健社",
+      "zh-CN": "保健社",
+      "ko": "양호부",
+      "ja": "保健委員"
+    },
+    "Beachside Angel": {
+      "zh-TW": "海邊天使",
+      "zh-CN": "海边天使",
+      "ko": "해변의 천사",
+      "ja": "ビーチの天使"
+    },
+    "Milky Bikini": {
+      "zh-TW": "奶牛比基尼",
+      "zh-CN": "奶牛比基尼",
+      "ja": "ミルキービキニ",
+      "ko": "밀키 비키니",
+      "en": "Milky Bikini"
+    }
+  },
+  "Liatris": {
+    "Rodev's Star": {
+      "zh-TW": "羅戴夫之星",
+      "zh-CN": "罗戴夫之星",
+      "ko": "로데브의 별",
+      "ja": "ロデブの星"
+    },
+    "Neon Stalker": {
+      "zh-TW": "霓虹跟蹤狂",
+      "zh-CN": "霓虹跟踪狂",
+      "ko": "네온 스토커",
+      "ja": "ネオン・ストーカー"
+    },
+    "Maid Name R": {
+      "zh-TW": "女僕代號R",
+      "zh-CN": "女仆代号R",
+      "ko": "메이드네임 R",
+      "ja": "メイドネームR"
+    }
+  },
+  "Diana": {
+    "Adventurer of the Unknown": {
+      "zh-TW": "未知的探究者",
+      "zh-CN": "未知的探究者",
+      "ko": "미지의 탐구자",
+      "ja": "未知の探求者"
+    },
+    "Anti-dystopia": {
+      "zh-TW": "反烏托邦",
+      "zh-CN": "反乌托邦",
+      "ko": "안티 디스토피아",
+      "ja": "アンチ・ディストピア"
+    }
+  },
+  "Layla": {
+    "Anvil of Creation": {
+      "zh-TW": "創造的鐵砧",
+      "zh-CN": "创造的铁砧",
+      "ko": "창조의 모루",
+      "ja": "想像の金床"
+    }
+  },
+  "Elpis": {
+    "Hand of Salvation": {
+      "zh-TW": "救贖之手",
+      "zh-CN": "救赎之手",
+      "ko": "구원의 손길",
+      "ja": "救いの手"
+    }
+  },
+  "Loen": {
+    "Last Hope": {
+      "zh-TW": "最後希望",
+      "zh-CN": "最后希望",
+      "ko": "마지막 희망",
+      "ja": "最後の希望"
+    },
+    "Track and Field Team": {
+      "zh-TW": "田徑社社員",
+      "zh-CN": "田径社社员",
+      "ko": "육상부 부원",
+      "ja": "陸上部 部員"
+    },
+    "Celebrity Bunny": {
+      "zh-TW": "名人兔女郎",
+      "zh-CN": "名人兔女郎",
+      "ko": "셀레브리티 바니",
+      "ja": "セレブリティ・バニー"
+    }
+  },
+  "Nebris": {
+    "Labyrinth Gatekeeper": {
+      "zh-TW": "迷宮的門衛",
+      "zh-CN": "迷宫的门卫",
+      "ko": "미궁의 문지기",
+      "ja": "迷宮の門番"
+    },
+    "Laid-back Lifeguard": {
+      "zh-TW": "鬆散的救生員",
+      "zh-CN": "松散的救生员",
+      "ko": "느슨한 라이프 가드",
+      "ja": "ユルいライフガード"
+    },
+    "New Hire": {
+      "zh-TW": "新進員工",
+      "zh-CN": "新进员工",
+      "ko": "신입사원",
+      "ja": "新入社員"
+    }
+  },
+  "Morpeah": {
+    "Beach Vacation": {
+      "zh-TW": "海邊度假",
+      "zh-CN": "海边度假",
+      "ko": "비치 바캉스",
+      "ja": "ビーチバカンス"
+    },
+    "Daydream Bunny": {
+      "zh-TW": "白日夢兔女郎",
+      "zh-CN": "白日梦兔女郎",
+      "ko": "데이드림 바니",
+      "ja": "デイドリーム・バニー"
+    },
+    "Apostle": {
+      "zh-TW": "使者",
+      "zh-CN": "使者",
+      "ko": "사도",
+      "ja": "使徒"
+    }
+  },
+  "Sacred Justia": {
+    "Reclaimed Destiny": {
+      "zh-TW": "找回的命運",
+      "zh-CN": "找回的命运",
+      "ko": "되찾은 운명",
+      "ja": "取り戻せし運命"
+    }
+  },
+  "Olivier": {
+    "Faithful Wings": {
+      "zh-TW": "忠實之翼",
+      "zh-CN": "信实之翼",
+      "ko": "신실의 날개",
+      "ja": "信心の翼"
+    },
+    "Apostle (Kelian)": {
+      "zh-TW": "使者",
+      "zh-CN": "使者",
+      "ko": "사도",
+      "ja": "使徒"
+    },
+    "Fallen Wings": {
+      "zh-TW": "墮落之翼",
+      "zh-CN": "堕落之翼",
+      "ko": "타락한 날개",
+      "ja": "堕ちた翼"
+    }
+  },
+  "Blade": {
+    "Apostle": {
+      "zh-TW": "使者",
+      "zh-CN": "使者",
+      "ko": "사도",
+      "ja": "使徒"
+    },
+    "Onsen Swordfighter": {
+      "zh-TW": "溫泉劍客",
+      "zh-CN": "温泉剑客",
+      "ko": "온천 검객",
+      "ja": "温泉剣客"
+    },
+    "Young Lady": {
+      "zh-TW": "小公主",
+      "zh-CN": "小公主",
+      "ko": "소공녀",
+      "ja": "公女"
+    }
+  },
+  "Liberta": {
+    "Dark Saintess": {
+      "zh-TW": "暗黑聖女",
+      "zh-CN": "暗黑圣女",
+      "ko": "암흑 성녀",
+      "ja": "暗黒聖女"
+    },
+    "Onsen Manager": {
+      "zh-TW": "溫泉管理者",
+      "zh-CN": "温泉管理员",
+      "ko": "온천 관리인",
+      "ja": "温泉管理人"
+    },
+    "Hedonist": {
+      "zh-TW": "享樂主義者",
+      "zh-CN": "享乐主义者",
+      "ja": "享楽探究者",
+      "ko": "쾌락 추구자",
+      "en": "Hedonist"
+    }
+  },
+  "Sonya": {
+    "Shadowed Dream": {
+      "zh-TW": "潛藏的夢",
+      "zh-CN": "潜藏的梦",
+      "ko": "이면의 꿈",
+      "ja": "深裏の夢"
+    },
+    "Little Pumpkin Girl": {
+      "zh-TW": "賣南瓜的少女",
+      "zh-CN": "卖南瓜的少女",
+      "ko": "호박팔이 소녀",
+      "ja": "かぼちゃ売りの少女"
+    }
+  },
+  "Darian": {
+    "Prophetic Dream": {
+      "zh-TW": "啟示之夢",
+      "zh-CN": "启示之梦",
+      "ko": "계시의 꿈",
+      "ja": "啓示の夢"
+    },
+    "Bittersweet Bunny": {
+      "zh-TW": "苦甜兔女郎",
+      "zh-CN": "半糖余韵兔女郎",
+      "ko": "비터스윗 바니",
+      "ja": "ビタースウィート・バニー"
+    }
+  },
+  "Tyr": {
+    "Starlight Guardian": {
+      "zh-TW": "星光守護者",
+      "zh-CN": "星光守护者",
+      "ko": "별빛의 수호자",
+      "ja": "星光の守護者"
+    },
+    "Innocent Bunny": {
+      "zh-TW": "軟萌兔女郎",
+      "zh-CN": "澄心无邪兔女郎",
+      "ko": "이노센트 바니",
+      "ja": "イノセント・バニー"
+    }
+  },
+  "Eris": {
+    "Esteemed Adventurer": {
+      "zh-TW": "受祝福的冒險家",
+      "zh-CN": "受祝福的冒险家",
+      "ko": "촉망받는 모험가",
+      "ja": "有望な冒険家"
+    },
+    "Your Very Own Cat": {
+      "zh-TW": "只屬於你的貓咪",
+      "zh-CN": "只属于你的猫咪",
+      "ko": "당신만의 고양이 도안",
+      "ja": "あなただけの猫図案"
+    }
+  },
+  "Roxy": {
+    "Respected Master": {
+      "zh-TW": "受尊敬的師傅",
+      "zh-CN": "受尊敬的师傅",
+      "ko": "존경받는 스승",
+      "ja": "尊敬される師匠"
+    },
+    "Emerging Desire": {
+      "zh-TW": "洩露的慾望",
+      "zh-CN": "泄露的欲望",
+      "ko": "새어 나온 욕망",
+      "ja": "漏れ出る欲望"
+    }
+  },
+  "Yomi": {
+    "Gentle Destroyer": {
+      "zh-TW": "溫和的破壞者",
+      "zh-CN": "温和的破坏者",
+      "ko": "온화한 파괴자",
+      "ja": "穏やかな破壊者"
+    }
+  },
+  "Yozakura": {
+    "Fist of Conviction": {
+      "zh-TW": "信念之拳",
+      "zh-CN": "信念之拳",
+      "ko": "신념의 주먹",
+      "ja": "信念の拳"
+    }
+  },
+  "Yumi": {
+    "Dancing Snowflake": {
+      "zh-TW": "雪花之舞",
+      "zh-CN": "雪花之舞",
+      "ko": "눈꽃의 춤",
+      "ja": "雪花の舞"
+    }
+  },
+  "Hikage": {
+    "Kind Ruthlessness": {
+      "zh-TW": "和藹的無情",
+      "zh-CN": "和蔼的无情",
+      "ko": "상냥한 무정",
+      "ja": "優しき無情"
+    }
+  },
+  "Goblin Slayer": {
+    "Orcbolg": {
+      "zh-TW": "小鬼殺手",
+      "zh-CN": "小鬼杀手",
+      "ko": "소귀 살해자",
+      "ja": "小鬼を殺す者"
+    }
+  },
+  "Priestess": {
+    "Earth Mother Believer": {
+      "zh-TW": "地母神的祭司",
+      "zh-CN": "地母神的祭司",
+      "ko": "지모신의 사제",
+      "ja": "地母神の愛娘"
+    }
+  },
+  "High Elf Archer": {
+    "Daughter of Starwind": {
+      "zh-TW": "星風之女",
+      "zh-CN": "星风之女",
+      "ko": "별 바람의 딸",
+      "ja": "星風の娘"
+    }
+  },
+  "Sword Maiden": {
+    "Supreme God Archbishop": {
+      "zh-TW": "至高神的大主教",
+      "zh-CN": "至高神的大主教",
+      "ko": "지고신의 대주교",
+      "ja": "至高神の大司教"
+    }
+  },
+  "Alec": {
+    "The Destruction": {
+      "zh-TW": "毀滅之星",
+      "zh-CN": "毁灭之星",
+      "ko": "파괴의 별",
+      "ja": "破壊の星"
+    },
+    "Sword Breaker": {
+      "zh-TW": "劍之毀滅者",
+      "zh-CN": "剑之毁灭者",
+      "ko": "소드 브레이커",
+      "ja": "ソードブレーカー"
+    }
+  },
+  "Anastasia": {
+    "Gentle Maid": {
+      "zh-TW": "和藹的女僕",
+      "zh-CN": "和蔼的女仆",
+      "ko": "상냥한 메이드",
+      "ja": "優しきメイド"
+    },
+    "Fire Graffiti": {
+      "zh-TW": "火之塗鴉",
+      "zh-CN": "火之涂鸦",
+      "ko": "파이어 그라피티",
+      "ja": "ファイアグラフィティ"
+    }
+  },
+  "Lecliss": {
+    "Killer Doll": {
+      "zh-TW": "殺人娃娃",
+      "zh-CN": "杀人娃娃",
+      "ko": "살인 인형",
+      "ja": "殺人人形"
+    },
+    "Android Queen": {
+      "zh-TW": "安卓女王",
+      "zh-CN": "安卓女王",
+      "ko": "안드로이드 퀸",
+      "ja": "アンドロイドクイーン"
+    }
+  },
+  "Rafina": {
+    "Steel Engine": {
+      "zh-TW": "鋼鐵引擎",
+      "zh-CN": "钢铁引擎",
+      "ko": "강철엔진",
+      "ja": "鋼のエンジン"
+    },
+    "Code Name A": {
+      "zh-TW": "代號A",
+      "zh-CN": "代号A",
+      "ko": "코드네임 A",
+      "ja": "コードネームA"
+    },
+    "Game Club": {
+      "zh-TW": "遊戲社",
+      "zh-CN": "游戏社",
+      "ko": "게임부",
+      "ja": "ゲーム部"
+    }
+  },
+  "Elise": {
+    "Lovely Lady": {
+      "zh-TW": "可愛的小姐",
+      "zh-CN": "可爱的小姐",
+      "ko": "사랑스러운 아가씨",
+      "ja": "愛しいレディ"
+    },
+    "Code Name O": {
+      "zh-TW": "代號O",
+      "zh-CN": "代号O",
+      "ko": "코드네임 O",
+      "ja": "コードネーム O"
+    }
+  },
+  "Helena": {
+    "Top Idol": {
+      "zh-TW": "頂尖偶像",
+      "zh-CN": "顶尖偶像",
+      "ko": "톱 아이돌",
+      "ja": "トップアイドル"
+    },
+    "B-Rank Idol": {
+      "zh-TW": "B級偶像",
+      "zh-CN": "B级偶像",
+      "ko": "B급 아이돌",
+      "ja": "B級アイドル"
+    }
+  },
+  "Eleaneer": {
+    "Piercing Magic Bow": {
+      "zh-TW": "貫穿的魔弓",
+      "zh-CN": "贯穿的魔弓",
+      "ko": "꿰뚫는 마궁",
+      "ja": "貫く魔弓"
+    },
+    "B-Rank Idol": {
+      "zh-TW": "B級偶像",
+      "zh-CN": "B级偶像",
+      "ko": "B급 아이돌",
+      "ja": "B級アイドル"
+    },
+    "Shadow Bunny": {
+      "zh-TW": "酷魅兔女郎",
+      "zh-CN": "夜色流影兔女郎",
+      "ko": "쉐도우 바니",
+      "ja": "シャドウ・バニー"
+    }
+  },
+  "Dalvi": {
+    "Bright Moon": {
+      "zh-TW": "明月",
+      "zh-CN": "明月",
+      "ko": "명월",
+      "ja": "明月"
+    },
+    "Summer Vacation": {
+      "zh-TW": "暑假達非",
+      "zh-CN": "暑假达非",
+      "ko": "여름휴가 달비",
+      "ja": "バカンス キュウビ"
+    }
+  },
+  "Zenith": {
+    "Robin Hood": {
+      "zh-TW": "羅賓漢",
+      "zh-CN": "罗宾汉",
+      "ko": "로빈 후드",
+      "ja": "ロビンフッド"
+    },
+    "Poolside Guardian": {
+      "zh-TW": "水上守護者",
+      "zh-CN": "水上守护者",
+      "ko": "물놀이 수호자",
+      "ja": "水遊びの守護者"
+    },
+    "Stranger Bunny": {
+      "zh-TW": "神秘兔女郎",
+      "zh-CN": "神秘兔女郎",
+      "ja": "ストレンジャー・バニー",
+      "ko": "스트레인저 바니",
+      "en": "Stranger Bunny"
+    }
+  },
+  "Andrew": {
+    "Loyal Butler": {
+      "zh-TW": "忠誠耿直的管家",
+      "zh-CN": "忠诚耿直的管家",
+      "ko": "충직한 집사",
+      "ja": "忠実な執事"
+    },
+    "Specialist": {
+      "zh-TW": "專家",
+      "zh-CN": "专家",
+      "ko": "스페셜리스트",
+      "ja": "スペシャリスト"
+    }
+  },
+  "Ingrid": {
+    "Kardis' Bullet": {
+      "zh-TW": "卡迪斯的子彈",
+      "zh-CN": "卡迪斯的子弹",
+      "ko": "카디스의 탄환",
+      "ja": "カディスの弾丸"
+    }
+  },
+  "Cynthia": {
+    "Warmth within the Severe Cold": {
+      "zh-TW": "酷寒中的熱氣",
+      "zh-CN": "酷寒中的热气",
+      "ko": "혹한 속의 온기",
+      "ja": "酷寒の中の温もり"
+    }
+  },
+  "Julie": {
+    "Healer": {
+      "zh-TW": "恢復師",
+      "zh-CN": "恢复师",
+      "ko": "회복사",
+      "ja": "回復師"
+    }
+  },
+  "Yuri": {
+    "Whitebolt": {
+      "zh-TW": "白雷",
+      "zh-CN": "白雷",
+      "ko": "백뢰",
+      "ja": "白雷"
+    },
+    "Comeback Idol": {
+      "zh-TW": "回歸偶像",
+      "zh-CN": "回归偶像",
+      "ko": "컴백 아이돌",
+      "ja": "カムバックアイドル"
+    }
+  },
+  "Nartas": {
+    "Anonymous Sage": {
+      "zh-TW": "無名道士",
+      "zh-CN": "无名道士",
+      "ko": "무명도사",
+      "ja": "名も無き道士"
+    }
+  },
+  "Angelica": {
+    "The Fallen": {
+      "zh-TW": "墮落之星",
+      "zh-CN": "堕落之星",
+      "ko": "타락의 별",
+      "ja": "堕落の星"
+    },
+    "Pool Party": {
+      "zh-TW": "泳池派對",
+      "zh-CN": "泳池派对",
+      "ko": "풀 파티",
+      "ja": "プールパーティ"
+    },
+    "Neon Savior": {
+      "zh-TW": "霓虹救星",
+      "zh-CN": "霓虹救星",
+      "ko": "네온 세이비어",
+      "ja": "ネオン・セイヴァー"
+    }
+  },
+  "Refithea": {
+    "The Gluttonous": {
+      "zh-TW": "貪婪之星",
+      "zh-CN": "贪婪之星",
+      "ko": "탐욕의 별",
+      "ja": "貪欲の星"
+    },
+    "Pure White Blessing": {
+      "zh-TW": "純白的祝福",
+      "zh-CN": "纯白的祝福",
+      "ko": "새하얀 축복",
+      "ja": "純白の祝福"
+    },
+    "Poolside Fairy": {
+      "zh-TW": "水上精靈",
+      "zh-CN": "水上精灵",
+      "ko": "물놀이 요정",
+      "ja": "水遊びの妖精"
+    }
+  },
+  "Glacia": {
+    "Alice": {
+      "zh-TW": "愛麗絲",
+      "zh-CN": "爱丽丝",
+      "ko": "앨리스",
+      "ja": "アリス"
+    },
+    "Disciplinary Committee": {
+      "zh-TW": "糾察隊",
+      "zh-CN": "纠察队",
+      "ko": "선도부",
+      "ja": "風紀委員会"
+    }
+  },
+  "Ventana": {
+    "Snow White": {
+      "zh-TW": "白雪",
+      "zh-CN": "白雪",
+      "ko": "백설",
+      "ja": "スノーホワイト"
+    },
+    "Comeback Idol": {
+      "zh-TW": "回歸偶像",
+      "zh-CN": "回归偶像",
+      "ko": "컴백 아이돌",
+      "ja": "カムバックアイドル"
+    },
+    "Onsen Practitioner": {
+      "zh-TW": "溫泉修行者",
+      "zh-CN": "温泉修行者",
+      "ko": "온천 수행자",
+      "ja": "温泉修行人"
+    }
+  },
+  "Granhildr": {
+    "The Void": {
+      "zh-TW": "虛無之星",
+      "zh-CN": "虚无之星",
+      "ko": "허무의 별",
+      "ja": "虚無の星"
+    },
+    "Comeback Idol": {
+      "zh-TW": "回歸偶像",
+      "zh-CN": "回归偶像",
+      "ko": "컴백 아이돌",
+      "ja": "カムバックアイドル"
+    },
+    "Boo Ghost": {
+      "zh-TW": "惡作劇幽靈",
+      "zh-CN": "恶作剧幽灵",
+      "ko": "깜짝 유령",
+      "ja": "サプライズゴースト"
+    }
+  },
+  "Venaka": {
+    "DJ": {
+      "zh-TW": "DJ",
+      "zh-CN": "DJ",
+      "ko": "DJ",
+      "ja": "DJ"
+    },
+    "Wind Dancer": {
+      "zh-TW": "風之舞姬",
+      "zh-CN": "風之舞姬",
+      "ko": "바람의 무희",
+      "ja": "風の踊り子"
+    }
+  },
+  "Levia": {
+    "Track and Field Captain": {
+      "zh-TW": "田徑社社長",
+      "zh-CN": "田径社社长",
+      "ko": "육상부 부장",
+      "ja": "陸上部 部長"
+    },
+    "Night of Jealousy": {
+      "zh-TW": "忌妒之夜",
+      "zh-CN": "忌妒之夜",
+      "ko": "시기의 밤",
+      "ja": "嫉妬の夜"
+    },
+    "Overheat": {
+      "zh-TW": "過熱",
+      "zh-CN": "过热",
+      "ko": "오버히트",
+      "ja": "オーバーヒート"
+    }
+  },
+  "Michaela": {
+    "Beachside Justice": {
+      "zh-TW": "海邊正義",
+      "zh-CN": "海边正义",
+      "ko": "해변의 정의",
+      "ja": "浜辺の正義"
+    },
+    "Queen of Signatures": {
+      "zh-TW": "簽名女王",
+      "zh-CN": "签名女王",
+      "ko": "서명의 여왕",
+      "ja": "サインの女王"
+    },
+    "Acting Archbishop": {
+      "zh-TW": "神聖者",
+      "zh-CN": "神圣者",
+      "ko": "거룩한 자",
+      "ja": "大主教代行"
+    }
+  },
+  "Luvencia": {
+    "Deal Snatcher": {
+      "zh-TW": "印鑑掠奪者",
+      "zh-CN": "印鉴掠夺者",
+      "ko": "인감 탈취자",
+      "ja": "契約奪取者"
+    },
+    "Wild Dog": {
+      "zh-TW": "野犬",
+      "zh-CN": "野犬",
+      "ko": "와일드독",
+      "ja": "ワイルドドッグ"
+    }
+  },
+  "Wilhelmina": {
+    "Iron Monarch": {
+      "zh-TW": "鋼鐵君主",
+      "zh-CN": "钢铁君主",
+      "ko": "강철의 군주",
+      "ja": "鋼の君主"
+    },
+    "Water Park Queen": {
+      "zh-TW": "水上樂園女王",
+      "zh-CN": "水上乐园女王",
+      "ko": "워터파크의 여왕",
+      "ja": "ウォーターパークの女王"
+    },
+    "Frozen Queen": {
+      "zh-TW": "冰雪女王",
+      "zh-CN": "银雪凝光女王",
+      "ko": "프로즌 퀸",
+      "ja": "フローズン・クイーン"
+    }
+  },
+  "Granadair": {
+    "Shrine Maiden of Purification": {
+      "zh-TW": "淨化巫女",
+      "zh-CN": "净化巫女",
+      "ko": "정화의 무녀",
+      "ja": "浄化の巫女"
+    },
+    "Granadair: Queen of Gluttis": {
+      "zh-TW": "暴食女王",
+      "zh-CN": "暴食女王",
+      "ja": "暴食の女王",
+      "ko": "포식의 여왕",
+      "en": "Queen of Gluttis"
+    }
+  }
+}

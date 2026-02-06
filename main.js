@@ -1,0 +1,1 @@
+import{s,r as e,u as o,A as r,a}from"./index-BNpSv1zj.js";import{B as u,D as p,E as i}from"./vendor-SJdm2fbw.js";import"./vuetify-LyJ4S_6A.js";const n=u({history:p("/"),routes:s(a)}),t=i(r);t.use(n);e(t);const c=o();c.loadSettings();t.mount("#app");
