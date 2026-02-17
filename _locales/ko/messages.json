@@ -1,0 +1,10 @@
+{
+    "extensionName": {
+        "message": "BD2 Assistant",
+        "description": "The name of the extension"
+    },
+    "extensionDescription": {
+        "message": "브라운더스트 2 데스크톱 펫 확장 프로그램. Live2D 캐릭터 표시 및 쿠폰 코드 알림 기능 제공.",
+        "description": "The description of the extension"
+    }
+}

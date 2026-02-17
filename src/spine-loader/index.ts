@@ -1,3 +1,4 @@
+
 import { SpinePlayer } from '@esotericsoftware/spine-player';
 import '@esotericsoftware/spine-player/dist/spine-player.css';
 
@@ -15,7 +16,7 @@ let isPhantomPlaying = false;
 
 // --- Behavior Logic ---
 function initBehaviors(container: HTMLElement) {
-    console.log('[Spine Behavior] Initializing... V18.14 (Physical Resize + Pulse)');
+    ((..._a: any[]) => { })('[Spine Behavior] Initializing... V18.14 (Physical Resize + Pulse)');
 
     // Base dimensions (initially 300px, but we read from live)
 
@@ -40,14 +41,14 @@ function initBehaviors(container: HTMLElement) {
             top: container.style.top,
             scale: currentScale
         };
-        console.log('[Spine Behavior] Saving layout:', layout);
+        ((..._a: any[]) => { })('[Spine Behavior] Saving layout:', layout);
         window.postMessage({ type: 'PET_LAYOUT_UPDATE', layout: layout }, '*');
     };
 
     // Load & Validate
     if (container.dataset.layout) {
         try {
-            console.log('[Spine Behavior] Found dataset.layout:', container.dataset.layout);
+            ((..._a: any[]) => { })('[Spine Behavior] Found dataset.layout:', container.dataset.layout);
             const saved = JSON.parse(container.dataset.layout);
 
             // Restore Scale (via Width/Height)
@@ -63,7 +64,7 @@ function initBehaviors(container: HTMLElement) {
             if (saved.top) container.style.top = saved.top;
         } catch (e) { console.error('Layout parse error', e); }
     } else {
-        // console.warn('[Spine Behavior] No dataset.layout found.');
+        // ((..._a:any[])=>{})('[Spine Behavior] No dataset.layout found.');
     }
 
     // V18.23: Global Wheel Listener for Zoom
@@ -72,6 +73,12 @@ function initBehaviors(container: HTMLElement) {
     // and check if they happened over our area.
     window.addEventListener('wheel', (e) => {
         if (lockZoom) return;
+
+        // V19.3: Skip if container is hidden (showPet = false or not loaded yet)
+        const containerStyle = window.getComputedStyle(container);
+        if (containerStyle.display === 'none' || containerStyle.opacity === '0' || containerStyle.pointerEvents === 'none') {
+            return; // Don't block page scroll when pet is hidden
+        }
 
         // Bounding Box Check
         // We need to know if the mouse is over the container.
@@ -216,7 +223,7 @@ function initBehaviors(container: HTMLElement) {
             // V18.29: Logic Refinement - Only trigger if not currently playing a Phantom anim
             if (isPhantomPlaying) return;
 
-            console.log('[Spine Phantom] Hover Detected (Locked & Ready)!');
+            ((..._a: any[]) => { })('[Spine Phantom] Hover Detected (Locked & Ready)!');
 
             // Trigger Animation
             // @ts-ignore
@@ -235,14 +242,14 @@ function initBehaviors(container: HTMLElement) {
 
                 if (validAnims.length > 0) {
                     const randomAnim = validAnims[Math.floor(Math.random() * validAnims.length)];
-                    console.log('[Spine Phantom] Playing:', randomAnim.name);
+                    ((..._a: any[]) => { })('[Spine Phantom] Playing:', randomAnim.name);
                     const entry = player.animationState.setAnimation(0, randomAnim.name, false);
                     player.animationState.addAnimation(0, 'idle', true, 0);
 
                     // Listen for completion to unlock
                     entry.listener = {
                         complete: () => {
-                            console.log('[Spine Phantom] Animation Complete. Unlocking.');
+                            ((..._a: any[]) => { })('[Spine Phantom] Animation Complete. Unlocking.');
                             playAnimation('motion_only');
                             isPhantomPlaying = true;
                             setTimeout(() => isPhantomPlaying = false, 3000); // Simple cooldown
@@ -267,15 +274,15 @@ async function loadSpine(skel: string, atlas: string, animation: string = 'idle'
         return;
     }
 
-    console.log(`[Spine Loader] Loading Model: ${skel}`);
+    ((..._a: any[]) => { })(`[Spine Loader] Loading Model: ${skel} `);
 
     // Dispose previous
     if (currentPlayer) {
-        console.log('[Spine Loader] Disposing previous player...');
+        ((..._a: any[]) => { })('[Spine Loader] Disposing previous player...');
         try {
             currentPlayer.dispose();
         } catch (e) {
-            console.warn('[Spine Loader] Dispose error', e);
+            ((..._a: any[]) => { })('[Spine Loader] Dispose error', e);
         }
         currentPlayer = null;
         // @ts-ignore
@@ -316,7 +323,7 @@ async function loadSpine(skel: string, atlas: string, animation: string = 'idle'
             preserveDrawingBuffer: true,
             premultipliedAlpha: false,
             success: (player: any) => {
-                console.log('[Spine Loader] Success!');
+                ((..._a: any[]) => { })('[Spine Loader] Success!');
                 currentPlayer = player;
                 // V18.57: Allow bridge to find this element for visibility toggling
                 if (player.canvas) player.canvas.id = 'spine-widget';
@@ -395,7 +402,7 @@ async function loadSpine(skel: string, atlas: string, animation: string = 'idle'
         // Failsafe: Remove spinner if it takes too long (e.g. CSP block)
         setTimeout(() => {
             if (manualSpinner && manualSpinner.isConnected) {
-                // console.warn('[Spine Loader] Loading timeout/blocked - removing spinner');
+                // ((..._a:any[])=>{})('[Spine Loader] Loading timeout/blocked - removing spinner');
                 manualSpinner.remove();
                 if (container && container.innerHTML.trim() === '') {
                     container.remove();
@@ -406,7 +413,7 @@ async function loadSpine(skel: string, atlas: string, animation: string = 'idle'
         // V18.42: Add rawDataURIs if provided (for cloud assets)
         if (rawDataURIs && Object.keys(rawDataURIs).length > 0) {
             config.rawDataURIs = rawDataURIs;
-            // console.log('[Spine Loader] Using rawDataURIs for textures:', Object.keys(rawDataURIs));
+            // ((..._a:any[])=>{})('[Spine Loader] Using rawDataURIs for textures:', Object.keys(rawDataURIs));
         }
 
         try {
@@ -417,7 +424,7 @@ async function loadSpine(skel: string, atlas: string, animation: string = 'idle'
             if (e.message && (e.message.includes('TrustedHTML') || e.message.includes('Security Policy'))) {
                 return;
             }
-            console.warn('[Spine Loader] Init Warning');
+            ((..._a: any[]) => { })('[Spine Loader] Init Warning');
         }
     } catch (e) {
         console.error('[Spine Loader] Init Exception', e);
@@ -467,7 +474,7 @@ function playAnimation(strategy: 'motion_only' | 'talk_notify' = 'motion_only') 
 
     if (validAnims.length > 0) {
         const randomAnim = validAnims[Math.floor(Math.random() * validAnims.length)];
-        console.log(`[Spine Anim] Strategy: ${strategy}, Playing: ${randomAnim.name}`);
+        ((..._a: any[]) => { })(`[Spine Anim]Strategy: ${strategy}, Playing: ${randomAnim.name} `);
 
         // Use track 0 for everything to ensure clean transitions (replace current)
         // For 'talk', we might ideally layer, but since some 'motion' anims are complex, 
@@ -530,7 +537,7 @@ window.addEventListener('message', (event) => {
 
 // --- Main Execution ---
 (async () => {
-    console.log('[Spine Loader] Initializing Official Spine Player (4.1)...');
+    ((..._a: any[]) => { })('[Spine Loader] Initializing Official Spine Player (4.1)...');
 
     // 1. Setup Container
     const root = document.getElementById('pet-root');
@@ -556,9 +563,9 @@ window.addEventListener('message', (event) => {
     if (root.dataset.rawDataURIs) {
         try {
             rawDataURIs = JSON.parse(root.dataset.rawDataURIs);
-            // console.log('[Spine Loader] Found rawDataURIs');
+            // ((..._a:any[])=>{})('[Spine Loader] Found rawDataURIs');
         } catch (e) {
-            console.warn('[Spine Loader] Failed to parse rawDataURIs', e);
+            ((..._a: any[]) => { })('[Spine Loader] Failed to parse rawDataURIs', e);
         }
     }
 

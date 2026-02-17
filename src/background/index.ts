@@ -10,7 +10,7 @@ const API_URL = 'https://api.thebd2pulse.com/redeem';
 const REDEEM_API_URL = 'https://loj2urwaua.execute-api.ap-northeast-1.amazonaws.com/prod/coupon'; // Direct AWS API - extensions have no CORS restrictions
 const API_KEY = 'pulse-key-abc123-xyz789-very-secret';
 const ALARM_NAME = 'checkUpdate';
-const POLL_INTERVAL_MINUTES = 60; // User requested 60 mins
+const POLL_INTERVAL_MINUTES = 60; // Standard check interval
 
 // === DeclarativeNetRequest: Spoof Origin/Referer for AWS API ===
 const HEADER_RULE_ID = 1;
@@ -63,6 +63,7 @@ chrome.alarms.onAlarm.addListener(async (alarm: chrome.alarms.Alarm) => {
 });
 
 // Check for updates function
+// Check for updates function
 async function checkForUpdates() {
     try {
         console.log('[Background] Fetching coupons from', API_URL);
@@ -99,47 +100,93 @@ async function checkForUpdates() {
             return diffDays <= 1; // Keep if expired less than 1 day
         });
 
-        console.log(`[Background] ${codesData.length} codes from API, ${validCodes.length} valid (non-expired)`);
+        console.log(`[Background] ${codesData.length} valid (non-expired) codes from API`);
 
-        // Get processed codes from storage
-        const storage = await chrome.storage.local.get('seenCodes');
-        const seenCodes = (storage.seenCodes || []) as string[];
+        // Get Settings and Claimed History
+        const settingsResult = await chrome.storage.sync.get('petSettings');
+        const settings = (settingsResult.petSettings || {}) as PetSettings;
+        const nicknames = (settings.nicknames && settings.nicknames.length > 0)
+            ? settings.nicknames
+            : (settings.nickname ? [settings.nickname] : []);
 
-        // Find new codes
-        const newCodes = validCodes.filter(c => !seenCodes.includes(c.code));
+        // If no nicknames, we can't really smart-filter, so we default to showing all valid codes 
+        // OR we just use local 'seenCodes' as fallback? 
+        // User requested: "checking synced nickname usage". If no nickname, maybe standard behavior?
+        // Let's assume most users have synced. If not, we fall back to "seenCodes" to avoid spam.
 
-        if (newCodes.length > 0) {
-            console.log('[Background] New codes found:', newCodes);
+        let usersUnclaimedCodes: CodeInfo[] = [];
 
-            // Get Settings
-            const settingsResult = await chrome.storage.sync.get('petSettings');
-            const settings = (settingsResult.petSettings || {}) as PetSettings;
+        if (nicknames.length > 0) {
+            // Get claimed history from local storage
+            // keys: claimedCodes_Nickname
+            const keys = nicknames.map(n => `claimedCodes_${n}`);
+            const storage = await chrome.storage.local.get(keys);
+
+            // Find codes that are NOT in claimed history for ALL accounts
+            // (If at least one account hasn't claimed it, it's "unclaimed" for the user context)
+            // Wait, actually, if *any* account needs it, we should notify.
+
+            usersUnclaimedCodes = validCodes.filter(c => {
+                // Return true if ANY nickname is missing this code
+                const needsRedeem = nicknames.some(nick => {
+                    const claimed = (storage[`claimedCodes_${nick}`] as string[]) || [];
+                    return !claimed.includes(c.code);
+                });
+                return needsRedeem;
+            });
+            console.log(`[Background] Found ${usersUnclaimedCodes.length} codes not fully redeemed by current users.`);
+        } else {
+            // Fallback: Use seenCodes if no user is logged in
+            const storage = await chrome.storage.local.get('seenCodes');
+            const seenCodes = (storage.seenCodes || []) as string[];
+            usersUnclaimedCodes = validCodes.filter(c => !seenCodes.includes(c.code));
+        }
+
+        if (usersUnclaimedCodes.length > 0) {
+            console.log('[Background] Unclaimed/New codes found:', usersUnclaimedCodes);
+
             const lang = settings.language || 'zh-TW';
             const autoRedeem = !!settings.autoRedeem;
-            const nicknames = settings.nicknames || (settings.nickname ? [settings.nickname] : []);
+
+            // Notify active tabs with full code info IMMEDIATELY
+            // User said: "auto redeem equals pop up bubble PLUS auto execute".
+            notifyActiveTabs(usersUnclaimedCodes, lang);
 
             // AUTO REDEEM LOGIC
+            // Now runs AFTER notification loop
             if (autoRedeem && nicknames.length > 0) {
                 console.log('[Background] Auto-Redeeming new codes...');
+                broadcastAutoRedeemStatus('START', {});
 
                 let redeemCount = 0;
 
-                for (const codeObj of newCodes) {
+                for (const codeObj of usersUnclaimedCodes) {
                     const code = codeObj.code;
                     for (const nickname of nicknames) {
-                        const result = await redeemCode(nickname, code);
-                        if (result.success || result.alreadyClaimed) {
-                            redeemCount++;
-                            // Update claimedCodes in local storage
-                            const key = `claimedCodes_${nickname}`;
-                            const s = await chrome.storage.local.get(key);
-                            const current = (s[key] as string[]) || [];
-                            if (!current.includes(code)) {
-                                await chrome.storage.local.set({ [key]: [...current, code] });
+                        // Check if this specific nickname needs it
+                        const key = `claimedCodes_${nickname}`;
+                        const s = await chrome.storage.local.get(key);
+                        const currentHistory = (s[key] as string[]) || [];
+
+                        if (!currentHistory.includes(code)) {
+                            const result = await redeemCode(nickname, code);
+
+                            // Broadcast Progress
+                            broadcastAutoRedeemStatus('PROGRESS', {
+                                nickname, code, success: result.success, alreadyClaimed: result.alreadyClaimed
+                            });
+
+                            if (result.success || result.alreadyClaimed) {
+                                redeemCount++;
+                                // Update claimedCodes in local storage
+                                const updated = [...currentHistory, code];
+                                await chrome.storage.local.set({ [key]: updated });
                             }
                         }
                     }
                 }
+
+                broadcastAutoRedeemStatus('COMPLETE', { count: redeemCount });
 
                 // System Notification
                 if (redeemCount > 0) {
@@ -147,19 +194,22 @@ async function checkForUpdates() {
                         type: 'basic',
                         iconUrl: 'icons/icon128.png',
                         title: 'BD2 Auto-Redeem',
-                        message: `Auto-redeemed ${newCodes.length} codes for ${nicknames.length} accounts!`,
+                        message: `Auto-redeemed ${redeemCount} codes!`,
                         priority: 2
                     });
                 }
             }
 
-            // Notify active tabs with full code info
-            notifyActiveTabs(newCodes, lang);
+            // Update seenCodes for fallback mechanism
+            const storage = await chrome.storage.local.get('seenCodes');
+            const seenCodes = (storage.seenCodes || []) as string[];
+            const allCodes = [...seenCodes, ...usersUnclaimedCodes.map(c => c.code)];
+            // Deduplicate
+            const uniqueSeen = Array.from(new Set(allCodes));
+            await chrome.storage.local.set({ seenCodes: uniqueSeen });
 
-            // Mark as seen
-            await chrome.storage.local.set({ seenCodes: [...seenCodes, ...newCodes.map(c => c.code)] });
         } else {
-            console.log('[Background] All codes already seen.');
+            console.log('[Background] All valid codes have been claimed or seen.');
         }
 
     } catch (error) {
@@ -200,7 +250,7 @@ interface CodeInfo {
     expiry_date?: string; // Format: YYYY/MM/DD
 }
 
-async function notifyActiveTabs(codes: CodeInfo[], lang: string) {
+async function notifyActiveTabs(codes: CodeInfo[], lang: string, isManualCheck: boolean = false) {
     const tabs = await chrome.tabs.query({ active: true });
     for (const tab of tabs) {
         if (tab.id) {
@@ -208,12 +258,26 @@ async function notifyActiveTabs(codes: CodeInfo[], lang: string) {
                 type: 'NEW_GIFT',
                 data: {
                     codes: codes,
-                    lang: lang
+                    lang: lang,
+                    isManualCheck: isManualCheck
                 }
             };
             chrome.tabs.sendMessage(tab.id, message).catch((err) => {
                 console.debug(`[Background] Could not send message to tab ${tab.id}:`, err);
             });
+        }
+    }
+}
+
+async function broadcastAutoRedeemStatus(type: 'START' | 'PROGRESS' | 'COMPLETE', data: any) {
+    const tabs = await chrome.tabs.query({ active: true });
+    for (const tab of tabs) {
+        if (tab.id) {
+            chrome.tabs.sendMessage(tab.id, {
+                type: 'PET_AUTO_REDEEM_STATUS',
+                statusType: type,
+                data: data
+            }).catch(() => { });
         }
     }
 }
@@ -253,10 +317,17 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
                     console.log(`[Background] TEST_NOTIFICATION: ${codesData.length} total, ${validCodes.length} valid (non-expired)`);
 
-                    const settingsResult = await chrome.storage.sync.get('petSettings');
-                    const lang = (settingsResult.petSettings as PetSettings)?.language || 'zh-TW';
-                    notifyActiveTabs(validCodes, lang);
-                    sendResponse({ success: true });
+                    // User requested Manual Check to show ALL valid codes, ignoring claimed status
+                    if (validCodes.length > 0) {
+                        const settingsResult = await chrome.storage.sync.get('petSettings');
+                        const settings = (settingsResult.petSettings || {}) as PetSettings;
+                        const lang = settings.language || 'zh-TW';
+
+                        notifyActiveTabs(validCodes, lang, true); // isManualCheck = true
+                        sendResponse({ success: true, count: validCodes.length });
+                    } else {
+                        sendResponse({ success: false, error: 'No valid codes' });
+                    }
                 } else {
                     sendResponse({ success: false, error: 'No codes' });
                 }
@@ -305,6 +376,16 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
                         success: result.success,
                         alreadyClaimed: result.alreadyClaimed
                     });
+
+                    // Update claimedCodes on success/alreadyClaimed
+                    if (result.success || result.alreadyClaimed) {
+                        const key = `claimedCodes_${nickname}`;
+                        const s = await chrome.storage.local.get(key);
+                        const current = (s[key] as string[]) || [];
+                        if (!current.includes(code)) {
+                            await chrome.storage.local.set({ [key]: [...current, code] });
+                        }
+                    }
 
                     // Log for debugging
                     console.log(`[Background] ${nickname} × ${code}: success=${result.success}, claimed=${result.alreadyClaimed}`);
@@ -387,6 +468,21 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
                             console.log(`[Background] Synced claimed code ${code} for ${nickname}`);
                         }
                     });
+
+                    // Update Pending Sync for Website (Auto-Sync on Load)
+                    const pendingItem = { nickname, code, timestamp: Date.now() };
+                    chrome.storage.local.get('pendingWebSync', (res) => {
+                        const current = (res.pendingWebSync as any[]) || [];
+                        // Avoid duplicates
+                        const exists = current.find(i => i.code === code && i.nickname === nickname);
+                        if (!exists) {
+                            const updated = [...current, pendingItem];
+                            chrome.storage.local.set({ pendingWebSync: updated });
+                        }
+                    });
+
+                    // Live Update: If website is open, force sync immediately
+                    forceSyncToActiveTabs(nickname, code);
                 }
 
                 sendResponse({
@@ -401,6 +497,59 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
                 sendResponse({ success: false, message: 'Network Error', nickname, code });
             }
         })();
+
+        return true; // Async
+    }
+
+    // --- CHECK PENDING SYNC (From Content Script) ---
+    if (message.type === 'PET_CHECK_PENDING_SYNC') {
+        chrome.storage.local.get('pendingWebSync', (res) => {
+            const pending = (res.pendingWebSync as any[]) || [];
+            if (pending.length > 0) {
+                sendResponse({ success: true, data: pending });
+                // Clear after sending
+                chrome.storage.local.set({ pendingWebSync: [] });
+            } else {
+                sendResponse({ success: false });
+            }
+        });
+        return true; // Async
+    }
+
+    // --- NEW: GET FULL STORAGE DATA (For Sync on Load) ---
+    if (message.type === 'PET_GET_STORAGE_DATA') {
+        const keys = message.keys as string[]; // e.g., ['petSettings'] or ['claimedCodes_...']
+        if (!keys || keys.length === 0) {
+            sendResponse({ success: false, error: 'No keys provided' });
+            return true;
+        }
+
+        // We might need strict separation of sync vs local storage
+        // 'petSettings' is in SYNC. 'claimedCodes_*' is in LOCAL.
+        // Let's handle both.
+
+        const promises = [];
+        const resultData: any = {};
+
+        // 1. Check Sync Storage
+        promises.push(new Promise<void>((resolve) => {
+            chrome.storage.sync.get(keys, (res) => {
+                Object.assign(resultData, res);
+                resolve();
+            });
+        }));
+
+        // 2. Check Local Storage
+        promises.push(new Promise<void>((resolve) => {
+            chrome.storage.local.get(keys, (res) => {
+                Object.assign(resultData, res);
+                resolve();
+            });
+        }));
+
+        Promise.all(promises).then(() => {
+            sendResponse({ success: true, data: resultData });
+        });
 
         return true; // Async
     }
@@ -423,10 +572,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
             }
 
             console.log(`[Background] Redeeming ${code} for ${targets.length} accounts:`, targets);
-            const report: string[] = [];
-            let anySuccess = false;
-
-            // Execute parallel requests
+            // Removed unused 'report' and 'anySuccess'
             const promises = targets.map(async (nickname) => {
                 try {
                     const body = JSON.stringify({
@@ -447,7 +593,6 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
                     const text = await response.text();
                     console.log(`[Background] ${nickname}: ${response.status} - ${text}`);
-                    if (response.ok) anySuccess = true;
 
                     // Simple status parsing
                     let statusMsg = response.ok ? 'Success' : 'Failed';
@@ -473,6 +618,20 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         return true; // Async
     }
 
+    // Helper: Force Sync to Active Tabs (The BD2 Pulse)
+    async function forceSyncToActiveTabs(nickname: string, code: string) {
+        const tabs = await chrome.tabs.query({ url: "*://thebd2pulse.com/*" });
+        for (const tab of tabs) {
+            if (tab.id) {
+                console.log(`[Background] Sending PET_FORCE_SYNC_TO_WEB to tab ${tab.id}`);
+                chrome.tabs.sendMessage(tab.id, {
+                    type: 'PET_FORCE_SYNC_TO_WEB',
+                    data: [{ nickname, code }]
+                }).catch(() => { /* Ignore cleanup errors */ });
+            }
+        }
+    }
+
     // --- SYNC DATA ---
     if (message.type === 'PET_SYNC_DATA') {
         const data = message.data;
@@ -488,11 +647,32 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
             });
         }
 
-        // 2. Save Full History/Settings to Local
-        chrome.storage.local.set({
-            bd2_synced_settings: data.bd2_settings || {},
-            bd2_claimed_history: data.claimedHistory || {}
-        });
+        // 2. Save Claimed History to Local (Flattened Keys)
+        if (data.claimedHistory) {
+            const newHistory = data.claimedHistory as Record<string, string[]>;
+            const keys = Object.keys(newHistory);
+
+            if (keys.length > 0) {
+                chrome.storage.local.get(keys, (result) => {
+                    const updates: Record<string, string[]> = {};
+
+                    for (const key of keys) {
+                        const existing = (result[key] as string[]) || [];
+                        const incoming = newHistory[key] || [];
+                        // Union merge
+                        updates[key] = Array.from(new Set([...existing, ...incoming]));
+                    }
+
+                    chrome.storage.local.set(updates);
+                    console.log('[Background] Synced History Merged & Flattened:', Object.keys(updates));
+                });
+            }
+        }
+
+        // Save Settings
+        if (data.bd2_settings) {
+            chrome.storage.local.set({ bd2_synced_settings: data.bd2_settings });
+        }
 
         sendResponse({ success: true });
         return true;
