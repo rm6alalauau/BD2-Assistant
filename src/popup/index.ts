@@ -51,7 +51,7 @@ const UI_STRINGS: Record<string, any> = {
         clearCache: '清除已下載模型 🗑️',
         syncSection: '同步 The BD2 Pulse',
         syncBtn: '從網站同步 🔄',
-        testBtn: '測試通知 🔔',
+        checkCodes: '查看兌換碼 🎁',
         synced: '已同步: ',
         syncedAccounts: '已同步 {n} 個帳號',
         noSync: '尚未同步',
@@ -73,7 +73,7 @@ const UI_STRINGS: Record<string, any> = {
         clearCache: '清除已下载模型 🗑️',
         syncSection: '同步 The BD2 Pulse',
         syncBtn: '从网站同步 🔄',
-        testBtn: '测试通知 🔔',
+        checkCodes: '查看兑换码 🎁',
         synced: '已同步: ',
         syncedAccounts: '已同步 {n} 个账号',
         noSync: '尚未同步',
@@ -95,7 +95,7 @@ const UI_STRINGS: Record<string, any> = {
         clearCache: 'Clear Downloaded Models 🗑️',
         syncSection: 'Sync The BD2 Pulse',
         syncBtn: 'Sync from Website 🔄',
-        testBtn: 'Test Notification 🔔',
+        checkCodes: 'Check for Codes 🎁',
         synced: 'Synced: ',
         syncedAccounts: 'Synced {n} Accounts',
         noSync: 'Not Synced',
@@ -117,7 +117,7 @@ const UI_STRINGS: Record<string, any> = {
         clearCache: 'ダウンロード済みモデルを削除 🗑️',
         syncSection: 'The BD2 Pulse と同期',
         syncBtn: 'Webサイトから同期 🔄',
-        testBtn: '通知テスト 🔔',
+        checkCodes: 'コードを確認 🎁',
         synced: '同期済み: ',
         syncedAccounts: '{n} アカウント同期済み',
         noSync: '未同期',
@@ -139,7 +139,7 @@ const UI_STRINGS: Record<string, any> = {
         clearCache: '다운로드된 모델 삭제 🗑️',
         syncSection: 'The BD2 Pulse 동기화',
         syncBtn: '웹사이트에서 동기화 🔄',
-        testBtn: '알림 테스트 🔔',
+        checkCodes: '코드 확인 🎁',
         synced: '동기화됨: ',
         syncedAccounts: '{n} 계정 동기화됨',
         noSync: '미동기',
@@ -191,13 +191,13 @@ function updateUILanguage(lang: string) {
     if (lblSyncSection) lblSyncSection.textContent = strings.syncSection;
 
     const btnSyncText = document.getElementById('syncData-text');
-    if (btnSyncText && btnSyncText.textContent?.includes('🔄')) {
+    if (btnSyncText) {
         btnSyncText.textContent = strings.syncBtn;
     }
 
-    const btnTestText = document.getElementById('testNotify-text');
-    if (btnTestText && btnTestText.textContent?.includes('🔔')) {
-        btnTestText.textContent = strings.testBtn;
+    const btnCheckCodesText = document.getElementById('checkCodes-text');
+    if (btnCheckCodesText) {
+        btnCheckCodesText.textContent = strings.checkCodes;
     }
 
     const btnClearText = document.getElementById('clearCache-text');
@@ -260,13 +260,12 @@ async function init() {
         loadCacheStatus();
 
         if (modelsData) {
-            // Initial Population logic...
-            let startCharId = settings.characterId;
-            // ... logic to be moved here or called ...
+            // Initial Population logic handled by initializeDropdowns
             initializeDropdowns(settings);
         }
     });
 }
+
 
 function updateSyncStatus(settings: PetSettings) {
     const elNickname = document.getElementById('currentNickname') as HTMLElement | null;
@@ -298,6 +297,7 @@ function updateSyncStatus(settings: PetSettings) {
         }
     }
 }
+
 
 function initializeDropdowns(settings: PetSettings) {
     let startCharId = settings.characterId;
@@ -599,7 +599,8 @@ const saveSettings = () => {
         characterId: characterSelect.value,
         model: modelSelect.value, // Costume ID
         nickname: cachedNickname,
-        nicknames: cachedNicknames
+        nicknames: cachedNicknames,
+        autoRedeem: autoRedeem ? autoRedeem.checked : false
     };
 
     updateUILanguage(language.value);
@@ -640,6 +641,7 @@ if (opacity) {
         saveSettings();
     });
 }
+if (autoRedeem) autoRedeem.addEventListener('change', saveSettings);
 
 
 if (characterSearch) {
@@ -702,7 +704,33 @@ if (btnSync && btnSyncText) {
     });
 }
 
-// Test Notification Logic Removed for Production
+// Check Codes Logic
+const btnCheckCodes = document.getElementById('checkCodes');
+const btnCheckCodesText = document.getElementById('checkCodes-text');
+
+if (btnCheckCodes) {
+    btnCheckCodes.addEventListener('click', () => {
+        const originalText = btnCheckCodesText?.textContent;
+        if (btnCheckCodesText) btnCheckCodesText.textContent = 'Checking...';
+
+        // Use Official API via Background Script
+        chrome.runtime.sendMessage({ type: 'TEST_NOTIFICATION' }, (response) => {
+            if (chrome.runtime.lastError) {
+                console.error('Check Codes Error:', chrome.runtime.lastError);
+                if (btnCheckCodesText) btnCheckCodesText.textContent = 'Error ❌';
+            } else if (response && !response.success) {
+                console.warn('Check Codes Failed:', response.error);
+                if (btnCheckCodesText) btnCheckCodesText.textContent = 'No Codes ❌';
+            } else {
+                if (btnCheckCodesText) btnCheckCodesText.textContent = 'Done! ✅';
+            }
+
+            setTimeout(() => {
+                if (btnCheckCodesText && originalText) btnCheckCodesText.textContent = originalText;
+            }, 2000);
+        });
+    });
+}
 
 // Global Message Listener for Sync Updates
 chrome.runtime.onMessage.addListener((message) => {
@@ -742,3 +770,6 @@ chrome.runtime.onMessage.addListener((message) => {
     }
 });
 
+
+// Initialize Popup
+document.addEventListener('DOMContentLoaded', init);

@@ -79,7 +79,18 @@ const loadModelsData = async () => {
     if (modelsData) return;
     try {
         const res = await fetch(chrome.runtime.getURL('models.json'));
-        modelsData = await res.json();
+        const rawd = await res.json();
+        // Flatten for easy lookup
+        modelsData = {};
+        if (rawd.characters) {
+            rawd.characters.forEach((c: any) => {
+                if (c.costumes) {
+                    c.costumes.forEach((cos: any) => {
+                        modelsData[cos.id] = cos;
+                    });
+                }
+            });
+        }
     } catch (e) {
         console.error('[Pet Bridge] Failed to load models.json', e);
     }
@@ -90,6 +101,7 @@ const loadModelsData = async () => {
 const BUBBLE_STRINGS: Record<string, Record<string, string>> = {
     'zh-TW': {
         newCodes: '發現新兌換碼！',
+        viewCodes: '兌換碼',
         redeemAll: '一鍵兌換',
         redeeming: '兌換中...',
         success: '成功',
@@ -103,6 +115,7 @@ const BUBBLE_STRINGS: Record<string, Record<string, string>> = {
     },
     'zh-CN': {
         newCodes: '发现新兑换码！',
+        viewCodes: '兑换码',
         redeemAll: '一键兑换',
         redeeming: '兑换中...',
         success: '成功',
@@ -115,7 +128,8 @@ const BUBBLE_STRINGS: Record<string, Record<string, string>> = {
         nickname: '昵称'
     },
     'en': {
-        newCodes: 'New Codes Found!',
+        newCodes: 'New Coupon Codes Found!',
+        viewCodes: 'Coupon Codes',
         redeemAll: 'Redeem All',
         redeeming: 'Redeeming...',
         success: 'Success',
@@ -128,7 +142,8 @@ const BUBBLE_STRINGS: Record<string, Record<string, string>> = {
         nickname: 'Nickname'
     },
     'ja-JP': {
-        newCodes: '新しいコード発見！',
+        newCodes: '新しいクーポンコード発見！',
+        viewCodes: 'クーポンコード',
         redeemAll: '一括交換',
         redeeming: '交換中...',
         success: '成功',
@@ -141,7 +156,8 @@ const BUBBLE_STRINGS: Record<string, Record<string, string>> = {
         nickname: 'ニックネーム'
     },
     'ko-KR': {
-        newCodes: '새 코드 발견!',
+        newCodes: '새 쿠폰 코드 발견!',
+        viewCodes: '쿠폰 코드',
         redeemAll: '모두 교환',
         redeeming: '교환 중...',
         success: '성공',
@@ -164,6 +180,7 @@ interface BubbleData {
     codes?: CodeInfo[];
     lang?: string;
     text?: string; // Simple status text (for download progress, etc.)
+    isManualCheck?: boolean; // true when user clicked "Check Codes" button
 }
 
 // Helper: Bidirectional Sync (Extensions Storage <-> Website LocalStorage)
@@ -214,7 +231,7 @@ const syncAndGetClaimedCodes = async (nickname: string): Promise<string[]> => {
 
 
 const showSpeechBubble = (data: BubbleData) => {
-    console.log('[Pet Bridge] Showing Bubble:', data);
+    // console.log('[Pet Bridge] Showing Bubble:', data);
     const root = document.getElementById('pet-root');
     if (!root) return;
 
@@ -283,7 +300,7 @@ const showSpeechBubble = (data: BubbleData) => {
     // 2. Header
     const header = document.createElement('div');
     header.className = 'bubble-header';
-    header.textContent = strings.newCodes;
+    header.textContent = data.isManualCheck ? strings.viewCodes : strings.newCodes;
     bubble.appendChild(header);
 
     // 3. Nickname Row
@@ -647,9 +664,20 @@ const showSpeechBubble = (data: BubbleData) => {
 };
 
 
-// --- Asset Resolution Logic (The Core) ---
+
+
+
+
+// ...
+
+
+
+
+
+// ...
+
 const fetchBlob = async (url: string, isImage: boolean = false): Promise<Blob> => {
-    console.log(`[Pet DLC] Fetching: ${url}`);
+    // console.log(`[Pet DLC] Fetching: ${url}`);
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Fetch failed ${res.status}: ${url}`);
     const blob = await res.blob();
@@ -667,22 +695,15 @@ const fetchBlob = async (url: string, isImage: boolean = false): Promise<Blob> =
     return blob;
 };
 
+// ...
+
+// --- Asset Resolution Logic (The Core) ---
 const resolveModelAssets = async (costumeId: string) => {
     await loadModelsData();
-
-    let costume: any = null;
-    if (modelsData && modelsData.characters) {
-        for (const char of modelsData.characters) {
-            const found = char.costumes.find((c: any) => c.id === costumeId);
-            if (found) {
-                costume = found;
-                break;
-            }
-        }
-    }
+    let costume = modelsData ? modelsData[costumeId] : null;
 
     if (!costume) {
-        console.warn(`[Pet Bridge] Costume ${costumeId} not found. Assuming Built-in.`);
+        // console.warn(`[Pet Bridge] Costume ${costumeId} not found. Assuming Built-in.`);
         costume = { id: costumeId, isBuiltIn: true };
     }
 
@@ -695,7 +716,7 @@ const resolveModelAssets = async (costumeId: string) => {
             rawDataURIs: null // No need for built-in
         };
     } else {
-        console.log(`[Pet DLC] Resolving Cloud Asset: ${costume.id}`);
+        // console.log(`[Pet DLC] Resolving Cloud Asset: ${costume.id}`);
         try {
             const baseUrl = costume.src;
             const fileBase = costume.spineAlias ? costume.spineAlias : `char${costume.id}`;
@@ -714,14 +735,14 @@ const resolveModelAssets = async (costumeId: string) => {
             }
 
             const atlasText = await atlasBlob.text();
-            console.log(`[Pet DLC] Atlas Loaded (RAW). Header: ${atlasText.substring(0, 50)}...`);
+            // console.log(`[Pet DLC] Atlas Loaded (RAW). Header: ${atlasText.substring(0, 50)}...`);
 
             // B. Parse Atlas - Find Texture Page Names (using regex like reference project)
             const regex = /([^\s]+\.png)/g;
             const matches = Array.from(atlasText.matchAll(regex));
             const textureNames = [...new Set(matches.map(m => m[1]))]; // Unique names
 
-            console.log(`[Pet DLC] Found ${textureNames.length} texture(s) in atlas:`, textureNames);
+            // console.log(`[Pet DLC] Found ${textureNames.length} texture(s) in atlas:`, textureNames);
 
             if (textureNames.length === 0) {
                 textureNames.push(`${fileBase}.png`);
@@ -732,8 +753,8 @@ const resolveModelAssets = async (costumeId: string) => {
 
             // V18.43: Get base path from atlas URL (like reference project)
             const atlasBase = atlasUrl.slice(0, atlasUrl.lastIndexOf('/') + 1);
-            console.log(`[Pet DLC] Atlas URL: ${atlasUrl}`);
-            console.log(`[Pet DLC] Atlas Base: ${atlasBase}`);
+            // console.log(`[Pet DLC] Atlas URL: ${atlasUrl}`);
+            // console.log(`[Pet DLC] Atlas Base: ${atlasBase}`);
 
             // D. Download Images & Build rawDataURIs map with FULL paths
             const rawDataURIs: Record<string, string> = {};
@@ -757,7 +778,7 @@ const resolveModelAssets = async (costumeId: string) => {
                 const pngBlobUrl = URL.createObjectURL(pngBlob);
                 const fullKey = atlasBase + textureName;
                 rawDataURIs[fullKey] = pngBlobUrl;
-                console.log(`[Pet DLC] Texture mapped: "${fullKey}" -> "${pngBlobUrl.substring(0, 50)}..."`);
+                // console.log(`[Pet DLC] Texture mapped: "${fullKey}" -> "${pngBlobUrl.substring(0, 50)}..."`);
             }
 
             // E. Skel
@@ -774,7 +795,7 @@ const resolveModelAssets = async (costumeId: string) => {
             showSpeechBubble({ text: 'Download Complete!' });
             setTimeout(() => document.getElementById('pet-bubble')?.remove(), 2000);
 
-            console.log('[Pet DLC] Final rawDataURIs keys:', Object.keys(rawDataURIs));
+            // console.log('[Pet DLC] Final rawDataURIs keys:', Object.keys(rawDataURIs));
 
             return {
                 skel: skelUrl,
@@ -857,73 +878,140 @@ const applySettings = async (settings: any) => {
 
 // --- Initialization ---
 
-const init = async () => {
+// V19.2: Immediate Pre-Checks (Synchronous, before any async operations)
+const canInject = (): boolean => {
+    // 1. Check TrustedHTML compatibility FIRST
     try {
-        console.log('[Pet Bridge] Starting injection sequence [V18.43 Fix rawDataURIs keys]...');
+        const testDiv = document.createElement('div');
+        testDiv.innerHTML = '<span></span>';
+    } catch (e) {
+        console.warn('[Pet Bridge] TrustedHTML policy detected. Skipping injection.');
+        return false;
+    }
 
-        let root = document.getElementById('pet-root');
-        if (!root) {
-            root = document.createElement('div');
-            root.id = 'pet-root';
-            root.style.opacity = '1';
-            root.style.position = 'fixed';
-            root.style.right = '20px';
-            root.style.bottom = '20px';
-            root.style.zIndex = '999999';
-            root.style.width = '300px';
-            root.style.height = '300px';
-            root.style.height = '300px';
-            document.body.appendChild(root);
+    // 2. Check if extension context is valid
+    try {
+        if (!chrome?.runtime?.id) {
+            console.warn('[Pet Bridge] Extension context invalid. Skipping injection.');
+            return false;
         }
+    } catch (e) {
+        console.warn('[Pet Bridge] Extension context check failed. Skipping injection.');
+        return false;
+    }
 
-        // V18.60: Explicitly create the spine-widget container for the player
-        let widget = document.getElementById('spine-widget');
-        if (!widget) {
-            widget = document.createElement('div');
-            widget.id = 'spine-widget';
-            widget.style.width = '100%';
-            widget.style.height = '100%';
-            // Ensure it starts visible
-            widget.style.display = 'block';
-            root.appendChild(widget);
-        }
+    return true;
+};
 
-        const layoutResult = await chrome.storage.local.get(['petLayout']);
-        const layout = layoutResult.petLayout as any || {};
-        if (layoutResult.petLayout) {
-            root.dataset.layout = JSON.stringify(layout);
-            if (layout.left) {
-                root.style.right = 'auto';
-                root.style.bottom = 'auto';
-                root.style.left = layout.left;
-                root.style.top = layout.top;
+// Abort immediately if basic checks fail
+if (!canInject()) {
+    // Do nothing - no DOM creation, no async operations
+} else {
+
+    const init = async () => {
+        // console.log('[Pet Bridge DEBUG] init() started');
+        try {
+            // V19.10: Check 'show' setting - only HIDE if explicitly false
+            // console.log('[Pet Bridge DEBUG] About to check show setting...');
+            const preCheckResult = await chrome.storage.sync.get(['petSettings']);
+            const preCheckSettings: any = preCheckResult.petSettings || {};
+            // console.log('[Pet Bridge DEBUG] show raw value:', preCheckSettings.show, 'type:', typeof preCheckSettings.show);
+
+            // V19.11: Only HIDE if explicitly false (show by default)
+            if (preCheckSettings.show === false) {
+                // console.log('[Pet Bridge] show is explicitly false. Skipping injection.');
+                // Remove any existing pet-root
+                const existingRoot = document.getElementById('pet-root');
+                if (existingRoot) {
+                    existingRoot.remove();
+                }
+
+                // V19.11: Listen for setting changes so we can re-initialize when enabled
+                const settingsChangeListener = (changes: { [key: string]: chrome.storage.StorageChange }, area: string) => {
+                    if (area === 'sync' && changes.petSettings) {
+                        const newSettings = changes.petSettings.newValue as any || {};
+                        // console.log('[Pet Bridge] Settings changed. New show value:', newSettings.show);
+                        if (newSettings.show !== false) {
+                            // console.log('[Pet Bridge] show enabled! Re-initializing...');
+                            // Remove listener to prevent multiple inits
+                            chrome.storage.onChanged.removeListener(settingsChangeListener);
+                            init();
+                        }
+                    }
+                };
+                chrome.storage.onChanged.addListener(settingsChangeListener);
+
+                return;
             }
-        }
 
-        const settingsResult = await chrome.storage.sync.get(['petSettings']);
-        const savedSettings: any = settingsResult.petSettings || {};
-        const currentModelId = savedSettings.model || '003892';
 
-        const initialAssets = await resolveModelAssets(currentModelId);
-        if (initialAssets) {
-            root.dataset.skelUrl = initialAssets.skel;
-            root.dataset.atlasUrl = initialAssets.atlas;
-            root.dataset.currentModel = currentModelId;
-            if (initialAssets.rawDataURIs) {
-                root.dataset.rawDataURIs = JSON.stringify(initialAssets.rawDataURIs);
+
+            let root = document.getElementById('pet-root');
+            if (!root) {
+                root = document.createElement('div');
+                root.id = 'pet-root';
+                // V19.6: Start COMPLETELY HIDDEN - not just transparent
+                root.style.display = 'none';  // Completely removes from render
+                root.style.visibility = 'hidden';  // Extra safety
+                root.style.opacity = '0';
+                root.style.pointerEvents = 'none';
+                root.style.position = 'fixed';
+                root.style.right = '20px';
+                root.style.bottom = '20px';
+                root.style.zIndex = '999999';
+                root.style.width = '300px';
+                root.style.height = '300px';
+                document.body.appendChild(root);
             }
-        }
 
-        // V18.61: Kickstart Sequence
-        setTimeout(() => {
-            applySettings(savedSettings);
-            window.postMessage({ type: 'PET_PLAY_ANIMATION', strategy: 'motion_only' }, '*');
-        }, 1500);
+            // V18.60: Explicitly create the spine-widget container for the player
+            let widget = document.getElementById('spine-widget');
+            if (!widget) {
+                widget = document.createElement('div');
+                widget.id = 'spine-widget';
+                widget.style.width = '100%';
+                widget.style.height = '100%';
+                // Ensure it starts visible
+                widget.style.display = 'block';
+                root.appendChild(widget);
+            }
 
-        injectCSS('assets/spine-loader.css');
+            const layoutResult = await chrome.storage.local.get(['petLayout']);
+            const layout = layoutResult.petLayout as any || {};
+            if (layoutResult.petLayout) {
+                root.dataset.layout = JSON.stringify(layout);
+                if (layout.left) {
+                    root.style.right = 'auto';
+                    root.style.bottom = 'auto';
+                    root.style.left = layout.left;
+                    root.style.top = layout.top;
+                }
+            }
 
-        const customStyle = document.createElement('style');
-        customStyle.textContent = `
+            const settingsResult = await chrome.storage.sync.get(['petSettings']);
+            const savedSettings: any = settingsResult.petSettings || {};
+            const currentModelId = savedSettings.model || '003892';
+
+            const initialAssets = await resolveModelAssets(currentModelId);
+            if (initialAssets) {
+                root.dataset.skelUrl = initialAssets.skel;
+                root.dataset.atlasUrl = initialAssets.atlas;
+                root.dataset.currentModel = currentModelId;
+                if (initialAssets.rawDataURIs) {
+                    root.dataset.rawDataURIs = JSON.stringify(initialAssets.rawDataURIs);
+                }
+            }
+
+            // V18.61: Kickstart Sequence
+            setTimeout(() => {
+                applySettings(savedSettings);
+                window.postMessage({ type: 'PET_PLAY_ANIMATION', strategy: 'motion_only' }, '*');
+            }, 1500);
+
+            injectCSS('assets/spine-loader.css');
+
+            const customStyle = document.createElement('style');
+            customStyle.textContent = `
             .spine-player-loading::after {
                 content: '';
                 position: absolute;
@@ -944,73 +1032,154 @@ const init = async () => {
                 100% { transform: rotate(360deg); }
             }
         `;
-        document.head.appendChild(customStyle);
+            document.head.appendChild(customStyle);
 
-        await injectScript(`assets/spine-loader.js?t=${Date.now()}`);
+            await injectScript(`assets/spine-loader.js?t=${Date.now()}`);
 
-        chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-            if (message.type === 'NEW_GIFT' && message.data) {
-                // New format: data contains { codes: [...], lang: 'xx' }
-                showSpeechBubble({
-                    codes: message.data.codes || [{ code: message.data.code || message.data.id }],
-                    lang: message.data.lang || 'zh-TW'
-                });
+            chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+                if (message.type === 'NEW_GIFT' && message.data) {
+                    // New format: data contains { codes: [...], lang: 'xx', isManualCheck: boolean }
+                    showSpeechBubble({
+                        codes: message.data.codes || [{ code: message.data.code || message.data.id }],
+                        lang: message.data.lang || 'zh-TW',
+                        isManualCheck: message.data.isManualCheck || false
+                    });
 
-                // V18.53: Trigger Talk Animation
-                window.postMessage({ type: 'PET_PLAY_ANIMATION', strategy: 'talk' }, '*');
-            }
+                    // V18.53: Trigger Talk Animation
+                    window.postMessage({ type: 'PET_PLAY_ANIMATION', strategy: 'talk' }, '*');
+                }
 
-            if (message.type === 'PET_CLEAR_CACHE') {
-                console.log('[Pet Bridge] Clearing Cache Request Received');
-                const req = indexedDB.deleteDatabase(DB_NAME);
-                req.onsuccess = () => {
-                    console.log('[Pet Bridge] Database deleted successfully');
-                    sendResponse({ success: true });
-                    location.reload();
-                };
-                req.onerror = () => {
-                    console.error('[Pet Bridge] Failed to delete database');
-                    sendResponse({ success: false });
-                };
-                return true;
-            }
+                if (message.type === 'PET_AUTO_REDEEM_STATUS') {
+                    chrome.storage.sync.get('petSettings', (result) => {
+                        const settings = result.petSettings as { language?: string } || {};
+                        const lang = settings.language || 'zh-TW';
+                        const strings = BUBBLE_STRINGS[lang] || BUBBLE_STRINGS['en'];
 
-            if (message.type === 'PET_GET_DLC_STATUS') {
-                getAllKeys().then(keys => {
-                    // Filter keys to find unique IDs (look for _skel)
-                    const costumeIds = keys
-                        .filter(k => k.endsWith('_skel'))
-                        .map(k => k.replace('_skel', ''));
-                    sendResponse({ cachedIds: costumeIds });
-                }).catch(e => {
-                    console.error('[Pet Bridge] Failed to get DLC status', e);
-                    sendResponse({ cachedIds: [] });
-                });
-                return true; // Async response
-            }
-        });
+                        const bubble = document.getElementById('pet-bubble');
+                        const btn = document.getElementById('bubble-redeem-all') as HTMLButtonElement;
+                        const { statusType, data } = message;
 
-        chrome.storage.onChanged.addListener((changes, area) => {
-            if (area === 'sync' && changes.petSettings) {
-                applySettings(changes.petSettings.newValue);
-            }
-        });
+                        if (bubble) {
+                            if (statusType === 'START') {
+                                if (btn) {
+                                    btn.disabled = true;
+                                    btn.textContent = strings.redeeming || '兌換中...';
+                                }
+                            } else if (statusType === 'PROGRESS') {
+                                if (btn) btn.textContent = `${strings.redeeming} (${data.nickname})...`;
 
-        window.addEventListener('message', (event) => {
-            if (event.data && event.data.type === 'PET_LAYOUT_UPDATE') {
-                chrome.storage.local.set({ petLayout: event.data.layout });
-            }
-        });
+                                if (data.success || data.alreadyClaimed) {
+                                    const item = bubble.querySelector(`.bubble-code-item[data-code="${data.code}"]`);
+                                    if (item) {
+                                        item.classList.add('claimed');
+                                        const singleBtn = item.querySelector('.bubble-redeem-single');
+                                        if (singleBtn) singleBtn.remove();
+                                        if (!item.querySelector('.bubble-claimed-mark')) {
+                                            const newMark = document.createElement('span');
+                                            newMark.className = 'bubble-claimed-mark';
+                                            newMark.textContent = '✅';
+                                            item.appendChild(newMark);
+                                        }
+                                    }
+                                }
+                            } else if (statusType === 'COMPLETE') {
+                                if (btn) {
+                                    btn.textContent = `${strings.success} (${data.count})`;
+                                    setTimeout(() => {
+                                        btn.disabled = false;
+                                        btn.textContent = strings.batchRedeem || '一鍵兌換';
+                                        if (data.count > 0 && window.location.hostname.includes('thebd2pulse.com')) {
+                                            window.location.reload();
+                                        }
+                                    }, 3000);
+                                }
+                            }
+                        }
+                    });
+                }
 
-        setTimeout(() => applySettings(savedSettings), 500);
+                if (message.type === 'PET_CLEAR_CACHE') {
+                    // console.log('[Pet Bridge] Clearing Cache Request Received');
+                    const req = indexedDB.deleteDatabase(DB_NAME);
+                    req.onsuccess = () => {
+                        // console.log('[Pet Bridge] Database deleted successfully');
+                        sendResponse({ success: true });
+                        location.reload();
+                    };
+                    req.onerror = () => {
+                        // console.error('[Pet Bridge] Failed to delete database');
+                        sendResponse({ success: false });
+                    };
+                    return true;
+                }
 
-    } catch (error) {
-        console.error('[Pet Bridge] Injection failed:', error);
+                if (message.type === 'PET_GET_DLC_STATUS') {
+                    getAllKeys().then(keys => {
+                        // Filter keys to find unique IDs (look for _skel)
+                        const costumeIds = keys
+                            .filter(k => k.endsWith('_skel'))
+                            .map(k => k.replace('_skel', ''));
+                        sendResponse({ cachedIds: costumeIds });
+                    }).catch(e => {
+                        // console.error('[Pet Bridge] Failed to get DLC status', e);
+                        sendResponse({ cachedIds: [] });
+                    });
+                    return true; // Async response
+                }
+            });
+
+            chrome.storage.onChanged.addListener((changes, area) => {
+                if (area === 'sync' && changes.petSettings) {
+                    applySettings(changes.petSettings.newValue);
+                }
+            });
+
+            window.addEventListener('message', (event) => {
+                if (event.data && event.data.type === 'PET_LAYOUT_UPDATE') {
+                    chrome.storage.local.set({ petLayout: event.data.layout });
+                }
+            });
+
+            setTimeout(() => applySettings(savedSettings), 500);
+
+            // V19.3: Reveal pet-root only AFTER canvas successfully loads
+            // Use interval to check frequently, with 8-second max timeout
+            let checkCount = 0;
+            const maxChecks = 40; // 40 * 200ms = 8 seconds
+            const revealInterval = setInterval(() => {
+                checkCount++;
+                const root = document.getElementById('pet-root');
+                const widget = document.getElementById('spine-widget');
+                const hasCanvas = widget && widget.querySelector('canvas');
+
+                if (hasCanvas && root) {
+                    // SUCCESS: Canvas loaded, reveal the pet
+                    root.style.display = 'block';  // V19.6
+                    root.style.visibility = 'visible';  // V19.6
+                    root.style.opacity = '1';
+                    root.style.pointerEvents = 'auto';
+                    // console.log('[Pet Bridge] Canvas loaded successfully. Revealing UI.');
+                    clearInterval(revealInterval);
+                } else if (checkCount >= maxChecks) {
+                    // TIMEOUT: Keep hidden and stop checking
+                    console.warn('[Pet Bridge] Canvas initialization timeout. UI remains hidden.');
+                    if (root) {
+                        root.style.display = 'none';
+                    }
+                    clearInterval(revealInterval);
+                }
+            }, 200);
+
+        } catch (error) {
+            console.error('[Pet Bridge] Injection failed:', error);
+        }
+    };
+
+    // V19.7: Direct init call (removed delay that didn't help)
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
     }
-};
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-} else {
-    init();
-}
+} // End of canInject() else block
