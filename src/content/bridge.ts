@@ -678,7 +678,11 @@ const showSpeechBubble = (data: BubbleData) => {
 
 const fetchBlob = async (url: string, isImage: boolean = false): Promise<Blob> => {
     // console.log(`[Pet DLC] Fetching: ${url}`);
-    const res = await fetch(url);
+    const res = await fetch(url, {
+        headers: {
+            'X-BD2-Client': 'BD2-Assistant-Extension'
+        }
+    });
     if (!res.ok) throw new Error(`Fetch failed ${res.status}: ${url}`);
     const blob = await res.blob();
 
