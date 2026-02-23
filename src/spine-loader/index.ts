@@ -1,6 +1,7 @@
-
 import { SpinePlayer } from '@esotericsoftware/spine-player';
 import '@esotericsoftware/spine-player/dist/spine-player.css';
+
+
 
 // --- Global Constants & State (Moved to Top to avoid TDZ) ---
 const MIN_SCALE = 0.5; // User Refined
@@ -223,39 +224,59 @@ function initBehaviors(container: HTMLElement) {
             // V18.29: Logic Refinement - Only trigger if not currently playing a Phantom anim
             if (isPhantomPlaying) return;
 
-            ((..._a: any[]) => { })('[Spine Phantom] Hover Detected (Locked & Ready)!');
+            void 0; // Phantom hover detected
 
             // Trigger Animation
             // @ts-ignore
             if (window.spinePlayer && window.spinePlayer.animationState) {
                 isPhantomPlaying = true;
 
-                // @ts-ignore
-                const player = window.spinePlayer;
-                const anims = player.animationState.data.skeletonData.animations;
+                try {
+                    // @ts-ignore
+                    const player = window.spinePlayer;
+                    const anims = player.animationState.data.skeletonData.animations;
 
-                // V18.52: Filter out partial animations (face, mouth, etc)
-                const validAnims = anims.filter((a: any) => {
-                    const n = a.name.toLowerCase();
-                    return n !== 'idle' && !n.includes('_face') && !n.includes('_mouth') && !n.includes('_eye');
-                });
+                    // V18.52: Filter out partial animations (face, mouth, etc) — same as playAnimation
+                    let validAnims = anims.filter((a: any) => {
+                        const n = a.name.toLowerCase();
+                        return n !== 'idle' &&
+                            !n.includes('talk') &&
+                            !n.includes('_face') &&
+                            !n.includes('_mouth') &&
+                            !n.includes('_eye') &&
+                            !n.includes('default') &&
+                            !n.includes('feeling');
+                    });
 
-                if (validAnims.length > 0) {
-                    const randomAnim = validAnims[Math.floor(Math.random() * validAnims.length)];
-                    ((..._a: any[]) => { })('[Spine Phantom] Playing:', randomAnim.name);
-                    const entry = player.animationState.setAnimation(0, randomAnim.name, false);
-                    player.animationState.addAnimation(0, 'idle', true, 0);
+                    // Fallback: if no motion anims, use any animation
+                    if (validAnims.length === 0) validAnims = anims;
 
-                    // Listen for completion to unlock
-                    entry.listener = {
-                        complete: () => {
-                            ((..._a: any[]) => { })('[Spine Phantom] Animation Complete. Unlocking.');
-                            playAnimation('motion_only');
-                            isPhantomPlaying = true;
-                            setTimeout(() => isPhantomPlaying = false, 3000); // Simple cooldown
+                    if (validAnims.length > 0) {
+                        const randomAnim = validAnims[Math.floor(Math.random() * validAnims.length)];
+                        const entry = player.animationState.setAnimation(0, randomAnim.name, false);
+
+                        // Smart base animation detection (don't hardcode 'idle')
+                        let baseAnim = player.config?.animation;
+                        if (!baseAnim) {
+                            const idleAnim = anims.find((a: any) => a.name.toLowerCase() === 'idle' || a.name.toLowerCase() === 'animation');
+                            baseAnim = idleAnim ? idleAnim.name : anims[0]?.name;
                         }
-                    };
-                } else {
+                        if (baseAnim) {
+                            player.animationState.addAnimation(0, baseAnim, true, 0);
+                        }
+
+                        // Listen for completion to unlock
+                        entry.listener = {
+                            complete: () => {
+                                isPhantomPlaying = true;
+                                setTimeout(() => isPhantomPlaying = false, 3000); // Simple cooldown
+                            }
+                        };
+                    } else {
+                        isPhantomPlaying = false;
+                    }
+                } catch (e) {
+                    console.warn('[Spine Phantom] Animation error, resetting state', e);
                     isPhantomPlaying = false;
                 }
             }
@@ -263,9 +284,12 @@ function initBehaviors(container: HTMLElement) {
     });
 }
 
+
+
 // --- Loading Logic ---
+
 // V18.42: Added rawDataURIs parameter for cloud assets
-async function loadSpine(skel: string, atlas: string, animation: string = 'idle', rawDataURIs: Record<string, string> | null = null) {
+async function loadSpine(skel: string, atlas: string, animation: string = 'idle', rawDataURIs: Record<string, string> | null = null, isJsonSkel: boolean = false, atlasText: string | null = null) {
     const root = document.getElementById('pet-root');
     const container = document.getElementById('spine-widget');
 
@@ -311,91 +335,138 @@ async function loadSpine(skel: string, atlas: string, animation: string = 'idle'
 
     // Initialize
     try {
+        const initAnim = animation;
+
         // V18.42: Build config with optional rawDataURIs
+        // When atlasText is provided, use Blob URL for atlas to bypass atob() UTF-8 corruption
+        let finalAtlasUrl = atlas;
+        let finalSkelUrl = skel;
+        let finalRawDataURIs = rawDataURIs;
+
+        if (atlasText && rawDataURIs) {
+            // Create atlas Blob URL from raw text (preserves UTF-8 Korean chars like 레이어)
+            const atlasBlob = new Blob([atlasText], { type: 'text/plain; charset=utf-8' });
+            finalAtlasUrl = URL.createObjectURL(atlasBlob);
+
+            // SpinePlayer resolves texture page names relative to atlas URL.
+            // For blob URL "blob:https://www.google.com/UUID", the base is "blob:https://www.google.com/"
+            // So it constructs "blob:https://www.google.com/char003601.png" for texture page "char003601.png"
+            const blobBase = finalAtlasUrl.substring(0, finalAtlasUrl.lastIndexOf('/') + 1);
+
+            // Remap rawDataURIs: original keys (e.g. "char003601.png") → resolved keys that SpinePlayer will look up
+            const remapped: Record<string, string> = {};
+            for (const [key, value] of Object.entries(rawDataURIs)) {
+                if (key === 'model.skel') {
+                    // Skel URL is resolved independently, keep as-is
+                    remapped[key] = value;
+                } else {
+                    // Texture pages: add with the full resolved blob URL key
+                    remapped[blobBase + key] = value;
+                }
+            }
+            finalRawDataURIs = remapped;
+        }
+
         const config: any = {
-            binaryUrl: skel,
-            atlasUrl: atlas,
-            animation: animation,
+            atlasUrl: finalAtlasUrl,
+            animation: initAnim,
             showControls: false,
             showLoading: false,
             alpha: true,
             backgroundColor: '#00000000',
             preserveDrawingBuffer: true,
             premultipliedAlpha: false,
-            success: (player: any) => {
-                ((..._a: any[]) => { })('[Spine Loader] Success!');
-                currentPlayer = player;
-                // V18.57: Allow bridge to find this element for visibility toggling
-                if (player.canvas) player.canvas.id = 'spine-widget';
-                manualSpinner?.remove();
+        };
 
-                // Resolution Logic
-                const adjustResolution = () => {
-                    const canvas = player.canvas;
-                    const gl = player.context.gl;
-                    if (!canvas || !gl) return;
+        if (isJsonSkel) {
+            config.jsonUrl = finalSkelUrl;
+        } else {
+            config.binaryUrl = finalSkelUrl;
+        }
 
-                    const dpr = window.devicePixelRatio || 1;
-                    const SUPER_SAMPLE = 1.5;
-                    const rect = canvas.getBoundingClientRect();
+        config.success = (player: any) => {
+            ((..._a: any[]) => { })('[Spine Loader] Success!');
+            currentPlayer = player;
 
-                    if (rect.width === 0 || rect.height === 0) return;
+            // V20.4: Extract animations safely after proper initialization
+            if (player.animationState?.data?.skeletonData?.animations) {
+                const animNames = player.animationState.data.skeletonData.animations.map((a: any) => a.name);
 
-                    const targetWidth = Math.round(rect.width * dpr * SUPER_SAMPLE);
-                    const targetHeight = Math.round(rect.height * dpr * SUPER_SAMPLE);
+                // Broadcast available animations to bridge -> popup
+                window.parent.postMessage({ type: 'PET_ANIMATIONS_LIST', animations: animNames }, '*');
+            }
 
-                    if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
-                        canvas.width = targetWidth;
-                        canvas.height = targetHeight;
-                        canvas.style.width = '100%';
-                        canvas.style.height = '100%';
-                        gl.viewport(0, 0, canvas.width, canvas.height);
-                    }
-                };
+            // V18.57: Allow bridge to find this element for visibility toggling
+            if (player.canvas) player.canvas.id = 'spine-widget';
+            manualSpinner?.remove();
 
-                adjustResolution();
+            // Resolution Logic
+            const adjustResolution = () => {
+                const canvas = player.canvas;
+                const gl = player.context.gl;
+                if (!canvas || !gl) return;
 
-                // V18.37 FIX: Memory Leak / Lag
-                // Remove previous listener if exists. 
-                // We need to store it on window or a global var.
-                // @ts-ignore
-                if (window.currentResizeHandler) {
-                    // @ts-ignore
-                    window.removeEventListener('resize', window.currentResizeHandler);
+                const dpr = window.devicePixelRatio || 1;
+                const SUPER_SAMPLE = 1.5;
+                const rect = canvas.getBoundingClientRect();
+
+                if (rect.width === 0 || rect.height === 0) return;
+
+                const targetWidth = Math.round(rect.width * dpr * SUPER_SAMPLE);
+                const targetHeight = Math.round(rect.height * dpr * SUPER_SAMPLE);
+
+                if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
+                    canvas.width = targetWidth;
+                    canvas.height = targetHeight;
+                    canvas.style.width = '100%';
+                    canvas.style.height = '100%';
+                    gl.viewport(0, 0, canvas.width, canvas.height);
                 }
+            };
 
-                const newHandler = () => requestAnimationFrame(adjustResolution);
-                window.addEventListener('resize', newHandler);
+            adjustResolution();
 
+            // V18.37 FIX: Memory Leak / Lag
+            // Remove previous listener if exists. 
+            // We need to store it on window or a global var.
+            // @ts-ignore
+            if (window.currentResizeHandler) {
                 // @ts-ignore
-                window.currentResizeHandler = newHandler;
+                window.removeEventListener('resize', window.currentResizeHandler);
+            }
 
-                // @ts-ignore
-                window.spinePlayer = player;
-                // @ts-ignore
-                window.adjustSpineResolution = adjustResolution;
+            const newHandler = () => requestAnimationFrame(adjustResolution);
+            window.addEventListener('resize', newHandler);
 
-                // Interaction
-                player.canvas.addEventListener('click', () => {
-                    if (isDragging) return;
+            // @ts-ignore
+            window.currentResizeHandler = newHandler;
 
-                    playAnimation('motion_only');
-                });
+            // @ts-ignore
+            window.spinePlayer = player;
+            // @ts-ignore
+            window.adjustSpineResolution = adjustResolution;
 
-                // V18.58: Force play initial animation to prevent T-pose/freeze
-                setTimeout(() => playAnimation('motion_only'), 500);
-            },
-            error: (_p: any, msg: any) => {
-                // Suppress expected errors on blocked sites
-                if (typeof msg === 'string' && (msg.includes('TrustedHTML') || msg.includes('Security Policy'))) {
-                    // Silent fail
-                } else {
-                    // console.error('[Spine Error]', msg); 
-                }
-                manualSpinner?.remove();
-                if (container && !container.hasChildNodes()) {
-                    container.remove();
-                }
+            // Interaction
+            player.canvas.addEventListener('click', () => {
+                if (isDragging) return;
+
+                playAnimation('motion_only');
+            });
+
+            // V18.58: Force play initial animation to prevent T-pose/freeze
+            setTimeout(() => playAnimation('motion_only'), 500);
+        };
+
+        config.error = (_p: any, msg: any) => {
+            // Suppress expected errors on blocked sites
+            if (typeof msg === 'string' && (msg.includes('TrustedHTML') || msg.includes('Security Policy'))) {
+                // Silent fail
+            } else {
+                console.error('[Spine Error]', msg);
+            }
+            manualSpinner?.remove();
+            if (container && !container.hasChildNodes()) {
+                container.remove();
             }
         };
 
@@ -411,8 +482,8 @@ async function loadSpine(skel: string, atlas: string, animation: string = 'idle'
         }, 3000);
 
         // V18.42: Add rawDataURIs if provided (for cloud assets)
-        if (rawDataURIs && Object.keys(rawDataURIs).length > 0) {
-            config.rawDataURIs = rawDataURIs;
+        if (finalRawDataURIs && Object.keys(finalRawDataURIs).length > 0) {
+            config.rawDataURIs = finalRawDataURIs;
             // ((..._a:any[])=>{})('[Spine Loader] Using rawDataURIs for textures:', Object.keys(rawDataURIs));
         }
 
@@ -489,8 +560,19 @@ function playAnimation(strategy: 'motion_only' | 'talk_notify' = 'motion_only') 
         player.animationState.setAnimation(trackIndex, randomAnim.name, false);
 
         if (trackIndex === 0) {
-            // If main track, queue idle back
-            player.animationState.addAnimation(0, 'idle', true, 0);
+            // Then add idle so they don't freeze after motion is done.
+            // Get the initial animation for fallback. Local models might have `player.config.animation` undefined.
+            let baseAnim = player.config?.animation;
+            if (!baseAnim) {
+                const allAnims = player.animationState.data.skeletonData.animations;
+                if (allAnims && allAnims.length > 0) {
+                    const idleAnim = allAnims.find((a: any) => a.name.toLowerCase() === 'idle' || a.name.toLowerCase() === 'animation');
+                    baseAnim = idleAnim ? idleAnim.name : allAnims[0].name;
+                }
+            }
+            if (baseAnim) {
+                player.animationState.addAnimation(trackIndex, baseAnim, true, 0);
+            }
         } else {
             // If overlay track, just let it finish (empty)
             player.animationState.addEmptyAnimation(1, 0.5, 0);
@@ -501,9 +583,9 @@ function playAnimation(strategy: 'motion_only' | 'talk_notify' = 'motion_only') 
 // --- Message Listener for Model Switch ---
 window.addEventListener('message', (event) => {
     if (event.data && event.data.type === 'PET_MODEL_UPDATE') {
-        const { skelUrl, atlasUrl, rawDataURIs } = event.data.urls;
-        // V18.42: Pass rawDataURIs to loadSpine
-        loadSpine(skelUrl, atlasUrl, 'idle', rawDataURIs || null);
+        const { skelUrl, atlasUrl, rawDataURIs, isJsonSkel, atlasText } = event.data.urls;
+        // V18.42: Pass rawDataURIs and atlasText to loadSpine
+        loadSpine(skelUrl, atlasUrl, 'idle', rawDataURIs || null, isJsonSkel || false, atlasText || null);
     }
 
     if (event.data && event.data.type === 'PET_SETTINGS_UPDATE') {
@@ -532,6 +614,20 @@ window.addEventListener('message', (event) => {
     if (event.data && event.data.type === 'PET_PLAY_ANIMATION') {
         const strategy = event.data.strategy || 'motion_only';
         playAnimation(strategy);
+    }
+
+    // V20.6: Manual Animation Override (from UI)
+    if (event.data && event.data.type === 'PET_SET_ANIMATION' && currentPlayer && currentPlayer.animationState) {
+        try {
+            const animName = event.data.animation;
+            const anims = currentPlayer.animationState.data.skeletonData.animations;
+            const match = anims.find((a: any) => a.name === animName);
+            if (match) {
+                currentPlayer.animationState.setAnimation(0, animName, true);
+            }
+        } catch (e) {
+            console.warn('[Spine Loader] Failed to manually set animation:', e);
+        }
     }
 });
 
@@ -563,11 +659,11 @@ window.addEventListener('message', (event) => {
     if (root.dataset.rawDataURIs) {
         try {
             rawDataURIs = JSON.parse(root.dataset.rawDataURIs);
-            // ((..._a:any[])=>{})('[Spine Loader] Found rawDataURIs');
         } catch (e) {
             ((..._a: any[]) => { })('[Spine Loader] Failed to parse rawDataURIs', e);
         }
     }
+    const atlasText = root.dataset.atlasText || null;
 
     if (!skelUrl || !atlasUrl) {
         console.error('[Spine Loader] Missing URLs');
@@ -578,6 +674,7 @@ window.addEventListener('message', (event) => {
     initBehaviors(root);
 
     // --- Initial Load ---
-    loadSpine(skelUrl, atlasUrl, 'idle', rawDataURIs);
+    const isJsonSkel = root.dataset.isJsonSkel === 'true';
+    loadSpine(skelUrl, atlasUrl, 'idle', rawDataURIs, isJsonSkel, atlasText);
 
 })();

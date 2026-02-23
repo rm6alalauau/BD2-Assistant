@@ -142,6 +142,40 @@
             background-color: rgba(255, 255, 255, 0.1);
             margin: 15px 0;
         }
+
+        /* Glass-morphism buttons matching BD2-Archive */
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            color: #e7e7e7;
+            padding: 10px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .glass-btn:hover {
+            background: rgba(231, 40, 87, 0.15);
+            border-color: #e72857;
+        }
+
+        .glass-btn:active {
+            transform: scale(0.98);
+        }
+
+        .glass-btn.secondary {
+            background: rgba(255, 255, 255, 0.02);
+            border-color: rgba(255, 255, 255, 0.08);
+            font-size: 12px;
+            padding: 8px 12px;
+        }
+
+        .glass-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
     </style>
 </head>
 
@@ -188,6 +222,14 @@
             <label id="lbl-lockZoom" for="lockZoom">Lock Zoom</label>
             <label class="switch">
                 <input type="checkbox" id="lockZoom">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="divider" style="margin: 10px 0;"></div>
+        <div class="row">
+            <label id="lbl-flipX" for="flipX">Flip Horizontal</label>
+            <label class="switch">
+                <input type="checkbox" id="flipX">
                 <span class="slider"></span>
             </label>
         </div>
@@ -239,48 +281,32 @@
         <button id="clearCache" class="glass-btn secondary" style="width: 100%; font-size: 12px; margin-bottom: 8px;">
             <span id="clearCache-text">清除已下載模型 🗑️</span>
         </button>
-        <button id="loadLocalModel" class="glass-btn" style="width: 100%; font-size: 12px;">
-            <span id="loadLocalModel-text">載入本地模型 📁</span>
-        </button>
-        <input type="file" id="folderPicker" webkitdirectory style="display: none;">
-        <div id="localModelsList" style="margin-top: 8px; text-align: left;"></div>
     </div>
 
-    <style>
-        /* Glass-morphism buttons matching BD2-Archive */
-        .glass-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 8px;
-            color: #e7e7e7;
-            padding: 10px 16px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: inherit;
-        }
+    <div class="control-group">
+        <button id="toggleBlacklist" class="glass-btn"
+            style="width: 100%; font-size: 13px; margin-bottom: 8px; background: rgba(231, 40, 87, 0.2);">
+            <span id="toggleBlacklist-text">🚫 隱藏寵物 (目前網站)</span>
+        </button>
 
-        .glass-btn:hover {
-            background: rgba(231, 40, 87, 0.15);
-            border-color: #e72857;
-        }
+        <details id="advancedBlacklist" style="margin-top: 10px; font-size: 12px;">
+            <summary id="advancedBlacklist-summary" style="cursor: pointer; color: #aaa; padding: 4px 0;">進階設定：管理黑名單
+            </summary>
+            <div style="margin-top: 8px;">
+                <div id="blacklistHint" style="font-size: 10px; color: #888; margin-bottom: 4px; line-height: 1.3;">
+                    請輸入要隱藏的網域，每行一個（例: google.com）</div>
+                <textarea id="blacklistTextarea" rows="4"
+                    style="width: 100%; padding: 6px; border-radius: 4px; border: 1px solid #444; background: #2c2c2c; color: #fff; font-size: 12px; box-sizing: border-box; resize: vertical;"
+                    placeholder="example.com\nforum.gamer.com.tw"></textarea>
+                <button id="saveBlacklist" class="glass-btn option-btn"
+                    style="width: 100%; font-size: 12px; margin-top: 8px; background: rgba(76, 175, 80, 0.2);">
+                    <span id="saveBlacklist-text">儲存名單</span>
+                </button>
+            </div>
+        </details>
+    </div>
 
-        .glass-btn:active {
-            transform: scale(0.98);
-        }
 
-        .glass-btn.secondary {
-            background: rgba(255, 255, 255, 0.02);
-            border-color: rgba(255, 255, 255, 0.08);
-            font-size: 12px;
-            padding: 8px 12px;
-        }
-
-        .glass-btn.secondary:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-    </style>
 
     <script type="module" src="./index.ts"></script>
 </body>

@@ -36,12 +36,22 @@ const injectScript = (filePath: string): Promise<void> => {
 const DB_NAME = 'PetDLC';
 const STORE_NAME = 'assets';
 
+let _dbInstance: IDBDatabase | null = null;
+
 const openDB = () => new Promise<IDBDatabase>((resolve, reject) => {
+    if (_dbInstance) { resolve(_dbInstance); return; }
     const req = indexedDB.open(DB_NAME, 1);
     req.onupgradeneeded = () => req.result.createObjectStore(STORE_NAME);
-    req.onsuccess = () => resolve(req.result);
+    req.onsuccess = () => { _dbInstance = req.result; resolve(req.result); };
     req.onerror = () => reject(req.error);
 });
+
+const closeDB = () => {
+    if (_dbInstance) {
+        _dbInstance.close();
+        _dbInstance = null;
+    }
+};
 
 const getAsset = async (key: string): Promise<Blob | null> => {
     const db = await openDB();
@@ -94,6 +104,15 @@ const loadModelsData = async () => {
     } catch (e) {
         console.error('[Pet Bridge] Failed to load models.json', e);
     }
+};
+
+const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
 };
 
 // --- Notification Bubble ---
@@ -702,79 +721,9 @@ const fetchBlob = async (url: string, isImage: boolean = false): Promise<Blob> =
 // ...
 
 // --- Asset Resolution Logic (The Core) ---
+
+
 const resolveModelAssets = async (costumeId: string) => {
-    // --- Local Models (stored in IndexedDB by user) ---
-    if (costumeId.startsWith('local_')) {
-        try {
-            // Load skel
-            const skelBlob = await getAsset(`${costumeId}_skel`);
-            if (!skelBlob) {
-                console.warn(`[Pet Bridge] Local model not in IndexedDB: ${costumeId}. Falling back to default.`);
-                const fbDir = `live2d_models/003892/`;
-                return { skel: chrome.runtime.getURL(`${fbDir}char003892.skel`), atlas: chrome.runtime.getURL(`${fbDir}char003892.atlas`), png: chrome.runtime.getURL(`${fbDir}char003892.png`), rawDataURIs: null };
-            }
-            const skelUrl = URL.createObjectURL(skelBlob);
-
-            // Load atlas
-            const atlasBlob = await getAsset(`${costumeId}_atlas`);
-            if (!atlasBlob) {
-                console.warn(`[Pet Bridge] Local model atlas not in IndexedDB: ${costumeId}. Falling back to default.`);
-                const fbDir = `live2d_models/003892/`;
-                return { skel: chrome.runtime.getURL(`${fbDir}char003892.skel`), atlas: chrome.runtime.getURL(`${fbDir}char003892.atlas`), png: chrome.runtime.getURL(`${fbDir}char003892.png`), rawDataURIs: null };
-            }
-            const atlasUrl = URL.createObjectURL(atlasBlob);
-
-            // Parse atlas to find texture file names
-            const atlasText = await atlasBlob.text();
-            const regex = /([^\s]+\.png)/g;
-            const matches = Array.from(atlasText.matchAll(regex));
-            const textureNames = [...new Set(matches.map(m => m[1]))];
-
-            // Build rawDataURIs
-            const atlasBase = atlasUrl.slice(0, atlasUrl.lastIndexOf('/') + 1);
-            const rawDataURIs: Record<string, string> = {};
-
-            // Load all PNG files stored for this model
-            const allKeys = await getAllKeys();
-            const pngKeys = allKeys.filter(k => k.startsWith(`${costumeId}_png_`));
-
-            for (const pngKey of pngKeys) {
-                const pngBlob = await getAsset(pngKey);
-                if (pngBlob) {
-                    // Extract original filename from key: local_xxx_png_filename.png
-                    const pngName = pngKey.substring(`${costumeId}_png_`.length);
-                    const pngBlobUrl = URL.createObjectURL(pngBlob);
-                    const fullKey = atlasBase + pngName;
-                    rawDataURIs[fullKey] = pngBlobUrl;
-                }
-            }
-
-            // If atlas references textures but we matched by name, also map those
-            for (const texName of textureNames) {
-                const fullKey = atlasBase + texName;
-                if (!rawDataURIs[fullKey]) {
-                    // Try to find a matching png key
-                    const matchKey = pngKeys.find(k => k.endsWith(`_${texName}`));
-                    if (matchKey) {
-                        const blob = await getAsset(matchKey);
-                        if (blob) rawDataURIs[fullKey] = URL.createObjectURL(blob);
-                    }
-                }
-            }
-
-            return {
-                skel: skelUrl,
-                atlas: atlasUrl,
-                png: '',
-                rawDataURIs: rawDataURIs
-            };
-        } catch (e) {
-            console.error('[Pet Bridge] Failed to load local model, falling back to default', e);
-            const fbDir = `live2d_models/003892/`;
-            return { skel: chrome.runtime.getURL(`${fbDir}char003892.skel`), atlas: chrome.runtime.getURL(`${fbDir}char003892.atlas`), png: chrome.runtime.getURL(`${fbDir}char003892.png`), rawDataURIs: null };
-        }
-    }
-
     // --- Built-in / DLC Models ---
     await loadModelsData();
     let costume = modelsData ? modelsData[costumeId] : null;
@@ -790,7 +739,8 @@ const resolveModelAssets = async (costumeId: string) => {
             skel: chrome.runtime.getURL(`${dir}char${costume.id}.skel`),
             atlas: chrome.runtime.getURL(`${dir}char${costume.id}.atlas`),
             png: chrome.runtime.getURL(`${dir}char${costume.id}.png`),
-            rawDataURIs: null // No need for built-in
+            rawDataURIs: null, // No need for built-in
+            isJsonSkel: false
         };
     } else {
         // console.log(`[Pet DLC] Resolving Cloud Asset: ${costume.id}`);
@@ -825,16 +775,14 @@ const resolveModelAssets = async (costumeId: string) => {
                 textureNames.push(`${fileBase}.png`);
             }
 
-            // C. Create Atlas Blob URL FIRST - we need the base for rawDataURIs keys
-            const atlasUrl = URL.createObjectURL(atlasBlob);
+            // C. Atlas text will be passed separately (not in rawDataURIs)
+            // SpinePlayer's rawDataURIs uses atob() for Base64 which corrupts UTF-8 multi-byte chars
+            // and doesn't decode URL-encoded data URIs at all.
+            // The spine-loader will create Blob URLs from everything instead.
 
-            // V18.43: Get base path from atlas URL (like reference project)
-            const atlasBase = atlasUrl.slice(0, atlasUrl.lastIndexOf('/') + 1);
-            // console.log(`[Pet DLC] Atlas URL: ${atlasUrl}`);
-            // console.log(`[Pet DLC] Atlas Base: ${atlasBase}`);
-
-            // D. Download Images & Build rawDataURIs map with FULL paths
+            // D. Download Images & Build rawDataURIs map for internal CSP bypass
             const rawDataURIs: Record<string, string> = {};
+            // Atlas NOT in rawDataURIs — passed as atlasText
 
             for (const textureName of textureNames) {
                 const pngKey = `${costume.id}_${textureName}`;
@@ -850,12 +798,7 @@ const resolveModelAssets = async (costumeId: string) => {
                     await saveAsset(pngKey, pngBlob);
                 }
 
-                // V18.43: Key must be FULL path (atlasBase + textureName)
-                // Value can be Blob URL (simpler than Data URI)
-                const pngBlobUrl = URL.createObjectURL(pngBlob);
-                const fullKey = atlasBase + textureName;
-                rawDataURIs[fullKey] = pngBlobUrl;
-                // console.log(`[Pet DLC] Texture mapped: "${fullKey}" -> "${pngBlobUrl.substring(0, 50)}..."`);
+                rawDataURIs[textureName] = await blobToBase64(pngBlob);
             }
 
             // E. Skel
@@ -867,18 +810,19 @@ const resolveModelAssets = async (costumeId: string) => {
                 skelBlob = await fetchBlob(`${baseRemoteUrl}${skelName}`, false);
                 await saveAsset(skelKey, skelBlob);
             }
-            const skelUrl = URL.createObjectURL(skelBlob);
+            const skelB64 = await blobToBase64(skelBlob);
+            rawDataURIs['model.skel'] = skelB64;
 
             showSpeechBubble({ text: 'Download Complete!' });
             setTimeout(() => document.getElementById('pet-bubble')?.remove(), 2000);
 
-            // console.log('[Pet DLC] Final rawDataURIs keys:', Object.keys(rawDataURIs));
-
             return {
-                skel: skelUrl,
-                atlas: atlasUrl,
+                skel: 'model.skel',
+                atlas: 'model.atlas',
                 png: '',
-                rawDataURIs: rawDataURIs
+                rawDataURIs: rawDataURIs,
+                atlasText: atlasText,
+                spineVersion: '4.1'
             };
 
         } catch (e) {
@@ -889,7 +833,8 @@ const resolveModelAssets = async (costumeId: string) => {
                 skel: chrome.runtime.getURL(`${dir}char003892.skel`),
                 atlas: chrome.runtime.getURL(`${dir}char003892.atlas`),
                 png: chrome.runtime.getURL(`${dir}char003892.png`),
-                rawDataURIs: null
+                rawDataURIs: null,
+                spineVersion: '4.1'
             };
         }
     }
@@ -930,6 +875,7 @@ const applySettings = async (settings: any) => {
             root.dataset.skelUrl = newUrls.skel;
             root.dataset.atlasUrl = newUrls.atlas;
             root.dataset.currentModel = settings.model;
+            root.dataset.isJsonSkel = newUrls.isJsonSkel ? 'true' : 'false';
 
             // V18.42: Pass rawDataURIs to spine-loader via postMessage
             if (newUrls.rawDataURIs) {
@@ -937,16 +883,28 @@ const applySettings = async (settings: any) => {
             } else {
                 delete root.dataset.rawDataURIs;
             }
+            if (newUrls.atlasText) {
+                root.dataset.atlasText = newUrls.atlasText;
+            } else {
+                delete root.dataset.atlasText;
+            }
 
             window.postMessage({
                 type: 'PET_MODEL_UPDATE',
                 urls: {
                     skelUrl: newUrls.skel,
                     atlasUrl: newUrls.atlas,
-                    rawDataURIs: newUrls.rawDataURIs
+                    rawDataURIs: newUrls.rawDataURIs,
+                    atlasText: newUrls.atlasText,
+                    isJsonSkel: newUrls.isJsonSkel
                 }
             }, '*');
         });
+    }
+
+    // Apply Flip Horizontal
+    if (widget) {
+        widget.style.transform = settings.flipX ? 'scaleX(-1)' : 'scaleX(1)';
     }
 
     window.postMessage({ type: 'PET_SETTINGS_UPDATE', settings: settings }, '*');
@@ -990,8 +948,17 @@ if (!canInject()) {
         try {
             // V19.10: Check 'show' setting - only HIDE if explicitly false
             // console.log('[Pet Bridge DEBUG] About to check show setting...');
-            const preCheckResult = await chrome.storage.sync.get(['petSettings']);
+            const preCheckResult = await chrome.storage.sync.get(['petSettings', 'blacklistedDomains']);
             const preCheckSettings: any = preCheckResult.petSettings || {};
+
+            // Phase 9: Domain Blacklist Pre-Check
+            const blacklist = (preCheckResult.blacklistedDomains as string[]) || [];
+            const currentHostname = window.location.hostname;
+            if (blacklist.includes(currentHostname)) {
+                // console.log(`[Pet Bridge] Domain ${currentHostname} is blacklisted. Aborting injection.`);
+                return;
+            }
+
             // console.log('[Pet Bridge DEBUG] show raw value:', preCheckSettings.show, 'type:', typeof preCheckSettings.show);
 
             // V19.11: Only HIDE if explicitly false (show by default)
@@ -1074,6 +1041,7 @@ if (!canInject()) {
                 root.dataset.skelUrl = initialAssets.skel;
                 root.dataset.atlasUrl = initialAssets.atlas;
                 root.dataset.currentModel = currentModelId;
+                root.dataset.isJsonSkel = initialAssets.isJsonSkel ? 'true' : 'false';
                 if (initialAssets.rawDataURIs) {
                     root.dataset.rawDataURIs = JSON.stringify(initialAssets.rawDataURIs);
                 }
@@ -1177,7 +1145,15 @@ if (!canInject()) {
 
                 if (message.type === 'PET_CLEAR_CACHE') {
                     // console.log('[Pet Bridge] Clearing Cache Request Received');
+                    // Close the cached DB connection first so deleteDatabase can proceed
+                    closeDB();
                     const req = indexedDB.deleteDatabase(DB_NAME);
+                    req.onblocked = () => {
+                        // If still blocked (e.g. other tabs), force reload anyway
+                        console.warn('[Pet Bridge] deleteDatabase blocked, reloading anyway');
+                        sendResponse({ success: true });
+                        location.reload();
+                    };
                     req.onsuccess = () => {
                         // console.log('[Pet Bridge] Database deleted successfully');
                         sendResponse({ success: true });
@@ -1187,6 +1163,22 @@ if (!canInject()) {
                         // console.error('[Pet Bridge] Failed to delete database');
                         sendResponse({ success: false });
                     };
+                    return true;
+                }
+
+                if (message.type === 'PET_BLACKLIST_UPDATE') {
+                    if (message.blacklisted) {
+                        const root = document.getElementById('pet-root');
+                        if (root) root.style.display = 'none';
+                    } else {
+                        const root = document.getElementById('pet-root');
+                        if (root) {
+                            root.style.display = 'block';
+                        } else {
+                            location.reload(); // Never injected, need reload to inject
+                        }
+                    }
+                    sendResponse({ success: true });
                     return true;
                 }
 
@@ -1204,65 +1196,19 @@ if (!canInject()) {
                     return true; // Async response
                 }
 
-                // --- Local Model Save ---
-                if (message.type === 'PET_SAVE_LOCAL_MODEL') {
-                    (async () => {
-                        try {
-                            const { modelId, skelData, atlasData, pngFiles } = message;
-
-                            // Helper: base64 -> Blob
-                            const fromBase64 = (b64: string, mime: string): Blob => {
-                                const binary = atob(b64);
-                                const bytes = new Uint8Array(binary.length);
-                                for (let i = 0; i < binary.length; i++) {
-                                    bytes[i] = binary.charCodeAt(i);
-                                }
-                                return new Blob([bytes], { type: mime });
-                            };
-
-                            // Save skel
-                            await saveAsset(`${modelId}_skel`, fromBase64(skelData, 'application/octet-stream'));
-
-                            // Save atlas
-                            await saveAsset(`${modelId}_atlas`, fromBase64(atlasData, 'text/plain'));
-
-                            // Save PNGs
-                            for (const png of pngFiles) {
-                                await saveAsset(`${modelId}_png_${png.name}`, fromBase64(png.data, 'image/png'));
-                            }
-
-                            sendResponse({ success: true });
-                        } catch (e) {
-                            console.error('[Pet Bridge] Failed to save local model', e);
-                            sendResponse({ success: false, error: String(e) });
-                        }
-                    })();
-                    return true; // Async response
+                // V20.6: Forward manual animation setting from popup to spine-loader
+                if (message.type === 'PET_CHANGE_ANIMATION') {
+                    window.postMessage({ type: 'PET_SET_ANIMATION', animation: message.animation }, '*');
+                    sendResponse({ success: true });
                 }
 
-                // --- Local Model Delete ---
-                if (message.type === 'PET_DELETE_LOCAL_MODEL') {
-                    (async () => {
-                        try {
-                            const { modelId } = message;
-                            const allKeys = await getAllKeys();
-                            const keysToDelete = allKeys.filter(k => k.startsWith(`${modelId}_`));
-
-                            const db = await openDB();
-                            const tx = db.transaction(STORE_NAME, 'readwrite');
-                            const store = tx.objectStore(STORE_NAME);
-                            for (const key of keysToDelete) {
-                                store.delete(key);
-                            }
-
-                            sendResponse({ success: true });
-                        } catch (e) {
-                            console.error('[Pet Bridge] Failed to delete local model', e);
-                            sendResponse({ success: false });
-                        }
-                    })();
+                if (message.type === 'PET_REQUEST_ANIMATIONS') {
+                    // Send back the last cached animations list
+                    sendResponse({ type: 'PET_ANIMATIONS_LIST', animations: currentAnimations });
                     return true;
                 }
+
+
             });
 
             chrome.storage.onChanged.addListener((changes, area) => {
@@ -1271,9 +1217,16 @@ if (!canInject()) {
                 }
             });
 
+            let currentAnimations: string[] = [];
+
             window.addEventListener('message', (event) => {
                 if (event.data && event.data.type === 'PET_LAYOUT_UPDATE') {
                     chrome.storage.local.set({ petLayout: event.data.layout });
+                }
+                if (event.data && event.data.type === 'PET_ANIMATIONS_LIST') {
+                    currentAnimations = event.data.animations || [];
+                    // Forward to popup
+                    chrome.runtime.sendMessage(event.data);
                 }
             });
 
