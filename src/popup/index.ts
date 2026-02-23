@@ -59,7 +59,17 @@ const UI_STRINGS: Record<string, any> = {
         openWeb: '正在開啟網站...',
         syncSuccess: '同步成功! ✅',
         syncFail: '同步失敗 ❌',
-        autoRedeem: '自動兌換'
+        autoRedeem: '自動兌換',
+        loadLocal: '載入本地模型 📁',
+        localName: '請輸入模型名稱：',
+        localMissingSkel: '❌ 缺少 .skel 檔案（骨架資料）',
+        localMissingAtlas: '❌ 缺少 .atlas 檔案（圖集描述）',
+        localMissingPng: '❌ 缺少 .png 檔案（紋理圖片）',
+        localMultipleSkel: '❌ 資料夾內有多個 .skel 檔，請只保留一個',
+        localMultipleAtlas: '❌ 資料夾內有多個 .atlas 檔，請只保留一個',
+        localSaved: '模型已儲存 ✅',
+        localExists: '此名稱已存在，請使用其他名稱',
+        localDelete: '刪除'
     },
     'zh-CN': {
         show: '显示 BD2 Assistant',
@@ -81,7 +91,17 @@ const UI_STRINGS: Record<string, any> = {
         openWeb: '正在打开网站...',
         syncSuccess: '同步成功! ✅',
         syncFail: '同步失败 ❌',
-        autoRedeem: '自动兑换'
+        autoRedeem: '自动兑换',
+        loadLocal: '载入本地模型 📁',
+        localName: '请输入模型名称：',
+        localMissingSkel: '❌ 缺少 .skel 文件（骨架数据）',
+        localMissingAtlas: '❌ 缺少 .atlas 文件（图集描述）',
+        localMissingPng: '❌ 缺少 .png 文件（纹理图片）',
+        localMultipleSkel: '❌ 文件夹内有多个 .skel 文件，请只保留一个',
+        localMultipleAtlas: '❌ 文件夹内有多个 .atlas 文件，请只保留一个',
+        localSaved: '模型已保存 ✅',
+        localExists: '此名称已存在，请使用其他名称',
+        localDelete: '删除'
     },
     'en': {
         show: 'Show BD2 Assistant',
@@ -103,7 +123,17 @@ const UI_STRINGS: Record<string, any> = {
         openWeb: 'Opening Website...',
         syncSuccess: 'Sync Success! ✅',
         syncFail: 'Sync Failed ❌',
-        autoRedeem: 'Auto Redeem'
+        autoRedeem: 'Auto Redeem',
+        loadLocal: 'Load Local Model 📁',
+        localName: 'Enter a name for this model:',
+        localMissingSkel: '❌ Missing .skel file (skeleton data)',
+        localMissingAtlas: '❌ Missing .atlas file (texture atlas)',
+        localMissingPng: '❌ Missing .png file (texture image)',
+        localMultipleSkel: '❌ Multiple .skel files found — keep only one',
+        localMultipleAtlas: '❌ Multiple .atlas files found — keep only one',
+        localSaved: 'Model Saved ✅',
+        localExists: 'This name already exists, please use a different name',
+        localDelete: 'Delete'
     },
     'ja-JP': {
         show: 'BD2 Assistant を表示',
@@ -125,7 +155,17 @@ const UI_STRINGS: Record<string, any> = {
         openWeb: 'サイトを開いています...',
         syncSuccess: '同期成功! ✅',
         syncFail: '同期失敗 ❌',
-        autoRedeem: '自動交換'
+        autoRedeem: '自動交換',
+        loadLocal: 'ローカルモデルを読み込む 📁',
+        localName: 'モデル名を入力してください：',
+        localMissingSkel: '❌ .skel ファイルがありません（スケルトンデータ）',
+        localMissingAtlas: '❌ .atlas ファイルがありません（テクスチャアトラス）',
+        localMissingPng: '❌ .png ファイルがありません（テクスチャ画像）',
+        localMultipleSkel: '❌ 複数の .skel ファイルが見つかりました',
+        localMultipleAtlas: '❌ 複数の .atlas ファイルが見つかりました',
+        localSaved: 'モデルを保存しました ✅',
+        localExists: 'この名前は既に使用されています',
+        localDelete: '削除'
     },
     'ko-KR': {
         show: 'BD2 Assistant 표시',
@@ -147,7 +187,17 @@ const UI_STRINGS: Record<string, any> = {
         openWeb: '웹사이트 여는 중...',
         syncSuccess: '동기화 성공! ✅',
         syncFail: '동기화 실패 ❌',
-        autoRedeem: '자동 교환'
+        autoRedeem: '자동 교환',
+        loadLocal: '로컬 모델 불러오기 📁',
+        localName: '모델 이름을 입력하세요:',
+        localMissingSkel: '❌ .skel 파일 누락 (스켈레톤 데이터)',
+        localMissingAtlas: '❌ .atlas 파일 누락 (텍스처 아틀라스)',
+        localMissingPng: '❌ .png 파일 누락 (텍스처 이미지)',
+        localMultipleSkel: '❌ .skel 파일이 여러 개입니다 — 하나만 남겨주세요',
+        localMultipleAtlas: '❌ .atlas 파일이 여러 개입니다 — 하나만 남겨주세요',
+        localSaved: '모델 저장됨 ✅',
+        localExists: '이미 사용 중인 이름입니다',
+        localDelete: '삭제'
     }
 };
 
@@ -202,6 +252,9 @@ function updateUILanguage(lang: string) {
 
     const btnClearText = document.getElementById('clearCache-text');
     if (btnClearText) btnClearText.textContent = strings.clearCache;
+
+    const btnLoadLocalText = document.getElementById('loadLocalModel-text');
+    if (btnLoadLocalText) btnLoadLocalText.textContent = strings.loadLocal;
 
     // Update Synced Status Text
     const elNickname = document.getElementById('currentNickname');
@@ -301,22 +354,29 @@ function updateSyncStatus(settings: PetSettings) {
 
 function initializeDropdowns(settings: PetSettings) {
     let startCharId = settings.characterId;
-    // Fallback logic
-    const charExists = modelsData.characters.find((c: any) => c.id === startCharId);
-    if (!charExists) {
-        for (const char of modelsData.characters) {
-            if (char.costumes.find((c: any) => c.id === settings.model)) {
-                startCharId = char.id;
-                break;
+
+    // Local models don't exist in modelsData — skip fallback
+    if (!startCharId.startsWith('local_')) {
+        // Fallback logic for built-in models
+        const charExists = modelsData.characters.find((c: any) => c.id === startCharId);
+        if (!charExists) {
+            for (const char of modelsData.characters) {
+                if (char.costumes.find((c: any) => c.id === settings.model)) {
+                    startCharId = char.id;
+                    break;
+                }
             }
         }
-    }
-    if (!modelsData.characters.find((c: any) => c.id === startCharId)) {
-        startCharId = modelsData.characters[0].id;
+        if (!modelsData.characters.find((c: any) => c.id === startCharId)) {
+            startCharId = modelsData.characters[0].id;
+        }
     }
 
     populateCharacters(startCharId, settings.language || 'zh-TW');
-    populateCostumes(characterSelect.value, settings.model, settings.language || 'zh-TW');
+    // For local models, populateCharacters already sets up the costume dropdown
+    if (!startCharId.startsWith('local_')) {
+        populateCostumes(characterSelect.value, settings.model, settings.language || 'zh-TW');
+    }
 }
 
 // Start Init
@@ -429,6 +489,39 @@ function populateCharacters(selectedId: string, lang: string = 'en', preserveCos
     let firstVisibleId: string | null = null;
     let isSelectedVisible = false;
 
+    // --- Local Models (at the top) ---
+    const localModels = getLocalModelsList();
+    if (localModels.length > 0 && !filter) {
+        localModels.forEach((lm: { id: string, name: string }) => {
+            const opt = document.createElement('option');
+            opt.value = lm.id;
+            opt.textContent = `📁 ${lm.name}`;
+            characterSelect.appendChild(opt);
+            if (!firstVisibleId) firstVisibleId = lm.id;
+            if (lm.id === selectedId) isSelectedVisible = true;
+        });
+        // Separator
+        const sep = document.createElement('option');
+        sep.disabled = true;
+        sep.textContent = '────────────';
+        characterSelect.appendChild(sep);
+    } else if (localModels.length > 0 && filter) {
+        // Include local models in search too
+        const f = filter.toLowerCase();
+        localModels.forEach((lm: { id: string, name: string }) => {
+            if (lm.name.toLowerCase().includes(f)) {
+                const opt = document.createElement('option');
+                opt.value = lm.id;
+                opt.textContent = `📁 ${lm.name}`;
+                characterSelect.appendChild(opt);
+                if (!firstVisibleId) firstVisibleId = lm.id;
+                if (lm.id === selectedId) isSelectedVisible = true;
+            }
+        });
+    }
+
+    // --- Built-in Characters ---
+
     modelsData.characters.forEach((char: any) => {
         const name = getLocalizedName(char.name, lang);
 
@@ -458,7 +551,20 @@ function populateCharacters(selectedId: string, lang: string = 'en', preserveCos
 
     // Trigger Costume Update (Only if we have a valid selection)
     if (characterSelect.value) {
-        populateCostumes(characterSelect.value, preserveCostumeId, lang);
+        // For local models, create a single costume entry
+        if (characterSelect.value.startsWith('local_')) {
+            modelSelect.innerHTML = '';
+            const localModels = getLocalModelsList();
+            const lm = localModels.find((m: { id: string }) => m.id === characterSelect.value);
+            if (lm) {
+                const opt = document.createElement('option');
+                opt.value = lm.id;
+                opt.textContent = lm.name;
+                modelSelect.appendChild(opt);
+            }
+        } else {
+            populateCostumes(characterSelect.value, preserveCostumeId, lang);
+        }
     }
 
     return characterSelect.value !== startValue;
@@ -560,30 +666,33 @@ chrome.storage.sync.get(['petSettings'], async (result: { petSettings?: any }) =
 
     if (modelsData) {
         console.log('[Popup] Loaded Settings:', settings);
-        // Initial Population
-        // Check if saved characterId is valid. If not (or if it's legacy 'lathel'), try to recover via model ID.
         let startCharId = settings.characterId;
 
-        const charExists = modelsData.characters.find((c: any) => c.id === startCharId);
+        // Local models don't exist in modelsData — skip fallback
+        if (!startCharId.startsWith('local_')) {
+            const charExists = modelsData.characters.find((c: any) => c.id === startCharId);
 
-        if (!charExists) {
-            console.log(`[Popup] Character ID '${startCharId}' not found. Attempting recovery via Costume ID: ${settings.model}`);
-            // Try to find the character that owns this costume
-            for (const char of modelsData.characters) {
-                if (char.costumes.find((c: any) => c.id === settings.model)) {
-                    startCharId = char.id;
-                    break;
+            if (!charExists) {
+                console.log(`[Popup] Character ID '${startCharId}' not found. Attempting recovery via Costume ID: ${settings.model}`);
+                for (const char of modelsData.characters) {
+                    if (char.costumes.find((c: any) => c.id === settings.model)) {
+                        startCharId = char.id;
+                        break;
+                    }
                 }
+            }
+
+            // Final Fallback: If still invalid, default to first in list
+            if (!modelsData.characters.find((c: any) => c.id === startCharId)) {
+                startCharId = modelsData.characters[0].id;
             }
         }
 
-        // Final Fallback: If still invalid, default to first in list
-        if (!modelsData.characters.find((c: any) => c.id === startCharId)) {
-            startCharId = modelsData.characters[0].id; // Likely Lathel (000101)
-        }
-
         populateCharacters(startCharId, currentLang);
-        populateCostumes(characterSelect.value, settings.model, currentLang);
+        // For local models, populateCharacters already sets up the costume dropdown
+        if (!startCharId.startsWith('local_')) {
+            populateCostumes(characterSelect.value, settings.model, currentLang);
+        }
     }
 });
 
@@ -612,8 +721,21 @@ const saveSettings = () => {
 
 if (characterSelect) {
     characterSelect.addEventListener('change', () => {
-        // When character changes, update costumes using Default for that char
-        populateCostumes(characterSelect.value, null, language.value);
+        if (characterSelect.value.startsWith('local_')) {
+            // Local model: single costume entry
+            modelSelect.innerHTML = '';
+            const localModels = getLocalModelsList();
+            const lm = localModels.find(m => m.id === characterSelect.value);
+            if (lm) {
+                const opt = document.createElement('option');
+                opt.value = lm.id;
+                opt.textContent = lm.name;
+                modelSelect.appendChild(opt);
+            }
+        } else {
+            // When character changes, update costumes using Default for that char
+            populateCostumes(characterSelect.value, null, language.value);
+        }
         saveSettings();
     });
 }
@@ -770,6 +892,245 @@ chrome.runtime.onMessage.addListener((message) => {
     }
 });
 
+// ====================================================================
+// LOCAL MODEL MANAGEMENT
+// ====================================================================
+
+interface LocalModelEntry {
+    id: string;    // 'local_{sanitizedName}'
+    name: string;  // User-given display name
+}
+
+function getLocalModelsList(): LocalModelEntry[] {
+    try {
+        const raw = localStorage.getItem('bd2_local_models');
+        return raw ? JSON.parse(raw) : [];
+    } catch { return []; }
+}
+
+function saveLocalModelsList(list: LocalModelEntry[]) {
+    localStorage.setItem('bd2_local_models', JSON.stringify(list));
+}
+
+function sanitizeModelName(name: string): string {
+    return name.replace(/[^a-zA-Z0-9\u4e00-\u9fff\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af_-]/g, '_').substring(0, 50);
+}
+
+async function handleLocalFolderSelect(files: FileList) {
+    const currentLang = language?.value || 'zh-TW';
+    const strings = UI_STRINGS[currentLang] || UI_STRINGS['en'];
+    const allFiles = Array.from(files);
+
+    // Filter to ONLY root-level files (ignore subfolders)
+    // webkitRelativePath format: "folderName/file.ext" for root, "folderName/sub/file.ext" for nested
+    const fileArray = allFiles.filter(f => {
+        const parts = (f.webkitRelativePath || f.name).split('/');
+        return parts.length <= 2; // "folder/file" = 2 parts = root level
+    });
+
+    // 1. Validate
+    const skelFiles = fileArray.filter(f => f.name.endsWith('.skel'));
+    const atlasFiles = fileArray.filter(f => f.name.endsWith('.atlas'));
+    const pngFiles = fileArray.filter(f => f.name.endsWith('.png'));
+
+    const errors: string[] = [];
+    if (skelFiles.length === 0) errors.push(strings.localMissingSkel);
+    if (skelFiles.length > 1) errors.push(strings.localMultipleSkel);
+    if (atlasFiles.length === 0) errors.push(strings.localMissingAtlas);
+    if (atlasFiles.length > 1) errors.push(strings.localMultipleAtlas);
+    if (pngFiles.length === 0) errors.push(strings.localMissingPng);
+
+    if (errors.length > 0) {
+        alert(errors.join('\n'));
+        return;
+    }
+
+    // 2. Ask for name
+    const displayName = prompt(strings.localName);
+    if (!displayName || displayName.trim() === '') return;
+
+    const sanitized = sanitizeModelName(displayName.trim());
+    const modelId = `local_${sanitized}`;
+
+    // 3. Check for duplicates
+    const existing = getLocalModelsList();
+    if (existing.find(m => m.id === modelId)) {
+        alert(strings.localExists);
+        return;
+    }
+
+    // 4. Read files and send to content script (bridge) for IndexedDB storage
+    const skelFile = skelFiles[0];
+    const atlasFile = atlasFiles[0];
+
+    try {
+        // Read all files as ArrayBuffers
+        const skelBuffer = await skelFile.arrayBuffer();
+        const atlasBuffer = await atlasFile.arrayBuffer();
+        const pngBuffers: { name: string, data: ArrayBuffer }[] = [];
+        for (const png of pngFiles) {
+            pngBuffers.push({ name: png.name, data: await png.arrayBuffer() });
+        }
+
+        // Send to active tab's content script for IndexedDB storage
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        if (!tab || !tab.id) {
+            alert('No active tab found. Please open a webpage and try again.');
+            return;
+        }
+
+        // Convert to base64 for messaging (chrome.tabs.sendMessage can't send ArrayBuffers)
+        const toBase64 = (buf: ArrayBuffer): string => {
+            const bytes = new Uint8Array(buf);
+            let binary = '';
+            for (let i = 0; i < bytes.length; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return btoa(binary);
+        };
+
+        const payload = {
+            type: 'PET_SAVE_LOCAL_MODEL',
+            modelId: modelId,
+            skelData: toBase64(skelBuffer),
+            skelName: skelFile.name,
+            atlasData: toBase64(atlasBuffer),
+            atlasName: atlasFile.name,
+            pngFiles: pngBuffers.map(p => ({
+                name: p.name,
+                data: toBase64(p.data)
+            }))
+        };
+
+        chrome.tabs.sendMessage(tab.id, payload, (response) => {
+            if (chrome.runtime.lastError) {
+                console.error('[Popup] Save local model error:', chrome.runtime.lastError);
+                alert('Could not save model. Please refresh the webpage and try again.');
+                return;
+            }
+
+            if (response && response.success) {
+                // Save to local list
+                const list = getLocalModelsList();
+                list.push({ id: modelId, name: displayName.trim() });
+                saveLocalModelsList(list);
+
+                // Also save to chrome.storage.sync for cross-device
+                chrome.storage.sync.set({ localModels: list });
+
+                // Refresh UI first so dropdown is populated
+                populateCharacters(modelId, language.value);
+
+                // Ensure correct values after populate
+                characterSelect.value = modelId;
+                modelSelect.innerHTML = '';
+                const opt = document.createElement('option');
+                opt.value = modelId;
+                opt.textContent = displayName.trim();
+                modelSelect.appendChild(opt);
+
+                // Save settings AFTER dropdown is properly set
+                saveSettings();
+                refreshLocalModelsUI();
+
+                const btnText = document.getElementById('loadLocalModel-text');
+                if (btnText) {
+                    btnText.textContent = strings.localSaved;
+                    setTimeout(() => { btnText.textContent = strings.loadLocal; }, 2000);
+                }
+            } else {
+                alert('Failed to save model files.');
+            }
+        });
+    } catch (e) {
+        console.error('[Popup] Local model load error:', e);
+        alert('Error reading files.');
+    }
+}
+
+function refreshLocalModelsUI() {
+    const container = document.getElementById('localModelsList');
+    if (!container) return;
+    const currentLang = language?.value || 'zh-TW';
+    const strings = UI_STRINGS[currentLang] || UI_STRINGS['en'];
+    const models = getLocalModelsList();
+
+    container.innerHTML = '';
+    if (models.length === 0) return;
+
+    models.forEach(m => {
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:11px;border-bottom:1px solid rgba(255,255,255,0.05);';
+
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = `📁 ${m.name}`;
+        nameSpan.style.color = '#aaa';
+
+        const delBtn = document.createElement('button');
+        delBtn.textContent = strings.localDelete;
+        delBtn.style.cssText = 'background:none;border:1px solid rgba(255,80,80,0.3);color:#ff5050;padding:2px 8px;border-radius:4px;cursor:pointer;font-size:10px;';
+        delBtn.addEventListener('click', async () => {
+            if (!confirm(`Delete "${m.name}"?`)) return;
+
+            // Remove from list
+            const list = getLocalModelsList().filter(x => x.id !== m.id);
+            saveLocalModelsList(list);
+            chrome.storage.sync.set({ localModels: list });
+
+            // Tell bridge to remove from IndexedDB
+            const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+            if (tab && tab.id) {
+                chrome.tabs.sendMessage(tab.id, { type: 'PET_DELETE_LOCAL_MODEL', modelId: m.id });
+            }
+
+            // If currently selected, switch to default
+            if (characterSelect.value === m.id || modelSelect.value === m.id) {
+                characterSelect.value = modelsData?.characters?.[0]?.id || '003801';
+                populateCostumes(characterSelect.value, null, language.value);
+                saveSettings();
+            }
+
+            refreshLocalModelsUI();
+            populateCharacters(characterSelect.value, language.value);
+        });
+
+        row.appendChild(nameSpan);
+        row.appendChild(delBtn);
+        container.appendChild(row);
+    });
+}
+
+// --- Local Model Event Listeners ---
+const loadLocalBtn = document.getElementById('loadLocalModel');
+const folderPicker = document.getElementById('folderPicker') as HTMLInputElement;
+
+if (loadLocalBtn && folderPicker) {
+    loadLocalBtn.addEventListener('click', () => {
+        folderPicker.value = ''; // Reset
+        folderPicker.click();
+    });
+
+    folderPicker.addEventListener('change', () => {
+        if (folderPicker.files && folderPicker.files.length > 0) {
+            handleLocalFolderSelect(folderPicker.files);
+        }
+    });
+}
+
+// Sync local models from chrome.storage on load
+chrome.storage.sync.get(['localModels'], (result) => {
+    if (result.localModels && Array.isArray(result.localModels)) {
+        const synced = result.localModels as LocalModelEntry[];
+        const local = getLocalModelsList();
+        // Merge: keep union of both
+        const merged = [...local];
+        for (const s of synced) {
+            if (!merged.find(m => m.id === s.id)) merged.push(s);
+        }
+        saveLocalModelsList(merged);
+    }
+    refreshLocalModelsUI();
+});
 
 // Initialize Popup
 document.addEventListener('DOMContentLoaded', init);

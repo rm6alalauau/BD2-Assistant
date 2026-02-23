@@ -699,6 +699,79 @@ const fetchBlob = async (url: string, isImage: boolean = false): Promise<Blob> =
 
 // --- Asset Resolution Logic (The Core) ---
 const resolveModelAssets = async (costumeId: string) => {
+    // --- Local Models (stored in IndexedDB by user) ---
+    if (costumeId.startsWith('local_')) {
+        try {
+            // Load skel
+            const skelBlob = await getAsset(`${costumeId}_skel`);
+            if (!skelBlob) {
+                console.warn(`[Pet Bridge] Local model not in IndexedDB: ${costumeId}. Falling back to default.`);
+                const fbDir = `live2d_models/003892/`;
+                return { skel: chrome.runtime.getURL(`${fbDir}char003892.skel`), atlas: chrome.runtime.getURL(`${fbDir}char003892.atlas`), png: chrome.runtime.getURL(`${fbDir}char003892.png`), rawDataURIs: null };
+            }
+            const skelUrl = URL.createObjectURL(skelBlob);
+
+            // Load atlas
+            const atlasBlob = await getAsset(`${costumeId}_atlas`);
+            if (!atlasBlob) {
+                console.warn(`[Pet Bridge] Local model atlas not in IndexedDB: ${costumeId}. Falling back to default.`);
+                const fbDir = `live2d_models/003892/`;
+                return { skel: chrome.runtime.getURL(`${fbDir}char003892.skel`), atlas: chrome.runtime.getURL(`${fbDir}char003892.atlas`), png: chrome.runtime.getURL(`${fbDir}char003892.png`), rawDataURIs: null };
+            }
+            const atlasUrl = URL.createObjectURL(atlasBlob);
+
+            // Parse atlas to find texture file names
+            const atlasText = await atlasBlob.text();
+            const regex = /([^\s]+\.png)/g;
+            const matches = Array.from(atlasText.matchAll(regex));
+            const textureNames = [...new Set(matches.map(m => m[1]))];
+
+            // Build rawDataURIs
+            const atlasBase = atlasUrl.slice(0, atlasUrl.lastIndexOf('/') + 1);
+            const rawDataURIs: Record<string, string> = {};
+
+            // Load all PNG files stored for this model
+            const allKeys = await getAllKeys();
+            const pngKeys = allKeys.filter(k => k.startsWith(`${costumeId}_png_`));
+
+            for (const pngKey of pngKeys) {
+                const pngBlob = await getAsset(pngKey);
+                if (pngBlob) {
+                    // Extract original filename from key: local_xxx_png_filename.png
+                    const pngName = pngKey.substring(`${costumeId}_png_`.length);
+                    const pngBlobUrl = URL.createObjectURL(pngBlob);
+                    const fullKey = atlasBase + pngName;
+                    rawDataURIs[fullKey] = pngBlobUrl;
+                }
+            }
+
+            // If atlas references textures but we matched by name, also map those
+            for (const texName of textureNames) {
+                const fullKey = atlasBase + texName;
+                if (!rawDataURIs[fullKey]) {
+                    // Try to find a matching png key
+                    const matchKey = pngKeys.find(k => k.endsWith(`_${texName}`));
+                    if (matchKey) {
+                        const blob = await getAsset(matchKey);
+                        if (blob) rawDataURIs[fullKey] = URL.createObjectURL(blob);
+                    }
+                }
+            }
+
+            return {
+                skel: skelUrl,
+                atlas: atlasUrl,
+                png: '',
+                rawDataURIs: rawDataURIs
+            };
+        } catch (e) {
+            console.error('[Pet Bridge] Failed to load local model, falling back to default', e);
+            const fbDir = `live2d_models/003892/`;
+            return { skel: chrome.runtime.getURL(`${fbDir}char003892.skel`), atlas: chrome.runtime.getURL(`${fbDir}char003892.atlas`), png: chrome.runtime.getURL(`${fbDir}char003892.png`), rawDataURIs: null };
+        }
+    }
+
+    // --- Built-in / DLC Models ---
     await loadModelsData();
     let costume = modelsData ? modelsData[costumeId] : null;
 
@@ -807,11 +880,11 @@ const resolveModelAssets = async (costumeId: string) => {
         } catch (e) {
             console.error('[Pet DLC] Failed to load DLC', e);
             showSpeechBubble({ text: 'Download Failed (See Console)' });
-            const dir = `live2d_models/000701/`;
+            const dir = `live2d_models/003892/`;
             return {
-                skel: chrome.runtime.getURL(`${dir}char000701.skel`),
-                atlas: chrome.runtime.getURL(`${dir}char000701.atlas`),
-                png: chrome.runtime.getURL(`${dir}char000701.png`),
+                skel: chrome.runtime.getURL(`${dir}char003892.skel`),
+                atlas: chrome.runtime.getURL(`${dir}char003892.atlas`),
+                png: chrome.runtime.getURL(`${dir}char003892.png`),
                 rawDataURIs: null
             };
         }
@@ -1125,6 +1198,66 @@ if (!canInject()) {
                         sendResponse({ cachedIds: [] });
                     });
                     return true; // Async response
+                }
+
+                // --- Local Model Save ---
+                if (message.type === 'PET_SAVE_LOCAL_MODEL') {
+                    (async () => {
+                        try {
+                            const { modelId, skelData, atlasData, pngFiles } = message;
+
+                            // Helper: base64 -> Blob
+                            const fromBase64 = (b64: string, mime: string): Blob => {
+                                const binary = atob(b64);
+                                const bytes = new Uint8Array(binary.length);
+                                for (let i = 0; i < binary.length; i++) {
+                                    bytes[i] = binary.charCodeAt(i);
+                                }
+                                return new Blob([bytes], { type: mime });
+                            };
+
+                            // Save skel
+                            await saveAsset(`${modelId}_skel`, fromBase64(skelData, 'application/octet-stream'));
+
+                            // Save atlas
+                            await saveAsset(`${modelId}_atlas`, fromBase64(atlasData, 'text/plain'));
+
+                            // Save PNGs
+                            for (const png of pngFiles) {
+                                await saveAsset(`${modelId}_png_${png.name}`, fromBase64(png.data, 'image/png'));
+                            }
+
+                            sendResponse({ success: true });
+                        } catch (e) {
+                            console.error('[Pet Bridge] Failed to save local model', e);
+                            sendResponse({ success: false, error: String(e) });
+                        }
+                    })();
+                    return true; // Async response
+                }
+
+                // --- Local Model Delete ---
+                if (message.type === 'PET_DELETE_LOCAL_MODEL') {
+                    (async () => {
+                        try {
+                            const { modelId } = message;
+                            const allKeys = await getAllKeys();
+                            const keysToDelete = allKeys.filter(k => k.startsWith(`${modelId}_`));
+
+                            const db = await openDB();
+                            const tx = db.transaction(STORE_NAME, 'readwrite');
+                            const store = tx.objectStore(STORE_NAME);
+                            for (const key of keysToDelete) {
+                                store.delete(key);
+                            }
+
+                            sendResponse({ success: true });
+                        } catch (e) {
+                            console.error('[Pet Bridge] Failed to delete local model', e);
+                            sendResponse({ success: false });
+                        }
+                    })();
+                    return true;
                 }
             });
 
