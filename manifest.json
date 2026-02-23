@@ -1,14 +1,15 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extensionName__",
-  "version": "1.1.6",
+  "version": "1.7.0",
   "description": "__MSG_extensionDescription__",
   "default_locale": "en",
   "permissions": [
     "storage",
     "alarms",
     "declarativeNetRequest",
-    "declarativeNetRequestWithHostAccess"
+    "declarativeNetRequestWithHostAccess",
+    "activeTab"
   ],
   "host_permissions": [
     "https://thebd2pulse.com/*",

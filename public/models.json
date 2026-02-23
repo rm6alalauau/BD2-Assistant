@@ -9,7 +9,7 @@
                     "id": "100101",
                     "name": "Lugo Hunter",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -22,7 +22,7 @@
                     "id": "100201",
                     "name": "Lugo Defense Force",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -35,7 +35,7 @@
                     "id": "100301",
                     "name": "Wandering Priest",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -48,7 +48,7 @@
                     "id": "100401",
                     "name": "Combat Doctor",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -61,13 +61,13 @@
                     "id": "100501",
                     "name": "Bomb Fanatic",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "100502",
                     "name": "Bomb in the Hoodie",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -80,7 +80,7 @@
                     "id": "100601",
                     "name": "Seductive Wings",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -93,7 +93,7 @@
                     "id": "100801",
                     "name": "Righteous Raider Girl",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -106,19 +106,19 @@
                     "id": "101101",
                     "name": "Demon's Daughter",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "101102",
                     "name": "B-Rank Idol",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "101103",
                     "name": "New Hire",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -131,13 +131,13 @@
                     "id": "101201",
                     "name": "Beautiful Girl Devotee",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "101202",
                     "name": "Manga Research Club",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -150,13 +150,13 @@
                     "id": "101301",
                     "name": "Haggard Delinquent",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "101302",
                     "name": "School Queen",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -169,13 +169,13 @@
                     "id": "101401",
                     "name": "Kind Liberator",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "101402",
                     "name": "Kind Student",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -188,13 +188,13 @@
                     "id": "101501",
                     "name": "Liberated Marauder",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "101502",
                     "name": "Violent Student",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -207,19 +207,19 @@
                     "id": "101601",
                     "name": "The Curse",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "060402",
                     "name": "Descendant of the Great Witch",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "060403",
                     "name": "Masquerade Bunny",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -232,7 +232,7 @@
                     "id": "103201",
                     "name": "The Mercenary Knight",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -245,7 +245,7 @@
                     "id": "103301",
                     "name": "Apprentice Spearman",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -258,7 +258,7 @@
                     "id": "103401",
                     "name": "Little Hunter",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -271,7 +271,7 @@
                     "id": "103501",
                     "name": "The Mighty Warrior of the Tribe",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -284,7 +284,7 @@
                     "id": "103601",
                     "name": "Archmage",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -297,7 +297,7 @@
                     "id": "103701",
                     "name": "Priest of Vitality",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -310,37 +310,37 @@
                     "id": "000101",
                     "name": "Herb Tracker",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000102",
                     "name": "Lonely Survivor",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000103",
                     "name": "Homunculus",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000104",
                     "name": "Dark Knight",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000105",
                     "name": "Promise of Vengance",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000106",
                     "name": "Pool Party",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -353,37 +353,37 @@
                     "id": "000201",
                     "name": "Knight of Blood",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000202",
                     "name": "White Reaper",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000203",
                     "name": "Blood Glutton",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000204",
                     "name": "Kendo Club",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000206",
                     "name": "Pool Party",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000296",
                     "name": "Hot Summer Dream",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -396,25 +396,25 @@
                     "id": "000301",
                     "name": "The Lapis Witch",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000303",
                     "name": "The Magic School Professor",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000304",
                     "name": "Code Name S",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000306",
                     "name": "Pool Party",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -427,25 +427,25 @@
                     "id": "000401",
                     "name": "The Sharpshooter of the Mist",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000402",
                     "name": "B-Rank Manager",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000403",
                     "name": "Vanguard",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000406",
                     "name": "Pool Party",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -458,25 +458,25 @@
                     "id": "000501",
                     "name": "White Cat",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000502",
                     "name": "Red Hat",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000504",
                     "name": "Nature's Claw",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000506",
                     "name": "Stray Cat",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -489,13 +489,13 @@
                     "id": "000601",
                     "name": "The Fiend Scholar",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000604",
                     "name": "Sage of Blue Clouds",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -508,25 +508,25 @@
                     "id": "000701",
                     "name": "Dimension Witch",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000706",
                     "name": "Nightmare Bunny",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000707",
                     "name": "Beach Vacation",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000708",
                     "name": "Dream Bride",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -539,25 +539,25 @@
                     "id": "000801",
                     "name": "Thorn of the Desert",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000804",
                     "name": "The Empress of the Ocean",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000806",
                     "name": "Maid Name C",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "000807",
                     "name": "Maid Bikini",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -570,25 +570,25 @@
                     "id": "001001",
                     "name": "Desert Flower",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "001002",
                     "name": "The Sword Queen",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "001004",
                     "name": "Admiral",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "001006",
                     "name": "Bikini Agent",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -601,25 +601,25 @@
                     "id": "001101",
                     "name": "Angel of Destruction",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "001106",
                     "name": "Medical Club",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "001107",
                     "name": "Beachside Angel",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "001197",
                     "name": "Milky Bikini",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -632,19 +632,19 @@
                     "id": "001201",
                     "name": "Rodev's Star",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "001206",
                     "name": "Neon Stalker",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "001207",
                     "name": "Maid Name R",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -657,13 +657,19 @@
                     "id": "002401",
                     "name": "Adventurer of the Unknown",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
+                },
+                {
+                    "id": "002403",
+                    "name": "Magical Innovator",
+                    "isBuiltIn": false,
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "002406",
                     "name": "Anti-dystopia",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -676,7 +682,7 @@
                     "id": "003001",
                     "name": "Anvil of Creation",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -689,7 +695,7 @@
                     "id": "003101",
                     "name": "Hand of Salvation",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -702,20 +708,20 @@
                     "id": "003201",
                     "name": "Last Hope",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/",
+                    "src": "https://assistant.thebd2pulse.com/",
                     "spineAlias": "npc300501"
                 },
                 {
                     "id": "003202",
                     "name": "Track and Field Team",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "003203",
                     "name": "Celebrity Bunny",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -728,19 +734,19 @@
                     "id": "003301",
                     "name": "Labyrinth Gatekeeper",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "003302",
                     "name": "Laid-back Lifeguard",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "003303",
                     "name": "New Hire",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -753,19 +759,19 @@
                     "id": "003401",
                     "name": "Beach Vacation",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "003402",
                     "name": "Daydream Bunny",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "003403",
                     "name": "Apostle",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -778,7 +784,7 @@
                     "id": "003501",
                     "name": "Reclaimed Destiny",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -791,19 +797,25 @@
                     "id": "003601",
                     "name": "Faithful Wings",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "003602",
                     "name": "Apostle (Kelian)",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "003603",
                     "name": "Fallen Wings",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
+                },
+                {
+                    "id": "003604",
+                    "name": "Retired Legend",
+                    "isBuiltIn": false,
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -816,19 +828,19 @@
                     "id": "003701",
                     "name": "Apostle",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "003702",
                     "name": "Onsen Swordfighter",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "003703",
                     "name": "Young Lady",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -841,19 +853,19 @@
                     "id": "003801",
                     "name": "Dark Saintess",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "003802",
                     "name": "Onsen Manager",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "003892",
                     "name": "Hedonist",
-                    "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "isBuiltIn": true,
+                    "src": ""
                 }
             ]
         },
@@ -866,13 +878,13 @@
                     "id": "003901",
                     "name": "Shadowed Dream",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "003902",
                     "name": "Little Pumpkin Girl",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -885,13 +897,13 @@
                     "id": "004001",
                     "name": "Prophetic Dream",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "004002",
                     "name": "Bittersweet Bunny",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -904,13 +916,13 @@
                     "id": "004101",
                     "name": "Starlight Guardian",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "004102",
                     "name": "Innocent Bunny",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -923,13 +935,13 @@
                     "id": "020001",
                     "name": "Esteemed Adventurer",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "020002",
                     "name": "Your Very Own Cat",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -942,13 +954,13 @@
                     "id": "020101",
                     "name": "Respected Master",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "020102",
                     "name": "Emerging Desire",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -961,7 +973,7 @@
                     "id": "020201",
                     "name": "Gentle Destroyer",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -974,7 +986,7 @@
                     "id": "020301",
                     "name": "Fist of Conviction",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -987,7 +999,7 @@
                     "id": "020401",
                     "name": "Dancing Snowflake",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1000,7 +1012,7 @@
                     "id": "020501",
                     "name": "Kind Ruthlessness",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1013,7 +1025,7 @@
                     "id": "020601",
                     "name": "Orcbolg",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1026,7 +1038,7 @@
                     "id": "020701",
                     "name": "Earth Mother Believer",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1039,7 +1051,7 @@
                     "id": "020801",
                     "name": "Daughter of Starwind",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1052,7 +1064,7 @@
                     "id": "020901",
                     "name": "Supreme God Archbishop",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1065,13 +1077,13 @@
                     "id": "060301",
                     "name": "The Destruction",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "060302",
                     "name": "Sword Breaker",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1084,13 +1096,13 @@
                     "id": "060501",
                     "name": "Gentle Maid",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "060502",
                     "name": "Fire Graffiti",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1103,13 +1115,13 @@
                     "id": "060601",
                     "name": "Killer Doll",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "060602",
                     "name": "Android Queen",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1122,19 +1134,19 @@
                     "id": "060701",
                     "name": "Steel Engine",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "060702",
                     "name": "Code Name A",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "060706",
                     "name": "Game Club",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1147,13 +1159,13 @@
                     "id": "060801",
                     "name": "Lovely Lady",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "060802",
                     "name": "Code Name O",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1166,13 +1178,13 @@
                     "id": "061001",
                     "name": "Top Idol",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "061002",
                     "name": "B-Rank Idol",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1185,19 +1197,19 @@
                     "id": "061101",
                     "name": "Piercing Magic Bow",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "061102",
                     "name": "B-Rank Idol",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "061103",
                     "name": "Shadow Bunny",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1210,13 +1222,13 @@
                     "id": "061302",
                     "name": "Bright Moon",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "061305",
                     "name": "Summer Vacation",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1229,19 +1241,19 @@
                     "id": "061402",
                     "name": "Robin Hood",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "061404",
                     "name": "Poolside Guardian",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "061492",
                     "name": "Stranger Bunny",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1254,13 +1266,13 @@
                     "id": "062001",
                     "name": "Loyal Butler",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "062002",
                     "name": "Specialist",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1273,7 +1285,7 @@
                     "id": "063001",
                     "name": "Kardis' Bullet",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1286,7 +1298,7 @@
                     "id": "063301",
                     "name": "Warmth within the Severe Cold",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1299,7 +1311,7 @@
                     "id": "063401",
                     "name": "Healer",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1312,13 +1324,13 @@
                     "id": "065102",
                     "name": "Whitebolt",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "065103",
                     "name": "Comeback Idol",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1331,7 +1343,7 @@
                     "id": "065802",
                     "name": "Anonymous Sage",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1344,19 +1356,19 @@
                     "id": "066401",
                     "name": "The Fallen",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "066402",
                     "name": "Pool Party",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "066403",
                     "name": "Neon Savior",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1369,19 +1381,19 @@
                     "id": "066801",
                     "name": "The Gluttonous",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "066802",
                     "name": "Pure White Blessing",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "066803",
                     "name": "Poolside Fairy",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1394,13 +1406,13 @@
                     "id": "066902",
                     "name": "Alice",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "066906",
                     "name": "Disciplinary Committee",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1413,19 +1425,19 @@
                     "id": "067002",
                     "name": "Snow White",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "067003",
                     "name": "Comeback Idol",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "067004",
                     "name": "Onsen Practitioner",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1438,19 +1450,19 @@
                     "id": "067101",
                     "name": "The Void",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "067102",
                     "name": "Comeback Idol",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "067103",
                     "name": "Boo Ghost",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1463,13 +1475,13 @@
                     "id": "067201",
                     "name": "DJ",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "067202",
                     "name": "Wind Dancer",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1482,19 +1494,19 @@
                     "id": "067301",
                     "name": "Track and Field Captain",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "067302",
                     "name": "Night of Jealousy",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "067303",
                     "name": "Overheat",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1507,19 +1519,19 @@
                     "id": "067401",
                     "name": "Beachside Justice",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "067402",
                     "name": "Queen of Signatures",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "067403",
                     "name": "Acting Archbishop",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1532,13 +1544,13 @@
                     "id": "067502",
                     "name": "Deal Snatcher",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "067503",
                     "name": "Wild Dog",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1551,19 +1563,19 @@
                     "id": "067601",
                     "name": "Iron Monarch",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "067603",
                     "name": "Water Park Queen",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "067604",
                     "name": "Frozen Queen",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         },
@@ -1576,38 +1588,13 @@
                     "id": "067701",
                     "name": "Shrine Maiden of Purification",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
+                    "src": "https://assistant.thebd2pulse.com/"
                 },
                 {
                     "id": "067702",
                     "name": "Granadair: Queen of Gluttis",
                     "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
-                }
-            ]
-        },
-        {
-            "id": "003801",
-            "name": "Liberta",
-            "defaultCostumeId": "003801",
-            "costumes": [
-                {
-                    "id": "003801",
-                    "name": "Dark Saintess",
-                    "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
-                },
-                {
-                    "id": "003802",
-                    "name": "Onsen Manager",
-                    "isBuiltIn": false,
-                    "src": "https://assistant.thebd2pulse.com/spines/"
-                },
-                {
-                    "id": "003892",
-                    "name": "Hedonist",
-                    "isBuiltIn": true,
-                    "src": ""
+                    "src": "https://assistant.thebd2pulse.com/"
                 }
             ]
         }

@@ -1,7 +1,16 @@
 // Interfaces
 interface PetSettings {
+    show?: boolean;
+    lockMove?: boolean;
+    lockZoom?: boolean;
+    flipX?: boolean;
+    opacity?: number;
+    language?: string;
+    characterId?: string;
+    model?: string;
     nickname?: string;
     nicknames?: string[]; // Multiple accounts support
+    autoRedeem?: boolean;
     [key: string]: any;
 }
 
