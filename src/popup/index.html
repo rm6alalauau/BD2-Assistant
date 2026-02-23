@@ -236,9 +236,14 @@
     </div>
 
     <div class="control-group" style="text-align: center;">
-        <button id="clearCache" class="glass-btn secondary" style="width: 100%; font-size: 12px;">
+        <button id="clearCache" class="glass-btn secondary" style="width: 100%; font-size: 12px; margin-bottom: 8px;">
             <span id="clearCache-text">清除已下載模型 🗑️</span>
         </button>
+        <button id="loadLocalModel" class="glass-btn" style="width: 100%; font-size: 12px;">
+            <span id="loadLocalModel-text">載入本地模型 📁</span>
+        </button>
+        <input type="file" id="folderPicker" webkitdirectory style="display: none;">
+        <div id="localModelsList" style="margin-top: 8px; text-align: left;"></div>
     </div>
 
     <style>
