@@ -1,7 +1,8 @@
 {
   "name": "bd2-assistant",
   "private": true,
-  "version": "1.7.0",
+  "version": "1.7.1",
+  "description": "Browser extension for Brown Dust 2 players",
   "type": "module",
   "scripts": {
     "dev": "vite",
