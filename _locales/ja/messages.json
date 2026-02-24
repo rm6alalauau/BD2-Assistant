@@ -4,7 +4,7 @@
         "description": "The name of the extension"
     },
     "extensionDescription": {
-        "message": "ブラウンダスト2のデスクトップペット拡張機能。Live2Dキャラクター表示とクーポンコード通知機能を搭載。",
+        "message": "ブラウンダスト2のデスクトップペット拡張機能。Spineキャラクター表示とクーポンコード通知機能を搭載。",
         "description": "The description of the extension"
     }
 }

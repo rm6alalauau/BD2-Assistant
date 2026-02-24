@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Project specific temp files
+temp_*
+temp_lib_build/

@@ -4,7 +4,7 @@
         "description": "The name of the extension"
     },
     "extensionDescription": {
-        "message": "棕色塵埃 2 桌面寵物擴充功能，支援 Live2D 角色顯示與優惠券碼通知。",
+        "message": "棕色塵埃 2 桌面寵物擴充功能，支援 Spine 角色顯示與優惠券碼通知。",
         "description": "The description of the extension"
     }
 }

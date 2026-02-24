@@ -4,7 +4,7 @@
         "description": "The name of the extension"
     },
     "extensionDescription": {
-        "message": "A desktop pet extension for Brown Dust 2 featuring Live2D characters and coupon code notifications.",
+        "message": "A desktop pet extension for Brown Dust 2 featuring Spine characters and coupon code notifications.",
         "description": "The description of the extension"
     }
 }
