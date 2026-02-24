@@ -6,7 +6,7 @@ Since the Edge Add-ons Store requires a minimum of 250 characters, I have expand
 
 ## English (English)
 
-Enhance your Brown Dust 2 experience with the **BD2 Assistant**! This extension brings your favorite Live2D characters directly to your browser as a desktop pet companion, while providing powerful utility features for "The BD2 Pulse".
+Enhance your Brown Dust 2 experience with the **BD2 Assistant**! This extension brings your favorite Spine characters directly to your browser as a desktop pet companion, while providing powerful utility features for "The BD2 Pulse".
 
 ### Key Features:
 - **Desktop Pet Companion**: Choose from a growing collection of your favorite characters and costumes to keep you company while you browse.
@@ -19,7 +19,7 @@ Enhance your Brown Dust 2 experience with the **BD2 Assistant**! This extension 
 
 ## 繁體中文 (Chinese Traditional)
 
-使用 **BD2 Assistant** 提升您的棕色塵埃 2 (Brown Dust 2) 體驗！此擴充功能將您喜愛的 Live2D 角色帶到瀏覽器中作為桌面寵物，同時為「The BD2 Pulse」提供強大的實用功能。
+使用 **BD2 Assistant** 提升您的棕色塵埃 2 (Brown Dust 2) 體驗！此擴充功能將您喜愛的 Spine 角色帶到瀏覽器中作為桌面寵物，同時為「The BD2 Pulse」提供強大的實用功能。
 
 ### 主要功能：
 - **桌面寵物夥伴**：支援多種角色與造型，讓您喜愛的角色隨時陪伴在側。
@@ -32,7 +32,7 @@ Enhance your Brown Dust 2 experience with the **BD2 Assistant**! This extension 
 
 ## 簡體中文 (Chinese Simplified)
 
-使用 **BD2 Assistant** 提升您的棕色尘埃 2 (Brown Dust 2) 体验！此扩展程序将您喜爱的 Live2D 角色带到浏览器中作为桌面宠物，同时为「The BD2 Pulse」提供强大的实用功能。
+使用 **BD2 Assistant** 提升您的棕色尘埃 2 (Brown Dust 2) 体验！此扩展程序将您喜爱的 Spine 角色带到浏览器中作为桌面宠物，同时为「The BD2 Pulse」提供强大的实用功能。
 
 ### 主要功能：
 - **桌面宠物伙伴**：支持多种角色与造型，让您喜爱的角色随时陪伴在侧。
@@ -45,7 +45,7 @@ Enhance your Brown Dust 2 experience with the **BD2 Assistant**! This extension 
 
 ## 日文 (Japanese)
 
-**BD2 Assistant** でブラウンダスト2 (Brown Dust 2) の体験を向上させましょう！この拡張機能は、お気に入りのLive2Dキャラクターをブラウザのデスクトップペットとして表示し、「The BD2 Pulse」のための便利な機能を提供します。
+**BD2 Assistant** でブラウンダスト2 (Brown Dust 2) の体験を向上させましょう！この拡張機能は、お気に入りのSpineキャラクターをブラウザのデスクトップペットとして表示し、「The BD2 Pulse」のための便利な機能を提供します。
 
 ### 主な機能：
 - **デスクトップマスコット**：様々なキャラクターと衣装をサポート。お気に入りのキャラがいつでもブラウザのそばに。
@@ -58,7 +58,7 @@ Enhance your Brown Dust 2 experience with the **BD2 Assistant**! This extension 
 
 ## 韓文 (Korean)
 
-**BD2 Assistant**로 브라운더스트 2 (Brown Dust 2) 경험을 향상시키세요! 이 확장 프로그램은 좋아하는 Live2D 캐릭터를 브라우저의 데스크톱 펫으로 표시하며, 「The BD2 Pulse」를 위한 강력한 유틸리티 기능을 제공합니다.
+**BD2 Assistant**로 브라운더스트 2 (Brown Dust 2) 경험을 향상시키세요! 이 확장 프로그램은 좋아하는 Spine 캐릭터를 브라우저의 데스크톱 펫으로 표시하며, 「The BD2 Pulse」를 위한 강력한 유틸리티 기능을 제공합니다.
 
 ### 주요 기능:
 - **데스크톱 펫**: 다양한 캐릭터와 코스튬 지원. 좋아하는 캐릭터와 항상 함께하세요.

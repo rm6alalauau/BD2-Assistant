@@ -16,7 +16,7 @@
     "vite": "^7.2.4"
   },
   "dependencies": {
-    "@esotericsoftware/spine-player": "^4.1.55",
+    "@esotericsoftware/spine-player": "4.1.55",
     "@jannchie/pixi-live2d-display": "https://github.com/Jannchie/pixi-live2d-display/tarball/master",
     "i18next": "^25.8.0"
   }

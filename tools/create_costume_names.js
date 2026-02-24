@@ -8,11 +8,11 @@ const __dirname = path.dirname(__filename);
 
 // Read the extracted data (keyed by character names in various languages)
 const zhData = JSON.parse(
-    fs.readFileSync(path.join(__dirname, '../public/costume_names_zh.json'), 'utf-8')
+    fs.readFileSync(path.join(__dirname, 'costume_names_zh.json'), 'utf-8')
 );
 // Read the English-keyed version
-const extractedData = JSON.parse(
-    fs.readFileSync(path.join(__dirname, '../public/costume_names_extracted.json'), 'utf-8')
+const extractedNames = JSON.parse(
+    fs.readFileSync(path.join(__dirname, 'costume_names_extracted.json'), 'utf-8')
 );
 
 // English character names for reference
@@ -230,12 +230,12 @@ const costumeTranslations = {};
 
 // Process each English character
 for (const enChar of englishCharacters) {
-    if (!extractedData[enChar]) {
+    if (!extractedNames[enChar]) {
         console.log(`Missing English costumes for: ${enChar}`);
         continue;
     }
 
-    const enCostumes = extractedData[enChar];
+    const enCostumes = extractedNames[enChar];
     const charMapping = charNameMappings[enChar];
 
     if (!charMapping) {

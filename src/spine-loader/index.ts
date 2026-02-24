@@ -344,26 +344,26 @@ async function loadSpine(skel: string, atlas: string, animation: string = 'idle'
         let finalRawDataURIs = rawDataURIs;
 
         if (atlasText && rawDataURIs) {
-            // Create atlas Blob URL from raw text (preserves UTF-8 Korean chars like 레이어)
-            const atlasBlob = new Blob([atlasText], { type: 'text/plain; charset=utf-8' });
-            finalAtlasUrl = URL.createObjectURL(atlasBlob);
+            // CSP-safe approach: Use data URIs for everything (no blob: URLs needed)
+            finalAtlasUrl = 'model.atlas';
+            finalSkelUrl = isJsonSkel ? 'model.json' : 'model.skel';
 
-            // SpinePlayer resolves texture page names relative to atlas URL.
-            // For blob URL "blob:https://www.google.com/UUID", the base is "blob:https://www.google.com/"
-            // So it constructs "blob:https://www.google.com/char003601.png" for texture page "char003601.png"
-            const blobBase = finalAtlasUrl.substring(0, finalAtlasUrl.lastIndexOf('/') + 1);
-
-            // Remap rawDataURIs: original keys (e.g. "char003601.png") → resolved keys that SpinePlayer will look up
+            // Remap rawDataURIs: strip MIME types so there are NO dots (.) in the data URI prefix.
+            // SpinePlayer's loadTexture checks rawDataUris and sets image.src directly.
+            // Stripping MIME (e.g. "data:image/png;base64,..." → "data:;base64,...") removes dots
+            // so the browser can still decode the image correctly.
+            // For binary data (skel), atob() returns raw bytes which is correct.
             const remapped: Record<string, string> = {};
             for (const [key, value] of Object.entries(rawDataURIs)) {
-                if (key === 'model.skel') {
-                    // Skel URL is resolved independently, keep as-is
-                    remapped[key] = value;
-                } else {
-                    // Texture pages: add with the full resolved blob URL key
-                    remapped[blobBase + key] = value;
-                }
+                remapped[key] = value.replace(/^data:.*?base64,/, 'data:;base64,');
             }
+
+            // Atlas text: use NON-base64 data URI to preserve UTF-8 (Korean 레이어 etc.)
+            // SpinePlayer's dataUriToString for non-base64: returns dataUri.substr(dataUri.indexOf(",") + 1)
+            // This returns the raw text as-is — no atob() corruption of multi-byte chars.
+            // downloadText() checks rawDataUris[url] inline, NO XHR, NO CSP issue.
+            remapped[finalAtlasUrl] = `data:,${atlasText}`;
+
             finalRawDataURIs = remapped;
         }
 
