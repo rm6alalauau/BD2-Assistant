@@ -344,26 +344,26 @@ async function loadSpine(skel: string, atlas: string, animation: string = 'idle'
         let finalRawDataURIs = rawDataURIs;
 
         if (atlasText && rawDataURIs) {
-            // Create atlas Blob URL from raw text (preserves UTF-8 Korean chars like 레이어)
-            const atlasBlob = new Blob([atlasText], { type: 'text/plain; charset=utf-8' });
-            finalAtlasUrl = URL.createObjectURL(atlasBlob);
+            // CSP-safe approach: Use data URIs for everything (no blob: URLs needed)
+            // btoa(unescape(encodeURIComponent(...))) safely encodes UTF-8 chars to base64
+            const atlasBase64 = btoa(unescape(encodeURIComponent(atlasText)));
 
-            // SpinePlayer resolves texture page names relative to atlas URL.
-            // For blob URL "blob:https://www.google.com/UUID", the base is "blob:https://www.google.com/"
-            // So it constructs "blob:https://www.google.com/char003601.png" for texture page "char003601.png"
-            const blobBase = finalAtlasUrl.substring(0, finalAtlasUrl.lastIndexOf('/') + 1);
+            finalAtlasUrl = 'model.atlas';
+            finalSkelUrl = isJsonSkel ? 'model.json' : 'model.skel';
 
-            // Remap rawDataURIs: original keys (e.g. "char003601.png") → resolved keys that SpinePlayer will look up
+            // Remap rawDataURIs: strip MIME types so there are NO dots (.) in the data URI prefix.
+            // SpinePlayer's Downloader checks: if rawDataUri.includes("."), it falls through to XHR.
+            // XHR to data: URIs is blocked by GitHub's strict connect-src CSP.
+            // By stripping the MIME (e.g. "data:image/png;base64,..." → "data:;base64,..."),
+            // SpinePlayer decodes inline via atob() — no network request, no CSP issue.
             const remapped: Record<string, string> = {};
             for (const [key, value] of Object.entries(rawDataURIs)) {
-                if (key === 'model.skel') {
-                    // Skel URL is resolved independently, keep as-is
-                    remapped[key] = value;
-                } else {
-                    // Texture pages: add with the full resolved blob URL key
-                    remapped[blobBase + key] = value;
-                }
+                remapped[key] = value.replace(/^data:.*?base64,/, 'data:;base64,');
             }
+
+            // Add atlas into the raw data map (also dot-free)
+            remapped[finalAtlasUrl] = `data:;base64,${atlasBase64}`;
+
             finalRawDataURIs = remapped;
         }
 

@@ -1045,6 +1045,9 @@ if (!canInject()) {
                 if (initialAssets.rawDataURIs) {
                     root.dataset.rawDataURIs = JSON.stringify(initialAssets.rawDataURIs);
                 }
+                if (initialAssets.atlasText) {
+                    root.dataset.atlasText = initialAssets.atlasText;
+                }
             }
 
             // V18.61: Kickstart Sequence
