@@ -152,11 +152,13 @@ for (const [zhName, costumes] of Object.entries(result)) {
 }
 
 // Save results
-const outputPathZh = path.join(__dirname, '../public/costume_names_zh.json');
+const outputPathZh = path.join(__dirname, 'costume_names_zh.json');
 fs.writeFileSync(outputPathZh, JSON.stringify(result, null, 2), 'utf-8');
 console.log(`\nSaved Chinese version to: ${outputPathZh}`);
 
-const outputPathEn = path.join(__dirname, '../public/costume_names_extracted.json');
+// For debugging/reference, output EN names as well
+// We can use it to map any missing characters if needed
+const outputPathEn = path.join(__dirname, 'costume_names_extracted.json');
 fs.writeFileSync(outputPathEn, JSON.stringify(resultEn, null, 2), 'utf-8');
 console.log(`Saved English-keyed version to: ${outputPathEn}`);
 
