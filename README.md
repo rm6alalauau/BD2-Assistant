@@ -58,10 +58,14 @@ After building, you can load the `dist/` folder via Chrome/Edge's "Load unpacked
 
 ## 📜 Changelog
 
+#### v2.0.0
+- **Dynamic Asset Configuration**: Migrated the storage for model data, aliases, and character mappings from local bundles to a remote, dynamic JSON configuration (`assistant.thebd2pulse.com/config/models.json` etc). This ensures new models appear without requiring extension updates.
+- **Model Update UI**: Added a dedicated "Check Model Updates" button integrated directly into the character search panel (fully localized) to force manual synchronization of assets.
+- **Security Bypass**: Resolved an issue where strict Content Security Policies (CSP) on certain pages (e.g., Google Homepage) blocked asset initialization by routing specific asset downloads through the background service worker.
+- **Improved Layout Logic**: Position dragging has been refined back to a fixed pixel absolute offset calculation mechanism for superior consistency across pages with varying window sizes and scrollbars.
+
 #### v1.7.0 
 - **Performance Optimization**: Successfully migrated the Spine model assets endpoint to Cloudflare R2, drastically improving bandwidth speed and asset loading stability.
-- **Bug Fix**: Resolved string encoding issues caused by the shift in the remote data source.
-- **Feature Additions**: Implemented advanced CSP evading and customizable domain blacklist settings (accessible via the settings UI).
 - **UX Improvement**: Added a dedicated toggle for horizontal mirroring (Flip Horizontal) in the settings panel.
 
 ## 🙏 Credits
