@@ -195,6 +195,14 @@
             <input type="text" id="characterSearch" placeholder="Search..."
                 style="width: 100%; padding: 6px; border-radius: 4px; border: 1px solid #444; background: #2c2c2c; color: #fff; font-size: 13px; box-sizing: border-box;">
         </div>
+        <div class="row" style="margin-bottom: 4px;">
+            <button id="checkUpdatesBtn" class="glass-btn secondary" style="width: 100%;" title="Check Model Updates">
+                <span id="checkUpdates-text">檢查模型更新 🔄</span>
+            </button>
+        </div>
+        <div id="versionDisplay" style="font-size: 10px; color: #888; text-align: center; margin-bottom: 8px;">版本:
+            讀取中...
+        </div>
         <div class="row">
             <label id="lbl-character" for="characterSelect">Character</label>
             <select id="characterSelect" style="width: 140px;">
@@ -234,6 +242,7 @@
             </label>
         </div>
     </div>
+
 
     <div class="control-group">
         <div class="row">

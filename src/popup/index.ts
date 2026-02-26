@@ -69,7 +69,13 @@ const UI_STRINGS: Record<string, any> = {
         blacklistSaved: '黑名單已儲存！',
         blacklistHint: '請輸入要隱藏的網域，每行一個（例如: forum.gamer.com.tw）',
         flipX: '左右反轉',
-        animation: '選擇動作'
+        animation: '選擇動作',
+        checkModelUpdates: '檢查更新 🔄',
+        version: '版本: ',
+        checking: '檢查中...',
+        updated: '更新成功！即將重整',
+        upToDate: '已是最新版本',
+        updateFailed: '檢查失敗'
     },
     'zh-CN': {
         show: '显示 BD2 Assistant',
@@ -99,7 +105,13 @@ const UI_STRINGS: Record<string, any> = {
         blacklistSaved: '黑名单已保存！',
         blacklistHint: '请输入要隐藏的网域，每行一个（例如: forum.gamer.com.tw）',
         flipX: '左右翻转',
-        animation: '选择动作'
+        animation: '选择动作',
+        checkModelUpdates: '检查更新 🔄',
+        version: '版本: ',
+        checking: '检查中...',
+        updated: '更新成功！即将刷新',
+        upToDate: '已是最新版本',
+        updateFailed: '检查失败'
     },
     'en': {
         show: 'Show BD2 Assistant',
@@ -128,7 +140,14 @@ const UI_STRINGS: Record<string, any> = {
         saveBlacklist: 'Save List',
         blacklistSaved: 'List Saved!',
         blacklistHint: 'Enter domains to hide, one per line (e.g., google.com)',
-        flipX: 'Flip Horizontal'
+        flipX: 'Flip Horizontal',
+        animation: 'Animation',
+        checkModelUpdates: 'Check Updates 🔄',
+        version: 'Version: ',
+        checking: 'Checking...',
+        updated: 'Updated! Reloading...',
+        upToDate: 'Up to date',
+        updateFailed: 'Failed'
     },
     'ja-JP': {
         show: 'BD2 Assistant を表示',
@@ -157,7 +176,14 @@ const UI_STRINGS: Record<string, any> = {
         saveBlacklist: 'リストを保存',
         blacklistSaved: 'リストを保存しました！',
         blacklistHint: '非表示にするドメインを1行に1つ入力（例: google.com）',
-        flipX: '左右反転'
+        flipX: '左右反転',
+        animation: 'アニメーション',
+        checkModelUpdates: '更新チェック 🔄',
+        version: 'バージョン: ',
+        checking: 'チェック中...',
+        updated: '更新成功！再読み込みします',
+        upToDate: '最新です',
+        updateFailed: '失敗しました'
     },
     'ko-KR': {
         show: 'BD2 Assistant 표시',
@@ -186,7 +212,14 @@ const UI_STRINGS: Record<string, any> = {
         saveBlacklist: '목록 저장',
         blacklistSaved: '목록 저장됨!',
         blacklistHint: '숨길 도메인을 한 줄에 하나씩 입력하세요 (예: google.com)',
-        flipX: '좌우 반전'
+        flipX: '좌우 반전',
+        animation: '애니메이션',
+        checkModelUpdates: '업데이트 확인 🔄',
+        version: '버전: ',
+        checking: '확인 중...',
+        updated: '업데이트 성공! 새로고침 중...',
+        upToDate: '최신 버전입니다',
+        updateFailed: '확인 실패'
     }
 };
 
@@ -241,6 +274,13 @@ function updateUILanguage(lang: string) {
         btnCheckCodesText.textContent = strings.checkCodes;
     }
 
+    const checkUpdatesText = document.getElementById('checkUpdates-text');
+    if (checkUpdatesText) {
+        checkUpdatesText.textContent = strings.checkModelUpdates || 'Check Updates 🔄';
+    }
+
+    // versionDisplay is now handled by renderVersionDisplay
+
     const btnClearText = document.getElementById('clearCache-text');
     if (btnClearText) btnClearText.textContent = strings.clearCache;
 
@@ -252,6 +292,7 @@ function updateUILanguage(lang: string) {
 
     const textBlacklistHint = document.getElementById('blacklistHint');
     if (textBlacklistHint) textBlacklistHint.textContent = strings.blacklistHint;
+
 
     // Update Synced Status Text
     const elNickname = document.getElementById('currentNickname');
@@ -413,30 +454,71 @@ init();
 // --- Functions ---
 
 async function loadModelsData() {
-
+    let success = false;
     try {
-        const res = await fetch(chrome.runtime.getURL('models.json'));
-        modelsData = await res.json();
+        const local = await chrome.storage.local.get('modelsData');
+        if (local.modelsData && Object.keys(local.modelsData).length > 0) {
+            modelsData = local.modelsData;
+            success = true;
+        }
     } catch (e) {
-        console.error('Failed to load models.json', e);
+        console.warn('Failed to load models.json from local storage, falling back...', e);
+    }
+
+    if (!success) {
+        try {
+            const res = await fetch(chrome.runtime.getURL('models.json'));
+            modelsData = await res.json();
+            await chrome.storage.local.set({ modelsData });
+        } catch (e) {
+            console.error('Failed to load bundled models.json', e);
+        }
     }
 }
 
 async function loadCharacterNames() {
+    let success = false;
     try {
-        const res = await fetch(chrome.runtime.getURL('character_names.json'));
-        characterNames = await res.json();
+        const local = await chrome.storage.local.get('characterNames');
+        if (local.characterNames && Object.keys(local.characterNames).length > 0) {
+            characterNames = local.characterNames as any;
+            success = true;
+        }
     } catch (e) {
-        console.error('Failed to load character_names.json', e);
+        console.warn('Failed to load character_names.json from local storage, falling back...', e);
+    }
+
+    if (!success) {
+        try {
+            const res = await fetch(chrome.runtime.getURL('character_names.json'));
+            characterNames = await res.json();
+            await chrome.storage.local.set({ characterNames });
+        } catch (e) {
+            console.error('Failed to load bundled character_names.json', e);
+        }
     }
 }
 
 async function loadCostumeNames() {
+    let success = false;
     try {
-        const res = await fetch(chrome.runtime.getURL('costume_names.json'));
-        costumeNames = await res.json();
+        const local = await chrome.storage.local.get('costumeNames');
+        if (local.costumeNames && Object.keys(local.costumeNames).length > 0) {
+            costumeNames = local.costumeNames as any;
+            success = true;
+        }
     } catch (e) {
-        console.error('Failed to load costume_names.json', e);
+        console.warn('Failed to load costume_names.json from local storage, falling back...', e);
+    }
+
+    if (!success) {
+        try {
+            const res = await fetch(chrome.runtime.getURL('costume_names.json'));
+            costumeNames = await res.json();
+            await chrome.storage.local.set({ costumeNames });
+        } catch (e) {
+            console.error('Failed to load bundled costume_names.json', e);
+        }
     }
 }
 
@@ -828,6 +910,91 @@ if (btnSync && btnSyncText) {
         setTimeout(() => {
             btnSyncText.textContent = strings.syncing;
         }, 1000);
+    });
+}
+
+// Check Updates Logic
+// --- Setup Model Updates ---
+const checkUpdatesBtn = document.getElementById('checkUpdatesBtn');
+const versionDisplay = document.getElementById('versionDisplay');
+
+// Global state for update status
+let updateState = 'idle'; // idle, checking, updated, uptodate, failed
+let updateVersion = '0.0.0';
+let updateError = '';
+
+function renderVersionDisplay() {
+    if (!versionDisplay) return;
+    const lang = language.value || 'zh-TW';
+    const strings = UI_STRINGS[lang] || UI_STRINGS['en'];
+
+    const baseText = `${strings.version || 'Version: '} ${updateVersion}`;
+
+    if (updateState === 'idle') {
+        versionDisplay.textContent = baseText;
+        versionDisplay.style.color = '#888';
+    } else if (updateState === 'checking') {
+        versionDisplay.textContent = `${strings.version || 'Version: '} ${strings.checking || 'Checking...'}`;
+        versionDisplay.style.color = '#888';
+    } else if (updateState === 'updated') {
+        versionDisplay.textContent = `${baseText} ✨ (${strings.updated || 'Updated!'})`;
+        versionDisplay.style.color = '#4CAF50';
+    } else if (updateState === 'uptodate') {
+        versionDisplay.textContent = `${baseText} (${strings.upToDate || 'Up to date'})`;
+        versionDisplay.style.color = '#888';
+    } else if (updateState === 'failed') {
+        versionDisplay.textContent = `${strings.version || 'Version: '} ${strings.updateFailed || 'Failed'} (${updateError})`;
+        versionDisplay.style.color = '#e72857';
+    }
+}
+
+if (checkUpdatesBtn && versionDisplay) {
+    // 1. Initial Load: Read and display local version
+    chrome.storage.local.get('configVersion', (data) => {
+        updateVersion = String(data.configVersion || '0.0.0');
+        renderVersionDisplay();
+    });
+
+    // Handle Language change dynamically for versionDisplay
+    language.addEventListener('change', () => {
+        renderVersionDisplay();
+    });
+
+    // 2. Click Handler
+    checkUpdatesBtn.addEventListener('click', () => {
+        checkUpdatesBtn.setAttribute('disabled', 'true');
+        updateState = 'checking';
+        renderVersionDisplay();
+
+        chrome.runtime.sendMessage({ type: 'PET_CHECK_MODEL_UPDATES' }, (response) => {
+            if (chrome.runtime.lastError || !response) {
+                updateState = 'failed';
+                updateError = chrome.runtime.lastError?.message || 'Unknown';
+                renderVersionDisplay();
+                checkUpdatesBtn.removeAttribute('disabled');
+                return;
+            }
+
+            if (response.success) {
+                updateVersion = response.version;
+                if (response.updated) {
+                    updateState = 'updated';
+                    renderVersionDisplay();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    updateState = 'uptodate';
+                    renderVersionDisplay();
+                    checkUpdatesBtn.removeAttribute('disabled');
+                }
+            } else {
+                updateState = 'failed';
+                updateError = String(response.error || 'Unknown Error');
+                renderVersionDisplay();
+                checkUpdatesBtn.removeAttribute('disabled');
+            }
+        });
     });
 }
 

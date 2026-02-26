@@ -686,6 +686,115 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         sendResponse({ success: true });
         return true;
     }
+
+    // --- CHECK CONFIG/MODELS UPDATES ---
+    if (message.type === 'PET_CHECK_MODEL_UPDATES') {
+        (async () => {
+            try {
+                const configBaseUrl = 'https://assistant.thebd2pulse.com/config/';
+                const reqHeaders = { 'X-BD2-Client': 'BD2-Assistant-Extension' };
+
+                // 1. Fetch Remote Version
+                const versionRes = await fetch(`${configBaseUrl}version.json`, { cache: 'no-store', headers: reqHeaders });
+                if (!versionRes.ok) throw new Error(`HTTP ${versionRes.status}`);
+                const remoteVersion = await versionRes.json();
+
+                // 2. Compare Local Version
+                const localStore = await chrome.storage.local.get(['configVersion', 'modelsData']);
+                const localVersionVal = localStore.configVersion || '0.0.0';
+
+                if (remoteVersion.version !== localVersionVal || !localStore.modelsData) {
+                    console.log(`[Background] Updating config from ${localVersionVal} to ${remoteVersion.version}`);
+
+                    // 3. Fetch New Configs
+                    const [modelsRes, charNamesRes, costumeNamesRes] = await Promise.all([
+                        fetch(`${configBaseUrl}models.json`, { cache: 'no-store', headers: reqHeaders }),
+                        fetch(`${configBaseUrl}character_names.json`, { cache: 'no-store', headers: reqHeaders }),
+                        fetch(`${configBaseUrl}costume_names.json`, { cache: 'no-store', headers: reqHeaders })
+                    ]);
+
+                    if (!modelsRes.ok || !charNamesRes.ok || !costumeNamesRes.ok) {
+                        throw new Error('Failed to fetch one or more config files');
+                    }
+
+                    const modelsData = await modelsRes.json();
+                    const characterNames = await charNamesRes.json();
+                    const costumeNames = await costumeNamesRes.json();
+
+                    // 4. Save to Local Storage
+                    await chrome.storage.local.set({
+                        configVersion: remoteVersion.version,
+                        modelsData,
+                        characterNames,
+                        costumeNames
+                    });
+
+                    sendResponse({
+                        success: true,
+                        updated: true,
+                        version: remoteVersion.version
+                    });
+                } else {
+                    console.log(`[Background] Config is already up to date (${localVersionVal})`);
+                    sendResponse({
+                        success: true,
+                        updated: false,
+                        version: localVersionVal
+                    });
+                }
+            } catch (error) {
+                console.error('[Background] PET_CHECK_MODEL_UPDATES Error:', error);
+                sendResponse({ success: false, error: String(error) });
+            }
+        })();
+        return true; // Async
+    }
+
+    // --- FETCH BLOB (Bypass CSP) ---
+    if (message.type === 'PET_FETCH_BLOB' && message.url) {
+        (async () => {
+            try {
+                const res = await fetch(message.url, {
+                    headers: {
+                        'X-BD2-Client': 'BD2-Assistant-Extension'
+                    }
+                });
+
+                if (!res.ok) throw new Error(`Fetch failed ${res.status}: ${message.url}`);
+
+                const buffer = await res.arrayBuffer();
+
+                // Check if it's HTML (likely 404/Block)
+                const contentType = res.headers.get('content-type') || '';
+                if (contentType.includes('text/html')) {
+                    const text = new TextDecoder().decode(buffer);
+                    if (text.toLowerCase().includes('<html')) {
+                        throw new Error('Fetched content was HTML/404 Page, not Asset');
+                    }
+                }
+
+                // Convert to base64 safely
+                const bytes = new Uint8Array(buffer);
+                let binary = '';
+                // Simple loop is safe and avoids RangeError: Maximum call stack size exceeded
+                for (let i = 0; i < bytes.byteLength; i++) {
+                    binary += String.fromCharCode(bytes[i]);
+                }
+                const base64 = btoa(binary);
+
+                sendResponse({
+                    success: true,
+                    base64: base64,
+                    contentType: contentType
+                });
+            } catch (error) {
+                console.error('[Background] PET_FETCH_BLOB Error:', error);
+                sendResponse({ success: false, error: String(error) });
+            }
+        })();
+        return true;
+    }
+
 });
 
 // Initial check on load (for debugging/immediate feedback)

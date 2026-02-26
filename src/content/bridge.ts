@@ -87,12 +87,38 @@ const getAllKeys = async (): Promise<string[]> => {
 let modelsData: any = null;
 const loadModelsData = async () => {
     if (modelsData) return;
+    let rawd: any = null;
+    let fromCache = false;
+
+    // First attempt: local storage
     try {
-        const res = await fetch(chrome.runtime.getURL('models.json'));
-        const rawd = await res.json();
-        // Flatten for easy lookup
+        const local = await chrome.storage.local.get('modelsData');
+        if (local.modelsData && Object.keys(local.modelsData).length > 0) {
+            rawd = local.modelsData;
+            fromCache = true;
+        } else {
+            throw new Error('Local modelsData empty or missing');
+        }
+    } catch (e) {
+        // console.warn('[Pet Bridge] Failed to read from local storage, falling back to bundled models.json', e);
+    }
+
+    // Fallback: bundled file
+    if (!fromCache) {
+        try {
+            const res = await fetch(chrome.runtime.getURL('models.json'));
+            rawd = await res.json();
+            chrome.storage.local.set({ modelsData: rawd }); // Cache for next time
+        } catch (e) {
+            console.error('[Pet Bridge] Failed to load bundled models.json', e);
+            return;
+        }
+    }
+
+    // Flatten for easy lookup
+    try {
         modelsData = {};
-        if (rawd.characters) {
+        if (rawd?.characters) {
             rawd.characters.forEach((c: any) => {
                 if (c.costumes) {
                     c.costumes.forEach((cos: any) => {
@@ -102,7 +128,8 @@ const loadModelsData = async () => {
             });
         }
     } catch (e) {
-        console.error('[Pet Bridge] Failed to load models.json', e);
+        console.error('[Pet Bridge] Error parsing modelsData', e);
+        modelsData = null; // Prevent bad state
     }
 };
 
@@ -696,26 +723,29 @@ const showSpeechBubble = (data: BubbleData) => {
 // ...
 
 const fetchBlob = async (url: string, isImage: boolean = false): Promise<Blob> => {
-    // console.log(`[Pet DLC] Fetching: ${url}`);
-    const res = await fetch(url, {
-        headers: {
-            'X-BD2-Client': 'BD2-Assistant-Extension'
-        }
+    return new Promise((resolve, reject) => {
+        chrome.runtime.sendMessage({ type: 'PET_FETCH_BLOB', url }, (response) => {
+            if (chrome.runtime.lastError) {
+                return reject(new Error(chrome.runtime.lastError.message));
+            }
+            if (!response || !response.success) {
+                return reject(new Error(response?.error || 'Unknown fetch error'));
+            }
+
+            try {
+                // Decode base64 using a fast loop (safe for large files)
+                const binary = atob(response.base64);
+                const array = new Uint8Array(binary.length);
+                for (let i = 0; i < binary.length; i++) {
+                    array[i] = binary.charCodeAt(i);
+                }
+                const blob = new Blob([array], { type: isImage ? 'image/png' : (response.contentType || 'application/octet-stream') });
+                resolve(blob);
+            } catch (e) {
+                reject(e);
+            }
+        });
     });
-    if (!res.ok) throw new Error(`Fetch failed ${res.status}: ${url}`);
-    const blob = await res.blob();
-
-    if (blob.type.includes('text/html')) {
-        console.error(`[Pet DLC] CRITICAL: Retrieved HTML (likely 404 page) instead of binary! URL: ${url}`);
-        const text = await blob.text();
-        console.error(`[Pet DLC] Content Preview: ${text.substring(0, 100)}`);
-        throw new Error('Fetched content was HTML/404 Page, not Asset');
-    }
-
-    if (isImage) {
-        return new Blob([blob], { type: 'image/png' });
-    }
-    return blob;
 };
 
 // ...
@@ -725,7 +755,10 @@ const fetchBlob = async (url: string, isImage: boolean = false): Promise<Blob> =
 
 const resolveModelAssets = async (costumeId: string) => {
     // --- Built-in / DLC Models ---
+
+    // Ensure modelsData is loaded and flattened
     await loadModelsData();
+
     let costume = modelsData ? modelsData[costumeId] : null;
 
     if (!costume) {
