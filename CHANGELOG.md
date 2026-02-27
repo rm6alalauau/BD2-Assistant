@@ -2,15 +2,14 @@
 
 ---
 
-## 2.1.0 - 2026-02-27
-
-### ✨ 新功能
-- **本地模型支援**：開放使用者自行載入本地 Spine 模型 (`.skel`/`.json`, `.atlas`, `.png`)，支援自由切換播放模型內建動作 (僅支援 Spine 4.1 格式)。
-- **無限制縮放與重置**：針對本地模型解除了縮放限制；新增「重置位置與大小」按鈕，快速恢復初始版面配置。
-- **初次體驗優化**：擴充功能安裝後，將依據瀏覽器的介面語言自動套用對應的預設顯示語系。
-
-### 🐛 錯誤修正
-- **縮放繼承修復**：修復從大幅縮放的本地自訂模型切換回官方內建模型時，縮放比例未正確恢復限制的異常問題。
+## v2.1.3 - Local Custom Model Loading & Persistence Reliability
+### What's New
+- 🌟 **Local Custom Model Support**: Import and manage your own Spine 4.1 `.skel`/`.json` models seamlessly.
+- ♻️ **Spine Memory Management**: Fixed WebGL context exhaustion crashes when invalid custom models are loaded.
+- ✨ **Animation Persistence**: Fixed an issue where local models would reset to 'idle' when refreshing the page.
+- 📐 **Stable Viewport Scaling**: Forced consistent 'setup' sizing so local models don't morph unexpectedly across identical animations.
+- 🪟 **T-Pose Flash CSS fix**: Local models now visually initialize smoothly without an accidental T-pose flicker.
+- 🔄 **Layout Reset Control**: Added a button to safely restore model size and position.**縮放繼承修復**：修復從大幅縮放的本地自訂模型切換回官方內建模型時，縮放比例未正確恢復限制的異常問題。
 
 ---
 
