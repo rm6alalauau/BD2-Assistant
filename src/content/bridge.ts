@@ -1121,6 +1121,10 @@ if (!canInject()) {
                 if (initialAssets.atlasText) {
                     root.dataset.atlasText = initialAssets.atlasText;
                 }
+                // V20.10: Pass saved local animation to spine-loader
+                if (currentModelId.startsWith('local_') && initLocal.localAnimation) {
+                    root.dataset.localAnimation = initLocal.localAnimation;
+                }
             }
 
             // V18.61: Kickstart Sequence
