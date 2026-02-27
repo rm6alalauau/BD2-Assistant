@@ -341,8 +341,28 @@ async function loadSpine(
         window.spinePlayer = null;
     }
 
+    // V20.13: Prevent WebGL Context Leak on Constructor Crash
+    // If a previous model crashed midway, currentPlayer is null, but canvas/WebGL context might exist
+    const canvases = container.getElementsByTagName('canvas');
+    for (let i = 0; i < canvases.length; i++) {
+        const gl = canvases[i].getContext('webgl') || canvases[i].getContext('webgl2');
+        if (gl) {
+            const ext = gl.getExtension('WEBGL_lose_context');
+            if (ext) ext.loseContext();
+        }
+    }
+
     // Clear container content (canvas)
     while (container.firstChild) container.removeChild(container.firstChild);
+
+    // V20.13: Hide the container initially for local models to prevent T-pose flash during load
+    if (isLocal) {
+        container.style.transition = 'opacity 0.15s ease-in-out';
+        container.style.opacity = '0';
+    } else {
+        container.style.transition = 'none';
+        container.style.opacity = '1';
+    }
 
     // Add Spinner
     if (manualSpinner) manualSpinner.remove();
@@ -406,9 +426,11 @@ async function loadSpine(
             premultipliedAlpha: false,
         };
 
-        // V20.7: Only set animation for built-in/R2 models (non-empty initAnim)
-        // Local models skip this to avoid 'Animation does not exist' error during startup
-        // if the stored localAnimation belongs to a previously loaded, different model.
+        // V20.10: For models without animation config (or dynamically requested via localAnimation)
+        // If initAnim is provided, use it to ensure the SpinePlayer initializes correctly.
+        // HOWEVER, for local models, an invalid config.animation will completely halt the 
+        // SpinePlayer and never fire the success callback. Thus, we MUST leave it blank 
+        // for local models and handle the initial animation ENTIRELY in the success callback.
         if (initAnim && !isLocal) {
             config.animation = initAnim;
         }
@@ -473,6 +495,15 @@ async function loadSpine(
                     player.setAnimation(targetAnim, true);
                 }
                 player.play();
+            }
+
+            // V20.13: Restore visibility for local models after initial animation is set
+            if (isLocal && container) {
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        container.style.opacity = '1';
+                    });
+                });
             }
 
             // V18.57: Allow bridge to find this element for visibility toggling
@@ -556,6 +587,7 @@ async function loadSpine(
         };
 
         config.error = (_p: any, msg: any) => {
+            if (container) container.style.opacity = '1'; // Restore opacity on error
             // Suppress expected errors on blocked sites
             if (typeof msg === 'string' && (msg.includes('TrustedHTML') || msg.includes('Security Policy'))) {
                 // Silent fail
@@ -574,6 +606,7 @@ async function loadSpine(
 
         // Failsafe: Remove spinner if it takes too long (e.g. CSP block)
         setTimeout(() => {
+            if (container) container.style.opacity = '1';
             if (manualSpinner && manualSpinner.isConnected) {
                 // ((..._a:any[])=>{})('[Spine Loader] Loading timeout/blocked - removing spinner');
                 manualSpinner.remove();
@@ -596,6 +629,7 @@ async function loadSpine(
         try {
             new SpinePlayer(container, config);
         } catch (e: any) {
+            if (container) container.style.opacity = '1'; // Restore opacity on constructor crash
             manualSpinner?.remove();
             // Suppress TrustedHTML/CSP errors
             if (e.message && (e.message.includes('TrustedHTML') || e.message.includes('Security Policy'))) {
@@ -604,6 +638,7 @@ async function loadSpine(
             ((..._a: any[]) => { })('[Spine Loader] Init Warning');
         }
     } catch (e) {
+        if (container) container.style.opacity = '1'; // Restore opacity
         console.error('[Spine Loader] Init Exception', e);
         manualSpinner?.remove();
     }
