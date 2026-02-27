@@ -255,44 +255,56 @@ function initBehaviors(container: HTMLElement) {
                     const player = window.spinePlayer;
                     const anims = player.animationState.data.skeletonData.animations;
 
-                    // V18.52: Filter out partial animations (face, mouth, etc) — same as playAnimation
-                    let validAnims = anims.filter((a: any) => {
-                        const n = a.name.toLowerCase();
-                        return n !== 'idle' &&
-                            !n.includes('talk') &&
-                            !n.includes('_face') &&
-                            !n.includes('_mouth') &&
-                            !n.includes('_eye') &&
-                            !n.includes('default') &&
-                            !n.includes('feeling');
-                    });
-
-                    // Fallback: if no motion anims, use any animation
-                    if (validAnims.length === 0) validAnims = anims;
-
-                    if (validAnims.length > 0) {
-                        const randomAnim = validAnims[Math.floor(Math.random() * validAnims.length)];
-                        const entry = player.animationState.setAnimation(0, randomAnim.name, false);
-
-                        // Smart base animation detection (don't hardcode 'idle')
-                        let baseAnim = player.config?.animation;
-                        if (!baseAnim) {
-                            const idleAnim = anims.find((a: any) => a.name.toLowerCase() === 'idle' || a.name.toLowerCase() === 'animation');
-                            baseAnim = idleAnim ? idleAnim.name : anims[0]?.name;
+                    // V20.14: For local models, just replay the currently selected animation
+                    // instead of picking a random "motion" animation that may not exist.
+                    const isLocalModel = container.dataset.currentModel?.startsWith('local_');
+                    if (isLocalModel) {
+                        const currentAnim = player.animationState?.getCurrent(0)?.animation?.name;
+                        if (currentAnim) {
+                            player.animationState.setAnimation(0, currentAnim, false);
+                            player.animationState.addAnimation(0, currentAnim, true, 0);
                         }
-                        if (baseAnim) {
-                            player.animationState.addAnimation(0, baseAnim, true, 0);
-                        }
-
-                        // Listen for completion to unlock
-                        entry.listener = {
-                            complete: () => {
-                                isPhantomPlaying = true;
-                                setTimeout(() => isPhantomPlaying = false, 3000); // Simple cooldown
-                            }
-                        };
+                        setTimeout(() => isPhantomPlaying = false, 3000);
                     } else {
-                        isPhantomPlaying = false;
+                        // V18.52: Filter out partial animations (face, mouth, etc) — same as playAnimation
+                        let validAnims = anims.filter((a: any) => {
+                            const n = a.name.toLowerCase();
+                            return n !== 'idle' &&
+                                !n.includes('talk') &&
+                                !n.includes('_face') &&
+                                !n.includes('_mouth') &&
+                                !n.includes('_eye') &&
+                                !n.includes('default') &&
+                                !n.includes('feeling');
+                        });
+
+                        // Fallback: if no motion anims, use any animation
+                        if (validAnims.length === 0) validAnims = anims;
+
+                        if (validAnims.length > 0) {
+                            const randomAnim = validAnims[Math.floor(Math.random() * validAnims.length)];
+                            const entry = player.animationState.setAnimation(0, randomAnim.name, false);
+
+                            // Smart base animation detection (don't hardcode 'idle')
+                            let baseAnim = player.config?.animation;
+                            if (!baseAnim) {
+                                const idleAnim = anims.find((a: any) => a.name.toLowerCase() === 'idle' || a.name.toLowerCase() === 'animation');
+                                baseAnim = idleAnim ? idleAnim.name : anims[0]?.name;
+                            }
+                            if (baseAnim) {
+                                player.animationState.addAnimation(0, baseAnim, true, 0);
+                            }
+
+                            // Listen for completion to unlock
+                            entry.listener = {
+                                complete: () => {
+                                    isPhantomPlaying = true;
+                                    setTimeout(() => isPhantomPlaying = false, 3000); // Simple cooldown
+                                }
+                            };
+                        } else {
+                            isPhantomPlaying = false;
+                        }
                     }
                 } catch (e) {
                     console.warn('[Spine Phantom] Animation error, resetting state', e);
