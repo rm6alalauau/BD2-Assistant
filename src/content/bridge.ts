@@ -761,6 +761,28 @@ const resolveModelAssets = async (costumeId: string) => {
 
     let costume = modelsData ? modelsData[costumeId] : null;
 
+    // V20.9: Handle Local Custom Models purely from local storage
+    if (costumeId.startsWith('local_')) {
+        const localMods = await chrome.storage.local.get(['localModels']);
+        const customModels = localMods.localModels || [];
+        const localModel = customModels.find((m: any) => m.id === costumeId);
+
+        if (localModel && localModel.modelData) {
+            const data = localModel.modelData;
+            return {
+                skel: data.isJsonSkel ? 'model.json' : 'model.skel',
+                atlas: 'model.atlas', // Atlas is direct in rawDataURIs
+                png: '', // Handled by rawDataURIs
+                rawDataURIs: data.rawDataURIs,
+                atlasText: null, // Passed directly via rawDataURIs
+                isJsonSkel: data.isJsonSkel,
+                isLocal: true // Mark for spine-loader
+            };
+        }
+        // Fallback if local model was deleted but ID remains
+        costumeId = '003892';
+    }
+
     if (!costume) {
         // console.warn(`[Pet Bridge] Costume ${costumeId} not found. Assuming Built-in.`);
         costume = { id: costumeId, isBuiltIn: true };
@@ -922,16 +944,22 @@ const applySettings = async (settings: any) => {
                 delete root.dataset.atlasText;
             }
 
-            window.postMessage({
-                type: 'PET_MODEL_UPDATE',
-                urls: {
-                    skelUrl: newUrls.skel,
-                    atlasUrl: newUrls.atlas,
-                    rawDataURIs: newUrls.rawDataURIs,
-                    atlasText: newUrls.atlasText,
-                    isJsonSkel: newUrls.isJsonSkel
-                }
-            }, '*');
+            chrome.storage.local.get(['localAnimation'], (animRes) => {
+                window.postMessage({
+                    type: 'PET_MODEL_UPDATE',
+                    urls: {
+                        skelUrl: newUrls.skel,
+                        atlasUrl: newUrls.atlas,
+                        rawDataURIs: newUrls.rawDataURIs,
+                        // @ts-ignore
+                        atlasText: newUrls.atlasText,
+                        isJsonSkel: newUrls.isJsonSkel,
+                        // @ts-ignore
+                        isLocal: newUrls.isLocal || false,
+                        localAnimation: animRes.localAnimation || ''
+                    }
+                }, '*');
+            });
         });
     }
 
@@ -1067,7 +1095,19 @@ if (!canInject()) {
 
             const settingsResult = await chrome.storage.sync.get(['petSettings']);
             const savedSettings: any = settingsResult.petSettings || {};
-            const currentModelId = savedSettings.model || '003892';
+            
+            // V20.9: Check local storage for local model ID if sync setting is empty
+            let currentModelId = savedSettings.model;
+            if (!currentModelId) {
+                const localRes = await chrome.storage.local.get(['localModelId']);
+                if (localRes.localModelId) {
+                    currentModelId = localRes.localModelId;
+                }
+            }
+            if (!currentModelId) currentModelId = '003892';
+
+            // V20.10: Fetch saved animation upfront for initial load
+            const initLocal = await chrome.storage.local.get(['localAnimation']);
 
             const initialAssets = await resolveModelAssets(currentModelId);
             if (initialAssets) {
@@ -1238,10 +1278,57 @@ if (!canInject()) {
                     sendResponse({ success: true });
                 }
 
+                if (message.type === 'PET_RESET_LAYOUT') {
+                    window.postMessage({ type: 'PET_RESET_LAYOUT' }, '*');
+                    sendResponse({ success: true });
+                }
+
                 if (message.type === 'PET_REQUEST_ANIMATIONS') {
                     // Send back the last cached animations list
                     sendResponse({ type: 'PET_ANIMATIONS_LIST', animations: currentAnimations });
                     return true;
+                }
+
+                if (message.type === 'PET_LOAD_LOCAL_MODEL') {
+                    const { modelData } = message;
+                    const root = document.getElementById('pet-root');
+                    if (root && modelData) {
+                        try {
+                            root.dataset.rawDataURIs = JSON.stringify(modelData.rawDataURIs);
+                            root.dataset.isJsonSkel = modelData.isJsonSkel ? 'true' : 'false';
+                            root.dataset.currentModel = 'local_custom';
+
+                            // V20.8: Use keys that match rawDataURIs entries directly
+                            const skelKey = modelData.isJsonSkel ? 'model.json' : 'model.skel';
+                            root.dataset.skelUrl = skelKey;
+                            root.dataset.atlasUrl = 'model.atlas';
+
+                            // Clear R2-specific attributes
+                            delete root.dataset.atlasText;
+
+                            // V20.10: Fetch saved animation if available
+                            chrome.storage.local.get(['localAnimation'], (animRes) => {
+                                window.postMessage({
+                                    type: 'PET_MODEL_UPDATE',
+                                    urls: {
+                                        skelUrl: skelKey,
+                                        atlasUrl: 'model.atlas',
+                                        rawDataURIs: modelData.rawDataURIs,
+                                        atlasText: null,
+                                        isJsonSkel: modelData.isJsonSkel,
+                                        isLocal: true,
+                                        localAnimation: animRes.localAnimation || ''
+                                    }
+                                }, '*');
+                                sendResponse({ success: true });
+                            });
+                        } catch (e) {
+                            sendResponse({ success: false, error: (e as Error).message });
+                        }
+                    } else {
+                        sendResponse({ success: false, error: 'No pet-root found' });
+                    }
+                    return;
                 }
 
 
