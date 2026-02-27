@@ -860,6 +860,9 @@ window.addEventListener('message', (event) => {
     // --- Initial Load ---
     const isJsonSkel = root.dataset.isJsonSkel === 'true';
     const isLocal = root.dataset.currentModel?.startsWith('local_') || false;
-    loadSpine(skelUrl, atlasUrl, 'idle', rawDataURIs, isJsonSkel, atlasText, isLocal);
+    const localAnimation = root.dataset.localAnimation || '';
+    const anim = isLocal ? localAnimation : 'idle';
+    
+    loadSpine(skelUrl, atlasUrl, anim, rawDataURIs, isJsonSkel, atlasText, isLocal);
 
 })();
