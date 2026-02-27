@@ -61,7 +61,7 @@ After building, you can load the `dist/` folder via Chrome/Edge's "Load unpacked
 #### v2.1.3
 - **Local Model Support**: Added the ability for users to load their own custom Spine models (`.skel`/`.json`, `.atlas`, `.png`) and freely select/play the embedded animations, bringing much greater customization flexibility (Only Spine 4.1 files are supported).
 - **Unrestricted Scaling & Layout Reset**: Removed scale limitations specifically for local custom models. Introduced a new "Reset Size & Position" button in the settings panel to quickly restore the pet to its default state if it gets too large or lost off-screen.
-- **UX Optimization**: The extension now automatically detects your browser's UI language upon first installation and applies the corresponding default locale (supports JP, KR, TW, CN), providing a more intuitive out-of-the-box experience.
+- **UX Optimization**: The extension now automatically detects your browser's UI language upon first installation and applies the corresponding default locale, providing a more intuitive out-of-the-box experience.
 - **Reliability & Persistence**: Fixed memory leak crashes, viewport scaling discrepancies, animation reset on reload, and T-pose flashes when loading local models.
 
 #### v2.0.0

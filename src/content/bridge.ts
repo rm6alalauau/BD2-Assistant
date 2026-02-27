@@ -1130,7 +1130,14 @@ if (!canInject()) {
             // V18.61: Kickstart Sequence
             setTimeout(() => {
                 applySettings(savedSettings);
-                window.postMessage({ type: 'PET_PLAY_ANIMATION', strategy: 'motion_only' }, '*');
+                // V20.14: For local models, forcefully re-apply the saved animation AFTER
+                // the spine-loader has fully initialized. This covers edge cases where
+                // the dataset-based initial animation was overridden or not read in time.
+                if (currentModelId.startsWith('local_') && initLocal.localAnimation) {
+                    window.postMessage({ type: 'PET_SET_ANIMATION', animation: initLocal.localAnimation }, '*');
+                } else {
+                    window.postMessage({ type: 'PET_PLAY_ANIMATION', strategy: 'motion_only' }, '*');
+                }
             }, 1500);
 
             injectCSS('assets/spine-loader.css');
