@@ -27,3 +27,6 @@ dist-ssr
 temp_*
 temp_lib_build/
 *.zip
+snippet.txt
+store_listing.md
+check_version.*
