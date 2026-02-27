@@ -490,7 +490,13 @@ async function loadSpine(
                 if (isLocal) {
                     player.animationState.setAnimation(0, targetAnim, true);
                     // Force a single viewport calculation on the default setup pose to get a stable bounds
-                    player.setViewport(targetAnim); 
+                    // V20.14: Use 'setup' (or the first consistent anim) so that resizing across tabs is mathematically identical 
+                    // regardless of what targetAnim is currently playing on page reload.
+                    try {
+                        player.setViewport('setup');
+                    } catch (e) {
+                        player.setViewport(animNames.includes('idle') ? 'idle' : animNames[0]);
+                    }
                 } else {
                     player.setAnimation(targetAnim, true);
                 }
