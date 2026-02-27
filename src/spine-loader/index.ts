@@ -14,6 +14,7 @@ let manualSpinner: HTMLElement | null = null;
 let lockMove = false;
 let lockZoom = false;
 let isPhantomPlaying = false;
+let currentScale = 1.0;
 
 // --- Behavior Logic ---
 function initBehaviors(container: HTMLElement) {
@@ -28,7 +29,7 @@ function initBehaviors(container: HTMLElement) {
     // We treat scale as a multiplier of the INITIAL Layout (300px)
     // But practically we just manipulate width/height directly now.
     // Let's keep `currentScale` for saving/compatibility.
-    let currentScale = 1.0;
+    // Moved currentScale to global state
 
     // V18.25: Removed shadowed variables. 
     // They are now global (moved to bottom/top of file) so listeners share state.
@@ -54,7 +55,10 @@ function initBehaviors(container: HTMLElement) {
 
             // Restore Scale (via Width/Height)
             if (saved.scale) {
-                currentScale = Math.max(MIN_SCALE, Math.min(saved.scale, MAX_SCALE));
+                const isLocalModel = container.dataset.currentModel?.startsWith('local_');
+                const minScale = isLocalModel ? 0.05 : MIN_SCALE;
+                const maxScale = isLocalModel ? 10.0 : MAX_SCALE;
+                currentScale = Math.max(minScale, Math.min(saved.scale, maxScale));
 
                 // V18.14: Apply Physical Size
                 const newSize = 300 * currentScale;
@@ -72,7 +76,15 @@ function initBehaviors(container: HTMLElement) {
     // Solves the "Locked Move = No Zoom" paradox.
     // Even if pointer-events: none (Locked), we can catch wheel events globally 
     // and check if they happened over our area.
-    window.addEventListener('wheel', (e) => {
+    
+    // Prevent stacking listeners
+    // @ts-ignore
+    if (window.currentSpineWheelHandler) {
+        // @ts-ignore
+        window.removeEventListener('wheel', window.currentSpineWheelHandler);
+    }
+
+    const wheelHandler = (e: WheelEvent) => {
         if (lockZoom) return;
 
         // V19.3: Skip if container is hidden (showPet = false or not loaded yet)
@@ -101,7 +113,11 @@ function initBehaviors(container: HTMLElement) {
         const oldScale = currentScale;
         const delta = Math.sign(e.deltaY) * -0.1;
         const potentialScale = currentScale + delta;
-        const newScale = Math.max(MIN_SCALE, Math.min(potentialScale, MAX_SCALE));
+        
+        const isLocalModel = container.dataset.currentModel?.startsWith('local_');
+        const minScale = isLocalModel ? 0.05 : MIN_SCALE;
+        const maxScale = isLocalModel ? 10.0 : MAX_SCALE;
+        const newScale = Math.max(minScale, Math.min(potentialScale, maxScale));
 
         if (newScale !== oldScale) {
             currentScale = newScale;
@@ -146,7 +162,10 @@ function initBehaviors(container: HTMLElement) {
             // @ts-ignore
             if (window.adjustSpineResolution) window.adjustSpineResolution();
         }
-    }, { passive: false });
+    };
+    window.addEventListener('wheel', wheelHandler, { passive: false });
+    // @ts-ignore
+    window.currentSpineWheelHandler = wheelHandler;
 
     container.addEventListener('mousedown', (e) => {
         if (lockMove) return;
@@ -289,7 +308,16 @@ function initBehaviors(container: HTMLElement) {
 // --- Loading Logic ---
 
 // V18.42: Added rawDataURIs parameter for cloud assets
-async function loadSpine(skel: string, atlas: string, animation: string = 'idle', rawDataURIs: Record<string, string> | null = null, isJsonSkel: boolean = false, atlasText: string | null = null) {
+async function loadSpine(
+    skel: string, 
+    atlas: string, 
+    animation: string = 'idle', 
+    rawDataURIs: Record<string, string> | null = null, 
+    isJsonSkel: boolean = false, 
+    atlasText: string | null = null, 
+    isLocal: boolean = false,
+    skin: string | null = null
+) {
     const root = document.getElementById('pet-root');
     const container = document.getElementById('spine-widget');
 
@@ -298,7 +326,7 @@ async function loadSpine(skel: string, atlas: string, animation: string = 'idle'
         return;
     }
 
-    ((..._a: any[]) => { })(`[Spine Loader] Loading Model: ${skel} `);
+    console.log('[DEBUG] loadSpine called:', { skel, atlas, animation, isJsonSkel, atlasText: atlasText ? 'present' : 'null', rawDataURIs: rawDataURIs ? Object.keys(rawDataURIs) : 'null' });
 
     // Dispose previous
     if (currentPlayer) {
@@ -365,11 +393,11 @@ async function loadSpine(skel: string, atlas: string, animation: string = 'idle'
             remapped[finalAtlasUrl] = `data:,${atlasText}`;
 
             finalRawDataURIs = remapped;
+            console.log('[DEBUG] R2 remapping applied. Keys:', Object.keys(remapped));
         }
 
         const config: any = {
             atlasUrl: finalAtlasUrl,
-            animation: initAnim,
             showControls: false,
             showLoading: false,
             alpha: true,
@@ -378,6 +406,13 @@ async function loadSpine(skel: string, atlas: string, animation: string = 'idle'
             premultipliedAlpha: false,
         };
 
+        // V20.7: Only set animation for built-in/R2 models (non-empty initAnim)
+        // Local models skip this to avoid 'Animation does not exist' error during startup
+        // if the stored localAnimation belongs to a previously loaded, different model.
+        if (initAnim && !isLocal) {
+            config.animation = initAnim;
+        }
+
         if (isJsonSkel) {
             config.jsonUrl = finalSkelUrl;
         } else {
@@ -385,20 +420,83 @@ async function loadSpine(skel: string, atlas: string, animation: string = 'idle'
         }
 
         config.success = (player: any) => {
-            ((..._a: any[]) => { })('[Spine Loader] Success!');
+            console.log('[DEBUG] SpinePlayer SUCCESS callback fired!');
             currentPlayer = player;
 
-            // V20.4: Extract animations safely after proper initialization
-            if (player.animationState?.data?.skeletonData?.animations) {
-                const animNames = player.animationState.data.skeletonData.animations.map((a: any) => a.name);
+            let animNames: string[] = [];
+            let skinNames: string[] = [];
 
-                // Broadcast available animations to bridge -> popup
-                window.parent.postMessage({ type: 'PET_ANIMATIONS_LIST', animations: animNames }, '*');
+            // Extract Skins
+            if (player.skeleton?.data?.skins) {
+                skinNames = player.skeleton.data.skins.map((s: any) => s.name);
+            }
+
+            // Extract Animations
+            if (player.animationState?.data?.skeletonData?.animations) {
+                animNames = player.animationState.data.skeletonData.animations.map((a: any) => a.name);
+            }
+
+            // Broadcast available animations and skins to bridge -> popup
+            window.parent.postMessage({ type: 'PET_ANIMATIONS_LIST', animations: animNames, skins: skinNames }, '*');
+
+            // Apply Skin
+            if (skinNames.length > 0) {
+                const targetSkin = (skin && skinNames.includes(skin)) ? skin : (skinNames.includes('default') ? 'default' : skinNames[0]);
+                try {
+                    player.skeleton.setSkinByName(targetSkin);
+                    player.skeleton.setToSetupPose();
+                } catch (e) {
+                    console.warn('[Spine Loader] Failed to set initial skin:', e);
+                }
+            }
+
+            // Apply Animation
+            if (animNames.length > 0) {
+                // V20.10: For models without animation config (or dynamically requested via localAnimation)
+                // If initAnim is provided (e.g., localAnimation restores a saved state), use it.
+                // Otherwise, automatically fallback to idle or first available.
+                const targetAnim = (initAnim && animNames.includes(initAnim)) 
+                    ? initAnim 
+                    : (animNames.includes('idle') ? 'idle' : animNames[0]);
+
+                // Clear any error flag that would block drawFrame rendering
+                // @ts-ignore
+                player.error = null;
+                
+                // V20.10: For local models, use animationState.setAnimation directly without recalculating viewport
+                // This prevents custom models with huge transparent bounds from scaling wildly on animation change.
+                if (isLocal) {
+                    player.animationState.setAnimation(0, targetAnim, true);
+                    // Force a single viewport calculation on the default setup pose to get a stable bounds
+                    player.setViewport(targetAnim); 
+                } else {
+                    player.setAnimation(targetAnim, true);
+                }
+                player.play();
             }
 
             // V18.57: Allow bridge to find this element for visibility toggling
             if (player.canvas) player.canvas.id = 'spine-widget';
             manualSpinner?.remove();
+
+            // DEBUG: Check player state after success
+            setTimeout(() => {
+                console.log('[DEBUG] Post-success player state:', {
+                    error: player.error,
+                    paused: player.paused,
+                    hasCurrentViewport: !!player.currentViewport,
+                    currentViewport: player.currentViewport,
+                    canvasWidth: player.canvas?.width,
+                    canvasHeight: player.canvas?.height,
+                    canvasDisplay: player.canvas?.style?.display,
+                    canvasParent: player.canvas?.parentElement?.id,
+                    canvasParentDisplay: player.canvas?.parentElement?.style?.display,
+                    rootDisplay: document.getElementById('pet-root')?.style?.display,
+                    rootVisibility: document.getElementById('pet-root')?.style?.visibility,
+                    rootOpacity: document.getElementById('pet-root')?.style?.opacity,
+                    currentTrack: player.animationState?.getCurrent(0)?.animation?.name
+                });
+            }, 500);
 
             // Resolution Logic
             const adjustResolution = () => {
@@ -461,12 +559,16 @@ async function loadSpine(skel: string, atlas: string, animation: string = 'idle'
             // Suppress expected errors on blocked sites
             if (typeof msg === 'string' && (msg.includes('TrustedHTML') || msg.includes('Security Policy'))) {
                 // Silent fail
+            } else if (typeof msg === 'string' && msg.includes('Animation does not exist')) {
+                // V20.7: Don't remove container for missing animation errors (local models may not have 'idle')
+                console.warn('[Spine Loader] Animation not found, will use fallback in success callback');
+                manualSpinner?.remove();
             } else {
                 console.error('[Spine Error]', msg);
-            }
-            manualSpinner?.remove();
-            if (container && !container.hasChildNodes()) {
-                container.remove();
+                manualSpinner?.remove();
+                if (container && !container.hasChildNodes()) {
+                    container.remove();
+                }
             }
         };
 
@@ -484,8 +586,12 @@ async function loadSpine(skel: string, atlas: string, animation: string = 'idle'
         // V18.42: Add rawDataURIs if provided (for cloud assets)
         if (finalRawDataURIs && Object.keys(finalRawDataURIs).length > 0) {
             config.rawDataURIs = finalRawDataURIs;
-            // ((..._a:any[])=>{})('[Spine Loader] Using rawDataURIs for textures:', Object.keys(rawDataURIs));
+            console.log('[DEBUG] rawDataURIs added to config. Keys:', Object.keys(finalRawDataURIs));
+        } else {
+            console.log('[DEBUG] No rawDataURIs for config');
         }
+
+        console.log('[DEBUG] Final SpinePlayer config:', { atlasUrl: config.atlasUrl, binaryUrl: config.binaryUrl, jsonUrl: config.jsonUrl, animation: config.animation, hasRawDataURIs: !!config.rawDataURIs });
 
         try {
             new SpinePlayer(container, config);
@@ -513,6 +619,18 @@ function playAnimation(strategy: 'motion_only' | 'talk_notify' = 'motion_only') 
     const anims = player.animationState.data.skeletonData.animations;
 
     let validAnims: any[] = [];
+
+    // V20.10: For local models, clicking just restarts the currently selected animation instead of picking a random "motion".
+    // This prevents the issue where local models with different visual states (skins mapped to animations) cycle incorrectly.
+    const isLocalModel = document.getElementById('pet-root')?.dataset.currentModel?.startsWith('local_');
+    if (isLocalModel) {
+        const currentAnim = player.animationState?.getCurrent(0)?.animation?.name;
+        if (currentAnim) {
+            player.animationState.setAnimation(0, currentAnim, false);
+            player.animationState.addAnimation(0, currentAnim, true, 0);
+        }
+        return;
+    }
 
     if (strategy === 'talk_notify') {
         // Notification Strategy: Play "Talk", "Face", "Idle_Talk" animations
@@ -560,7 +678,7 @@ function playAnimation(strategy: 'motion_only' | 'talk_notify' = 'motion_only') 
         player.animationState.setAnimation(trackIndex, randomAnim.name, false);
 
         if (trackIndex === 0) {
-            // Then add idle so they don't freeze after motion is done.
+            // Then add base anim so they don't freeze after motion is done.
             // Get the initial animation for fallback. Local models might have `player.config.animation` undefined.
             let baseAnim = player.config?.animation;
             if (!baseAnim) {
@@ -570,8 +688,13 @@ function playAnimation(strategy: 'motion_only' | 'talk_notify' = 'motion_only') 
                     baseAnim = idleAnim ? idleAnim.name : allAnims[0].name;
                 }
             }
-            if (baseAnim) {
+            // V20.10: If the randomly chosen animation IS the base animation (e.g. skin cycling),
+            // don't queue the base animation again, just let it loop or stay.
+            if (baseAnim && baseAnim !== randomAnim.name) {
                 player.animationState.addAnimation(trackIndex, baseAnim, true, 0);
+            } else if (baseAnim === randomAnim.name) {
+                // Keep it looping if it's the base
+                player.animationState.setAnimation(trackIndex, randomAnim.name, true);
             }
         } else {
             // If overlay track, just let it finish (empty)
@@ -583,9 +706,35 @@ function playAnimation(strategy: 'motion_only' | 'talk_notify' = 'motion_only') 
 // --- Message Listener for Model Switch ---
 window.addEventListener('message', (event) => {
     if (event.data && event.data.type === 'PET_MODEL_UPDATE') {
-        const { skelUrl, atlasUrl, rawDataURIs, isJsonSkel, atlasText } = event.data.urls;
-        // V18.42: Pass rawDataURIs and atlasText to loadSpine
-        loadSpine(skelUrl, atlasUrl, 'idle', rawDataURIs || null, isJsonSkel || false, atlasText || null);
+        const { skelUrl, atlasUrl, rawDataURIs, isJsonSkel, atlasText, isLocal, localAnimation, localSkin } = event.data.urls;
+        console.log('[DEBUG] PET_MODEL_UPDATE received:', { skelUrl, atlasUrl, isJsonSkel, isLocal, localAnimation, localSkin, atlasText: atlasText ? 'present' : 'null', rawDataURIs: rawDataURIs ? Object.keys(rawDataURIs) : 'null' });
+        
+        // V20.12: Clamp scale when switching from a custom local model back to an official model
+        if (!isLocal) {
+            let clamped = false;
+            if (currentScale > MAX_SCALE) {
+                currentScale = MAX_SCALE;
+                clamped = true;
+            } else if (currentScale < MIN_SCALE) {
+                currentScale = MIN_SCALE;
+                clamped = true;
+            }
+            if (clamped) {
+                const container = document.getElementById('pet-root');
+                if (container) {
+                    const newSize = 300 * currentScale;
+                    container.style.width = `${newSize}px`;
+                    container.style.height = `${newSize}px`;
+                    // Trigger resize logic
+                    // @ts-ignore
+                    if (window.adjustSpineResolution) window.adjustSpineResolution();
+                }
+            }
+        }
+
+        // V20.10: For local models, pass localAnimation as initAnim, fallback to empty
+        const anim = isLocal ? (localAnimation || '') : 'idle';
+        loadSpine(skelUrl, atlasUrl, anim, rawDataURIs || null, isJsonSkel || false, atlasText || null, isLocal || false, isLocal ? (localSkin || null) : null);
     }
 
     if (event.data && event.data.type === 'PET_SETTINGS_UPDATE') {
@@ -616,17 +765,52 @@ window.addEventListener('message', (event) => {
         playAnimation(strategy);
     }
 
-    // V20.6: Manual Animation Override (from UI)
     if (event.data && event.data.type === 'PET_SET_ANIMATION' && currentPlayer && currentPlayer.animationState) {
         try {
             const animName = event.data.animation;
             const anims = currentPlayer.animationState.data.skeletonData.animations;
             const match = anims.find((a: any) => a.name === animName);
             if (match) {
-                currentPlayer.animationState.setAnimation(0, animName, true);
+                // Clear any error flag
+                // @ts-ignore
+                if (currentPlayer.error) currentPlayer.error = null;
+
+                const isLocalModel = document.getElementById('pet-root')?.dataset.currentModel?.startsWith('local_');
+
+                if (isLocalModel) {
+                    // For local custom models, avoid recalculating the viewport on every animation switch
+                    // because custom boundings might differ wildly and cause the model to jump or shrink.
+                    currentPlayer.animationState.setAnimation(0, animName, true);
+                } else {
+                    // MUST use currentPlayer.setAnimation, NOT animationState.setAnimation
+                    // because setAnimation recalculates the viewport. Otherwise, changing from
+                    // idle to another animation might break the bounds and disappear.
+                    currentPlayer.setAnimation(animName, true);
+                }
+                
+                currentPlayer.play();
+            } else {
+                 console.warn(`[Spine Loader] Animation ${animName} not found in skeleton`);
             }
         } catch (e) {
             console.warn('[Spine Loader] Failed to manually set animation:', e);
+        }
+    }
+
+    if (event.data && event.data.type === 'PET_RESET_LAYOUT') {
+        const container = document.getElementById('pet-root');
+        if (container) {
+            // Reset state
+            currentScale = 1.0;
+            container.style.width = '300px';
+            container.style.height = '300px';
+            container.style.left = '';
+            container.style.top = '';
+            container.style.right = '20px';
+            container.style.bottom = '20px';
+            container.style.transform = 'none';
+            // @ts-ignore
+            if (window.adjustSpineResolution) window.adjustSpineResolution();
         }
     }
 });
@@ -675,6 +859,7 @@ window.addEventListener('message', (event) => {
 
     // --- Initial Load ---
     const isJsonSkel = root.dataset.isJsonSkel === 'true';
-    loadSpine(skelUrl, atlasUrl, 'idle', rawDataURIs, isJsonSkel, atlasText);
+    const isLocal = root.dataset.currentModel?.startsWith('local_') || false;
+    loadSpine(skelUrl, atlasUrl, 'idle', rawDataURIs, isJsonSkel, atlasText, isLocal);
 
 })();

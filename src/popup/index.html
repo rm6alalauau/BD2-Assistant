@@ -205,9 +205,13 @@
         </div>
         <div class="row">
             <label id="lbl-character" for="characterSelect">Character</label>
-            <select id="characterSelect" style="width: 140px;">
-                <option value="Loading">Loading...</option>
-            </select>
+            <div style="display: flex; align-items: center; gap: 4px; width: 140px;">
+                <select id="characterSelect" style="flex: 1; width: 100%;">
+                    <option value="Loading">Loading...</option>
+                </select>
+                <button id="renameLocalModelBtn" class="action-icon" title="Rename" style="display: none; background: none; border: none; cursor: pointer; padding: 0; font-size: 12px; color: white;">✏️</button>
+                <button id="deleteLocalModelBtn" class="action-icon" title="Delete" style="display: none; background: none; border: none; cursor: pointer; padding: 0; font-size: 12px; color: white;">🗑️</button>
+            </div>
         </div>
         <div class="row" style="margin-top: 10px;">
             <label id="lbl-costume" for="modelSelect">Costume</label>
@@ -240,6 +244,12 @@
                 <input type="checkbox" id="flipX">
                 <span class="slider"></span>
             </label>
+        </div>
+        <div class="divider" style="margin: 10px 0;"></div>
+        <div class="row" style="margin-bottom: 4px;">
+            <button id="resetLayoutBtn" class="glass-btn secondary" style="width: 100%;" title="Reset Size and Position">
+                <span id="resetLayout-text">重置位置與大小</span>
+            </button>
         </div>
     </div>
 
@@ -290,12 +300,17 @@
         <button id="clearCache" class="glass-btn secondary" style="width: 100%; font-size: 12px; margin-bottom: 8px;">
             <span id="clearCache-text">清除已下載模型 🗑️</span>
         </button>
+        <button id="loadLocalSpineBtn" class="glass-btn secondary"
+            style="width: 100%; font-size: 12px; margin-bottom: 8px;">
+            <span id="loadLocalSpine-text">載入本地模型 📁</span>
+        </button>
+        <input type="file" id="localSpineInput" accept=".skel,.json,.atlas,.png" multiple style="display: none;" />
     </div>
 
     <div class="control-group">
         <button id="toggleBlacklist" class="glass-btn"
             style="width: 100%; font-size: 13px; margin-bottom: 8px; background: rgba(231, 40, 87, 0.2);">
-            <span id="toggleBlacklist-text">🚫 隱藏寵物 (目前網站)</span>
+            <span id="toggleBlacklist-text">🚫 在此網站隱藏</span>
         </button>
 
         <details id="advancedBlacklist" style="margin-top: 10px; font-size: 12px;">

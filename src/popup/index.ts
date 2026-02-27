@@ -13,6 +13,8 @@ const language = document.getElementById('language') as HTMLSelectElement;
 const characterSelect = document.getElementById('characterSelect') as HTMLSelectElement;
 const modelSelect = document.getElementById('modelSelect') as HTMLSelectElement; // Costume Select
 const characterSearch = document.getElementById('characterSearch') as HTMLInputElement;
+const renameLocalModelBtn = document.getElementById('renameLocalModelBtn') as HTMLButtonElement | null;
+const deleteLocalModelBtn = document.getElementById('deleteLocalModelBtn') as HTMLButtonElement | null;
 
 // Labels
 const autoRedeem = document.getElementById('autoRedeem') as HTMLInputElement;
@@ -27,14 +29,30 @@ const lblOpacity = document.getElementById('lbl-opacity');
 const lblCharacter = document.getElementById('lbl-character');
 const lblCostume = document.getElementById('lbl-costume');
 const lblAutoRedeem = document.getElementById('lbl-autoRedeem');
+const resetLayoutBtn = document.getElementById('resetLayoutBtn');
 
+
+function getDefaultLanguage() {
+    try {
+        const uiLang = chrome.i18n.getUILanguage() || '';
+        if (uiLang.startsWith('zh')) {
+            if (uiLang.toLowerCase().includes('cn') || uiLang.toLowerCase().includes('hans')) return 'zh-CN';
+            return 'zh-TW';
+        }
+        if (uiLang.startsWith('ja')) return 'ja-JP';
+        if (uiLang.startsWith('ko')) return 'ko-KR';
+    } catch (e) {
+        // Fallback if i18n is unavailable
+    }
+    return 'zh-TW'; // Default fallback
+}
 
 const DEFAULT_SETTINGS = {
     show: true,
     lockMove: false,
     lockZoom: false,
     opacity: 1,
-    language: 'zh-TW',
+    language: getDefaultLanguage(),
     characterId: '003801',
     model: '003892', // Default Costume
     autoRedeem: false
@@ -50,6 +68,7 @@ const UI_STRINGS: Record<string, any> = {
         character: '選擇角色',
         costume: '選擇服裝',
         search: '搜尋角色...',
+        loadLocalSpine: '載入本地模型 📁',
         clearCache: '清除已下載模型 🗑️',
         syncSection: '同步 The BD2 Pulse',
         syncBtn: '從網站同步 🔄',
@@ -75,7 +94,8 @@ const UI_STRINGS: Record<string, any> = {
         checking: '檢查中...',
         updated: '更新成功！即將重整',
         upToDate: '已是最新版本',
-        updateFailed: '檢查失敗'
+        updateFailed: '檢查失敗',
+        resetLayout: '重置位置與大小'
     },
     'zh-CN': {
         show: '显示 BD2 Assistant',
@@ -86,6 +106,7 @@ const UI_STRINGS: Record<string, any> = {
         character: '选择角色',
         costume: '选择服装',
         search: '搜索角色...',
+        loadLocalSpine: '载入本地模型 📁',
         clearCache: '清除已下载模型 🗑️',
         syncSection: '同步 The BD2 Pulse',
         syncBtn: '从网站同步 🔄',
@@ -111,7 +132,8 @@ const UI_STRINGS: Record<string, any> = {
         checking: '检查中...',
         updated: '更新成功！即将刷新',
         upToDate: '已是最新版本',
-        updateFailed: '检查失败'
+        updateFailed: '检查失败',
+        resetLayout: '重置位置与大小'
     },
     'en': {
         show: 'Show BD2 Assistant',
@@ -122,6 +144,7 @@ const UI_STRINGS: Record<string, any> = {
         character: 'Character',
         costume: 'Costume',
         search: 'Search Character...',
+        loadLocalSpine: 'Load Local Model 📁',
         clearCache: 'Clear Downloaded Models 🗑️',
         syncSection: 'Sync The BD2 Pulse',
         syncBtn: 'Sync from Website 🔄',
@@ -147,7 +170,8 @@ const UI_STRINGS: Record<string, any> = {
         checking: 'Checking...',
         updated: 'Updated! Reloading...',
         upToDate: 'Up to date',
-        updateFailed: 'Failed'
+        updateFailed: 'Failed',
+        resetLayout: 'Reset Size & Position'
     },
     'ja-JP': {
         show: 'BD2 Assistant を表示',
@@ -158,6 +182,7 @@ const UI_STRINGS: Record<string, any> = {
         character: 'キャラクター',
         costume: 'コスチューム',
         search: '検索...',
+        loadLocalSpine: 'ローカルモデルを読み込む 📁',
         clearCache: 'ダウンロード済みモデルを削除 🗑️',
         syncSection: 'The BD2 Pulse と同期',
         syncBtn: 'Webサイトから同期 🔄',
@@ -183,7 +208,8 @@ const UI_STRINGS: Record<string, any> = {
         checking: 'チェック中...',
         updated: '更新成功！再読み込みします',
         upToDate: '最新です',
-        updateFailed: '失敗しました'
+        updateFailed: '失敗しました',
+        resetLayout: 'サイズと位置をリセット'
     },
     'ko-KR': {
         show: 'BD2 Assistant 표시',
@@ -194,6 +220,7 @@ const UI_STRINGS: Record<string, any> = {
         character: '캐릭터',
         costume: '코스튬',
         search: '검색...',
+        loadLocalSpine: '로컬 모델 불러오기 📁',
         clearCache: '다운로드된 모델 삭제 🗑️',
         syncSection: 'The BD2 Pulse 동기화',
         syncBtn: '웹사이트에서 동기화 🔄',
@@ -219,7 +246,8 @@ const UI_STRINGS: Record<string, any> = {
         checking: '확인 중...',
         updated: '업데이트 성공! 새로고침 중...',
         upToDate: '최신 버전입니다',
-        updateFailed: '확인 실패'
+        updateFailed: '확인 실패',
+        resetLayout: '크기 및 위치 초기화'
     }
 };
 
@@ -241,6 +269,17 @@ interface PetSettings {
 let cachedNicknames: string[] = [];
 let cachedNickname: string | undefined;
 
+interface LocalModelInfo {
+    id: string;
+    name: string;
+    modelData: {
+        atlasText: string;
+        rawDataURIs: Record<string, string>;
+        isJsonSkel: boolean;
+    };
+}
+let customSpineModels: LocalModelInfo[] = [];
+
 // Global Data
 let modelsData: any = null;
 let characterNames: Record<string, Record<string, string>> = {};
@@ -256,7 +295,13 @@ function updateUILanguage(lang: string) {
     if (lblLang) lblLang.textContent = strings.language;
     if (lblOpacity) lblOpacity.textContent = strings.opacity;
     if (lblCharacter) lblCharacter.textContent = strings.character;
-    if (lblCostume) lblCostume.textContent = strings.costume;
+    if (lblCostume) {
+        if (characterSelect && characterSelect.value.startsWith('local_')) {
+            lblCostume.textContent = strings.animation || 'Animation';
+        } else {
+            lblCostume.textContent = strings.costume || 'Costume';
+        }
+    }
     if (lblAutoRedeem) lblAutoRedeem.textContent = strings.autoRedeem;
     if (characterSearch) characterSearch.placeholder = strings.search;
 
@@ -267,6 +312,11 @@ function updateUILanguage(lang: string) {
     const btnSyncText = document.getElementById('syncData-text');
     if (btnSyncText) {
         btnSyncText.textContent = strings.syncBtn;
+    }
+
+    const resetLayoutText = document.getElementById('resetLayout-text');
+    if (resetLayoutText && strings.resetLayout) {
+        resetLayoutText.textContent = strings.resetLayout;
     }
 
     const btnCheckCodesText = document.getElementById('checkCodes-text');
@@ -283,6 +333,9 @@ function updateUILanguage(lang: string) {
 
     const btnClearText = document.getElementById('clearCache-text');
     if (btnClearText) btnClearText.textContent = strings.clearCache;
+
+    const btnLoadLocalText = document.getElementById('loadLocalSpine-text');
+    if (btnLoadLocalText) btnLoadLocalText.textContent = strings.loadLocalSpine;
 
     const summaryAdvancedBlacklist = document.getElementById('advancedBlacklist-summary');
     if (summaryAdvancedBlacklist) summaryAdvancedBlacklist.textContent = strings.advancedBlacklist;
@@ -316,9 +369,24 @@ function updateUILanguage(lang: string) {
 // ... Initialization ...
 
 async function init() {
+    // 0. Load Local Models
+    const localRes = await chrome.storage.local.get(['localModels']);
+    if (localRes.localModels) {
+        customSpineModels = localRes.localModels as LocalModelInfo[];
+    }
+
     // 1. Load Settings
     chrome.storage.sync.get(['petSettings'], async (result: { petSettings?: any }) => {
         const saved = result.petSettings || {};
+
+        // V20.9: Check for locally persisted model ID if sync model is empty
+        if (!saved.model && !saved.characterId) { // If no model or characterId is synced
+            const localModelIdRes = await chrome.storage.local.get(['localModelId']);
+            if (localModelIdRes.localModelId) {
+                saved.characterId = localModelIdRes.localModelId;
+            }
+        }
+
         const settings: PetSettings = { ...DEFAULT_SETTINGS, ...saved };
 
         // UI Bindings
@@ -394,9 +462,17 @@ function updateSyncStatus(settings: PetSettings) {
 function initializeDropdowns(settings: PetSettings) {
     let startCharId = settings.characterId;
 
-    // Local models don't exist in modelsData — skip fallback
+    // Local models: verify the model still exists in storage, otherwise fall back
+    if (startCharId.startsWith('local_')) {
+        const localModel = customSpineModels.find(m => m.id === startCharId);
+        if (!localModel) {
+            // Model was deleted from storage, fall back to first built-in
+            startCharId = modelsData.characters[0].id;
+        }
+    }
+
+    // Built-in models: validate
     if (!startCharId.startsWith('local_')) {
-        // Fallback logic for built-in models
         const charExists = modelsData.characters.find((c: any) => c.id === startCharId);
         if (!charExists) {
             for (const char of modelsData.characters) {
@@ -412,38 +488,18 @@ function initializeDropdowns(settings: PetSettings) {
     }
 
     populateCharacters(startCharId, settings.language || 'zh-TW');
-    // For local models, populateCharacters already sets up the costume dropdown
+
     if (!startCharId.startsWith('local_')) {
         populateCostumes(characterSelect.value, settings.model, settings.language || 'zh-TW');
     } else {
-        // Model is already loading or loaded in the page, ask for its animations
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            if (tabs[0] && tabs[0].id) {
-                chrome.tabs.sendMessage(tabs[0].id, { type: 'PET_REQUEST_ANIMATIONS' }, (response) => {
-                    if (response && response.type === 'PET_ANIMATIONS_LIST') {
-                        // Manually trigger the population logic as if it was a broadcast
-                        const anims = response.animations || [];
-                        if (modelSelect) {
-                            modelSelect.innerHTML = '';
-                            if (anims.length === 0) {
-                                const opt = document.createElement('option');
-                                opt.disabled = true;
-                                opt.textContent = 'No animations found';
-                                modelSelect.appendChild(opt);
-                            } else {
-                                anims.forEach((animName: string) => {
-                                    const opt = document.createElement('option');
-                                    opt.value = animName;
-                                    opt.textContent = animName;
-                                    modelSelect.appendChild(opt);
-                                });
-                                modelSelect.disabled = false;
-                            }
-                        }
-                    }
-                });
-            }
-        });
+        // Local model on page load: show loading state, the characterSelect change handler
+        // will re-send the model data to the content script
+        modelSelect.innerHTML = '<option disabled selected>Loading animations...</option>';
+        modelSelect.disabled = true;
+        updateUILanguage(settings.language || 'zh-TW');
+
+        // Trigger the change event which will re-send the model data
+        characterSelect.dispatchEvent(new Event('change'));
     }
 }
 
@@ -598,6 +654,32 @@ function populateCharacters(selectedId: string, lang: string = 'en', preserveCos
     let firstVisibleId: string | null = null;
     let isSelectedVisible = false;
 
+    // --- Local Characters ---
+    if (customSpineModels.length > 0) {
+        customSpineModels.forEach((model) => {
+            if (filter) {
+                const f = filter.toLowerCase();
+                if (!model.name.toLowerCase().includes(f) && !model.id.toLowerCase().includes(f)) {
+                    return;
+                }
+            }
+
+            const opt = document.createElement('option');
+            opt.value = model.id;
+            opt.textContent = model.name;
+            characterSelect.appendChild(opt);
+
+            if (!firstVisibleId) firstVisibleId = model.id;
+            if (model.id === selectedId) isSelectedVisible = true;
+        });
+
+        // Separator
+        const sep = document.createElement('option');
+        sep.disabled = true;
+        sep.textContent = '──────────────';
+        characterSelect.appendChild(sep);
+    }
+
     // --- Built-in Characters ---
 
     modelsData.characters.forEach((char: any) => {
@@ -668,6 +750,15 @@ function populateCostumes(charId: string, selectedCostumeId: string | null, lang
 
 chrome.storage.sync.get(['petSettings'], async (result: { petSettings?: any }) => {
     const saved = result.petSettings || {};
+
+    // V20.9: Check for locally persisted model ID if sync model is empty
+    if (!saved.model && !saved.characterId) { // If no model or characterId is synced
+        const localModelIdRes = await chrome.storage.local.get(['localModelId']);
+        if (localModelIdRes.localModelId) {
+            saved.characterId = localModelIdRes.localModelId;
+        }
+    }
+
     const settings: PetSettings = { ...DEFAULT_SETTINGS, ...saved };
 
     // 1. UI Bindings
@@ -693,11 +784,11 @@ chrome.storage.sync.get(['petSettings'], async (result: { petSettings?: any }) =
         if (nicknames && nicknames.length > 0) {
             elNickname.dataset.synced = 'true';
             elNickname.dataset.accountCount = String(nicknames.length);
-            elNickname.dataset.nickname = nicknames[0];
+            elNickname.dataset.nickname = nicknames[0]; // Primary nickname
 
             if (nicknames.length > 1) {
                 elNickname.textContent = strings.syncedAccounts.replace('{n}', String(nicknames.length));
-                elNickname.style.color = '#e72857';
+                elNickname.style.color = '#e72857'; // Website accent color
             } else {
                 elNickname.textContent = `${strings.synced}${nicknames[0]}`;
                 elNickname.style.color = '#4CAF50';
@@ -757,6 +848,15 @@ chrome.storage.sync.get(['petSettings'], async (result: { petSettings?: any }) =
         // For local models, populateCharacters already sets up the costume dropdown
         if (!startCharId.startsWith('local_')) {
             populateCostumes(characterSelect.value, settings.model, currentLang);
+        } else {
+            // V20.10: Request animations for currently active local model from bridge
+            modelSelect.innerHTML = '<option disabled selected>Loading animations...</option>';
+            modelSelect.disabled = true;
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                if (tabs[0] && tabs[0].id) {
+                    chrome.tabs.sendMessage(tabs[0].id, { type: 'PET_REQUEST_ANIMATIONS' });
+                }
+            });
         }
     }
 });
@@ -764,6 +864,8 @@ chrome.storage.sync.get(['petSettings'], async (result: { petSettings?: any }) =
 // --- Events ---
 
 const saveSettings = () => {
+    const isLocal = characterSelect.value.startsWith('local_');
+
     const settings: PetSettings = {
         show: showPet?.checked ?? true,
         lockMove: lockMove?.checked ?? false,
@@ -772,7 +874,7 @@ const saveSettings = () => {
         opacity: Number(opacity.value) / 100,
         language: language.value,
         characterId: characterSelect.value,
-        model: modelSelect.value, // Costume ID
+        model: isLocal ? '' : modelSelect.value, // Costume ID — irrelevant for local
         nickname: cachedNickname,
         nicknames: cachedNicknames,
         autoRedeem: autoRedeem ? autoRedeem.checked : false
@@ -781,24 +883,55 @@ const saveSettings = () => {
     updateUILanguage(language.value);
 
     chrome.storage.sync.set({ petSettings: settings }, () => {
-        console.log('Settings saved:', settings);
+        if (chrome.runtime.lastError) {
+            console.error('[Pet Popup] Error saving settings:', chrome.runtime.lastError);
+        }
     });
+
+    // V20.9: Persist local model selection to local storage (device specific)
+    if (isLocal) {
+        chrome.storage.local.set({ localModelId: characterSelect.value });
+        // Don't overwrite localAnimation if just showing, unless we want to reset it
+    } else {
+        chrome.storage.local.remove('localModelId');
+        chrome.storage.local.remove('localAnimation');
+    }
 };
 
 if (characterSelect) {
     characterSelect.addEventListener('change', () => {
+        const lang = language.value || 'zh-TW';
         if (characterSelect.value.startsWith('local_')) {
+            // Local model selected from dropdown
+            const localModel = customSpineModels.find(m => m.id === characterSelect.value);
+            if (localModel) {
+                chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                    if (tabs[0] && tabs[0].id) {
+                        chrome.tabs.sendMessage(tabs[0].id, {
+                            type: 'PET_LOAD_LOCAL_MODEL',
+                            modelData: localModel.modelData
+                        });
+                    }
+                });
+            }
+
             // Local model: switch costume header to animation header
             modelSelect.innerHTML = '<option disabled selected>Loading animations...</option>';
             // Keep it temporarily disabled until the model finishes loading and sends PET_ANIMATIONS_LIST
             modelSelect.disabled = true;
-            updateUILanguage(language.value);
+            updateUILanguage(lang);
             // Don't modify `model` in settings for local since it triggers model reload
-            // We just send the layout settings if needed, but avoid reloading model 
+            // We just send the layout settings if needed, but avoid reloading model
+            
+            if (renameLocalModelBtn) renameLocalModelBtn.style.display = 'block';
+            if (deleteLocalModelBtn) deleteLocalModelBtn.style.display = 'block';
         } else {
             // When character changes, update costumes using Default for that char
             populateCostumes(characterSelect.value, null, language.value);
             updateUILanguage(language.value); // Reset label to Costume
+            
+            if (renameLocalModelBtn) renameLocalModelBtn.style.display = 'none';
+            if (deleteLocalModelBtn) deleteLocalModelBtn.style.display = 'none';
         }
         saveSettings();
     });
@@ -828,6 +961,9 @@ if (language) {
 if (modelSelect) {
     modelSelect.addEventListener('change', () => {
         if (characterSelect.value.startsWith('local_')) {
+            // V20.10: Save selected animation for local models
+            chrome.storage.local.set({ localAnimation: modelSelect.value });
+            
             // Send PET_CHANGE_ANIMATION directly to avoid full model reload
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 if (tabs[0] && tabs[0].id) {
@@ -873,6 +1009,11 @@ if (clearCacheBtn) {
 
         clearCacheBtn.textContent = 'Clearing...';
 
+        // Clear local models
+        chrome.storage.local.remove(['localModels'], () => {
+            customSpineModels = [];
+        });
+
         // Send to Active Tab (Bridge)
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
         if (tab && tab.id) {
@@ -890,6 +1031,149 @@ if (clearCacheBtn) {
                 }
             });
         }
+    });
+}
+
+const loadLocalSpineBtn = document.getElementById('loadLocalSpineBtn');
+const localSpineInput = document.getElementById('localSpineInput') as HTMLInputElement;
+
+if (loadLocalSpineBtn && localSpineInput) {
+    loadLocalSpineBtn.addEventListener('click', () => {
+        localSpineInput.click();
+    });
+
+    localSpineInput.addEventListener('change', async (e) => {
+        const files = Array.from((e.target as HTMLInputElement).files || []);
+        if (files.length === 0) return;
+
+        const atlas = files.find(f => f.name.toLowerCase().endsWith('.atlas'));
+        const json = files.find(f => f.name.toLowerCase().endsWith('.json'));
+        const skel = files.find(f => f.name.toLowerCase().endsWith('.skel'));
+        const textures = files.filter(f => f.name.toLowerCase().endsWith('.png'));
+
+        if (!atlas || (!skel && !json)) {
+            alert('Atlas and/or skeleton files are missing.');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = async () => {
+            try {
+                const atlasText = String(reader.result);
+                const regex = /([^\s]+\.png)/g;
+                const referenced = Array.from(atlasText.matchAll(regex)).map(m => m[1]);
+                const missing = referenced.filter(n => !textures.some(t => t.name === n));
+                if (missing.length > 0) {
+                    alert(`Missing images: ${missing.join(', ')}`);
+                    return;
+                }
+
+                const readAsDataURL = (file: File): Promise<string> => {
+                    return new Promise((resolve, reject) => {
+                        const r = new FileReader();
+                        r.onload = () => resolve(String(r.result));
+                        r.onerror = reject;
+                        r.readAsDataURL(file);
+                    });
+                };
+
+                const rawDataURIs: Record<string, string> = {};
+                for (const t of textures) {
+                    rawDataURIs[t.name] = await readAsDataURL(t);
+                }
+
+                let isJsonSkel = false;
+                if (skel) {
+                    rawDataURIs['model.skel'] = await readAsDataURL(skel);
+                } else if (json) {
+                    rawDataURIs['model.json'] = await readAsDataURL(json);
+                    isJsonSkel = true;
+                }
+
+                const localId = `local_${Date.now()}`;
+                const lang = language.value || 'zh-TW';
+
+                const mainFile = skel || json || atlas || files[0];
+                const defaultName = mainFile ? mainFile.name.split('.')[0] : 'custom';
+                const customName = prompt(lang.includes('zh') ? '請輸入自訂模型名稱 (Enter a name for this model):' : 'Enter a name for this model:', defaultName);
+                if (!customName) return; // cancelled
+
+                // V20.8: Include atlas IN rawDataURIs as a data URI (bypasses R2 remapping in spine-loader)
+                // This matches how the reference project handles local models
+                rawDataURIs['model.atlas'] = `data:,${atlasText}`;
+
+                const newLocalModel: LocalModelInfo = {
+                    id: localId,
+                    name: customName,
+                    modelData: {
+                        atlasText: null, // Not separate — atlas is in rawDataURIs
+                        rawDataURIs,
+                        isJsonSkel
+                    }
+                };
+
+                customSpineModels.unshift(newLocalModel);
+                chrome.storage.local.set({ localModels: customSpineModels });
+
+                // Refresh dropdown so the new model appears at the top
+                populateCharacters(localId, lang);
+
+                characterSelect.dispatchEvent(new Event('change'));
+
+            } catch (err) {
+                alert(`Unexpected error: ${(err as Error).message}`);
+            }
+        };
+        reader.readAsText(atlas);
+    });
+}
+
+if (renameLocalModelBtn) {
+    renameLocalModelBtn.addEventListener('click', () => {
+        const localId = characterSelect.value;
+        const localModel = customSpineModels.find(m => m.id === localId);
+        if (!localModel) return;
+        const lang = language.value || 'zh-TW';
+        const newName = prompt(lang.includes('zh') ? '請輸入新名稱 (Enter new name):' : 'Enter new name:', localModel.name);
+        if (newName && newName.trim() !== '') {
+            localModel.name = newName.trim();
+            chrome.storage.local.set({ localModels: customSpineModels }, () => {
+                populateCharacters(localId, lang, modelSelect.value);
+            });
+        }
+    });
+}
+
+if (deleteLocalModelBtn) {
+    deleteLocalModelBtn.addEventListener('click', () => {
+        const localId = characterSelect.value;
+        const localModelIndex = customSpineModels.findIndex(m => m.id === localId);
+        if (localModelIndex === -1) return;
+        const lang = language.value || 'zh-TW';
+        const confirmMsg = lang.includes('zh') ? `確定要刪除 ${customSpineModels[localModelIndex].name} 嗎？` : `Are you sure you want to delete ${customSpineModels[localModelIndex].name}?`;
+        if (confirm(confirmMsg)) {
+            customSpineModels.splice(localModelIndex, 1);
+            chrome.storage.local.set({ localModels: customSpineModels }, () => {
+                chrome.storage.local.remove(['localModelId', 'localAnimation']);
+                // Select default character
+                const firstBuiltIn = modelsData ? Object.keys(modelsData)[0] : '003892';
+                populateCharacters(firstBuiltIn, lang);
+                characterSelect.dispatchEvent(new Event('change'));
+            });
+        }
+    });
+}
+
+if (resetLayoutBtn) {
+    resetLayoutBtn.addEventListener('click', () => {
+        chrome.storage.local.remove('petLayout', () => {
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                if (tabs[0] && tabs[0].id) {
+                    chrome.tabs.sendMessage(tabs[0].id, { type: 'PET_RESET_LAYOUT' });
+                }
+            });
+            window.close(); // Close popup after resetting to let user see it
+        });
     });
 }
 
@@ -928,13 +1212,13 @@ function renderVersionDisplay() {
     const lang = language.value || 'zh-TW';
     const strings = UI_STRINGS[lang] || UI_STRINGS['en'];
 
-    const baseText = `${strings.version || 'Version: '} ${updateVersion}`;
+    const baseText = `${strings.version || 'Version: '} ${updateVersion} `;
 
     if (updateState === 'idle') {
         versionDisplay.textContent = baseText;
         versionDisplay.style.color = '#888';
     } else if (updateState === 'checking') {
-        versionDisplay.textContent = `${strings.version || 'Version: '} ${strings.checking || 'Checking...'}`;
+        versionDisplay.textContent = `${strings.version || 'Version: '} ${strings.checking || 'Checking...'} `;
         versionDisplay.style.color = '#888';
     } else if (updateState === 'updated') {
         versionDisplay.textContent = `${baseText} ✨ (${strings.updated || 'Updated!'})`;
@@ -1047,6 +1331,15 @@ chrome.runtime.onMessage.addListener((message) => {
                         modelSelect.appendChild(opt);
                     });
                     modelSelect.disabled = false;
+                    
+                    // V20.10: Restore saved selection if valid
+                    chrome.storage.local.get(['localAnimation'], (res) => {
+                        if (res.localAnimation && anims.includes(res.localAnimation)) {
+                            modelSelect.value = res.localAnimation;
+                        } else if (anims.length > 0) {
+                            modelSelect.value = anims.includes('idle') ? 'idle' : anims[0];
+                        }
+                    });
                 }
             }
         }
@@ -1072,13 +1365,13 @@ chrome.runtime.onMessage.addListener((message) => {
                     elNickname.textContent = strings.syncedAccounts.replace('{n}', String(nicknames.length));
                     elNickname.style.color = '#e72857'; // Website accent color
                 } else {
-                    elNickname.textContent = `${strings.synced}${nicknames[0]}`;
+                    elNickname.textContent = `${strings.synced}${nicknames[0]} `;
                     elNickname.style.color = '#4CAF50';
                 }
             } else if (nickname) {
                 elNickname.dataset.accountCount = '1';
                 elNickname.dataset.nickname = nickname;
-                elNickname.textContent = `${strings.synced}${nickname}`;
+                elNickname.textContent = `${strings.synced}${nickname} `;
                 elNickname.style.color = '#4CAF50';
             }
 
@@ -1134,7 +1427,7 @@ function updateToggleButtonState(isBlacklisted: boolean) {
         toggleBlacklistText.textContent = strings.toggleBlacklistAllow || '✔️ 允許顯示在此網站';
         toggleBlacklistBtn.style.background = 'rgba(76, 175, 80, 0.2)'; // Green
     } else {
-        toggleBlacklistText.textContent = strings.toggleBlacklistBlock || '🚫 在此網站隱藏寵物';
+        toggleBlacklistText.textContent = strings.toggleBlacklistBlock || '🚫 在此網站隱藏';
         toggleBlacklistBtn.style.background = 'rgba(231, 40, 87, 0.2)'; // Red
     }
 }
