@@ -560,6 +560,14 @@ function handleAnimationsListResponse(anims: string[], skins: string[], characte
     if (!characterSelect || characterSelect.value !== characterId) return;
 
     const localModel = customSpineModels.find(m => m.id === characterId);
+    
+    // V20.16: Defensive check to completely reject empty arrays if we already have cached animations.
+    // This prevents a delayed failure from wiping out a perfectly good cache and breaking the UI.
+    if (anims.length === 0 && localModel?.animations && localModel.animations.length > 0) {
+        console.warn(`[DEBUG_POPUP] Dropping incoming empty animation list to preserve valid cache.`);
+        return; 
+    }
+
     if (localModel) {
         const animsChanged = JSON.stringify(localModel.animations) !== JSON.stringify(anims);
         localModel.animations = anims;
@@ -579,6 +587,7 @@ function handleAnimationsListResponse(anims: string[], skins: string[], characte
             opt.disabled = true;
             opt.textContent = 'No animations found';
             modelSelect.appendChild(opt);
+            modelSelect.disabled = true; // explicitly disable
         } else {
             console.log(`[DEBUG_POPUP] Populating dropdown with ${anims.length} animations.`);
             anims.forEach((animName: string) => {
@@ -826,6 +835,10 @@ function populateCharacters(selectedId: string, lang: string = 'en', preserveCos
 // Populate Costume Dropdown
 function populateCostumes(charId: string, selectedCostumeId: string | null, lang: string = 'en') {
     if (!modelSelect || !modelsData) return;
+    
+    // V20.17: Prevent async callbacks (like DLC cache checking) from wiping Local Model animation dropdowns!
+    if (charId.startsWith('local_')) return;
+
     modelSelect.innerHTML = '';
 
     const charData = modelsData.characters.find((c: any) => c.id === charId);

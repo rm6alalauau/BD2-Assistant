@@ -2,6 +2,14 @@
 
 ---
 
+## v2.1.4 - Local Model Loading Optimization & Bug Fixes
+### What's New
+- ⚡ **Local Model UI Optimization**: The popup now caches the parsed animation list of `local_` models in `chrome.storage.local`. On subsequent popup opens, the dropdown is populated instantly from this cache, bypassing the need to request it from the web page or reload the heavy `spine-loader` context again, drastically improving usability.
+- 🐛 **Dropdown Freeze Fix**: Fixed a critical race condition where the async callback checking for official models' DLC status would unintentionally wipe the local model's animation dropdown, causing it to freeze as empty.
+- 🛡️ **Cache Protection**: Added defensive logic that rejects and ignores incoming empty arrays `[]` (caused by momentary page loading issues) if a valid cache already exists, preventing failures from permanently corrupting the saved animation list.
+
+---
+
 ## v2.1.3 - Local Custom Model Loading & Persistence Reliability
 ### What's New
 - 🌟 **Local Custom Model Support**: Import and manage your own Spine 4.1 `.skel`/`.json` models seamlessly.
