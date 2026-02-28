@@ -272,6 +272,8 @@ let cachedNickname: string | undefined;
 interface LocalModelInfo {
     id: string;
     name: string;
+    animations?: string[];  // V20.15: Cached animation names from first load
+    skins?: string[];       // V20.15: Cached skin names from first load
     modelData: {
         atlasText: string;
         rawDataURIs: Record<string, string>;
@@ -492,10 +494,31 @@ function initializeDropdowns(settings: PetSettings) {
     if (!startCharId.startsWith('local_')) {
         populateCostumes(characterSelect.value, settings.model, settings.language || 'zh-TW');
     } else {
-        // Local model on page load: show loading state, the characterSelect change handler
-        // will re-send the model data to the content script
-        modelSelect.innerHTML = '<option disabled selected>Loading animations...</option>';
-        modelSelect.disabled = true;
+        // V20.15: Use cached animations if available for instant dropdown population
+        const localModel = customSpineModels.find(m => m.id === startCharId);
+        if (localModel?.animations && localModel.animations.length > 0) {
+            modelSelect.innerHTML = '';
+            localModel.animations.forEach(animName => {
+                const opt = document.createElement('option');
+                opt.value = animName;
+                opt.textContent = animName;
+                modelSelect.appendChild(opt);
+            });
+            modelSelect.disabled = false;
+
+            // Restore saved selection
+            chrome.storage.local.get(['localAnimation'], (res) => {
+                if (res.localAnimation && localModel.animations!.includes(res.localAnimation)) {
+                    modelSelect.value = res.localAnimation;
+                } else {
+                    modelSelect.value = localModel.animations!.includes('idle') ? 'idle' : localModel.animations![0];
+                }
+            });
+        } else {
+            // No cache: show loading state
+            modelSelect.innerHTML = '<option disabled selected>Loading animations...</option>';
+            modelSelect.disabled = true;
+        }
         updateUILanguage(settings.language || 'zh-TW');
 
         // Trigger the change event which will re-send the model data
@@ -915,10 +938,31 @@ if (characterSelect) {
                 });
             }
 
-            // Local model: switch costume header to animation header
-            modelSelect.innerHTML = '<option disabled selected>Loading animations...</option>';
-            // Keep it temporarily disabled until the model finishes loading and sends PET_ANIMATIONS_LIST
-            modelSelect.disabled = true;
+            // V20.15: Use cached animations if available for instant dropdown
+            const cachedAnims = localModel?.animations;
+            if (cachedAnims && cachedAnims.length > 0) {
+                modelSelect.innerHTML = '';
+                cachedAnims.forEach(animName => {
+                    const opt = document.createElement('option');
+                    opt.value = animName;
+                    opt.textContent = animName;
+                    modelSelect.appendChild(opt);
+                });
+                modelSelect.disabled = false;
+
+                // Restore saved selection
+                chrome.storage.local.get(['localAnimation'], (res) => {
+                    if (res.localAnimation && cachedAnims.includes(res.localAnimation)) {
+                        modelSelect.value = res.localAnimation;
+                    } else {
+                        modelSelect.value = cachedAnims.includes('idle') ? 'idle' : cachedAnims[0];
+                    }
+                });
+            } else {
+                // No cache yet: show loading state until PET_ANIMATIONS_LIST arrives
+                modelSelect.innerHTML = '<option disabled selected>Loading animations...</option>';
+                modelSelect.disabled = true;
+            }
             updateUILanguage(lang);
             // Don't modify `model` in settings for local since it triggers model reload
             // We just send the layout settings if needed, but avoid reloading model
@@ -1315,7 +1359,17 @@ chrome.runtime.onMessage.addListener((message) => {
     // V20.6: Receive Animations list for local model
     if (message.type === 'PET_ANIMATIONS_LIST') {
         if (characterSelect && characterSelect.value.startsWith('local_')) {
-            const anims = message.animations || [];
+            const anims: string[] = message.animations || [];
+            const skins: string[] = message.skins || [];
+
+            // V20.15: Update cache in customSpineModels
+            const localModel = customSpineModels.find(m => m.id === characterSelect.value);
+            if (localModel) {
+                localModel.animations = anims;
+                localModel.skins = skins;
+                chrome.storage.local.set({ localModels: customSpineModels });
+            }
+
             if (modelSelect) {
                 modelSelect.innerHTML = '';
                 if (anims.length === 0) {
