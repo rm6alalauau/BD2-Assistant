@@ -906,7 +906,8 @@ chrome.storage.sync.get(['petSettings'], async (result: { petSettings?: any }) =
         if (opacityValue) opacityValue.textContent = opacity.value + '%';
     }
 
-    // 2. Load Models and Character Names
+});
+
 // --- Events ---
 
 const saveSettings = () => {
