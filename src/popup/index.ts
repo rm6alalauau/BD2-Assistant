@@ -515,21 +515,14 @@ function initializeDropdowns(settings: PetSettings) {
                 }
             });
 
-            // V20.15: Send model data directly without dispatching change (avoids redundant dropdown rebuild)
-            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                if (tabs[0] && tabs[0].id) {
-                    chrome.tabs.sendMessage(tabs[0].id, {
-                        type: 'PET_LOAD_LOCAL_MODEL',
-                        modelData: localModel.modelData
-                    });
-                }
-            });
-
-            // Show rename/delete buttons
+            // V20.15: Do NOT send PET_LOAD_LOCAL_MODEL here — bridge.ts already loaded
+            // the model on page init. Sending it again causes a double-load crash.
+            // Just show the rename/delete buttons and save settings.
             const renameBtn = document.getElementById('renameLocalModel');
             const deleteBtn = document.getElementById('deleteLocalModel');
             if (renameBtn) renameBtn.style.display = 'block';
             if (deleteBtn) deleteBtn.style.display = 'block';
+            saveSettings();
         } else {
             // No cache: show loading state and dispatch change to trigger full load
             modelSelect.innerHTML = '<option disabled selected>Loading animations...</option>';
