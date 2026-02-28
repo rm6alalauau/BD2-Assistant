@@ -526,12 +526,72 @@ function initializeDropdowns(settings: PetSettings) {
                 saveSettings();
             });
         } else {
-            // No cache: show loading state and dispatch change to trigger full load
+            // No cache: show loading state
             modelSelect.innerHTML = '<option disabled selected>Loading animations...</option>';
             modelSelect.disabled = true;
-            characterSelect.dispatchEvent(new Event('change'));
+            
+            // V20.15: Request the current animations without triggering a model reload!
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                if (tabs[0] && tabs[0].id) {
+                    chrome.tabs.sendMessage(tabs[0].id, { type: 'PET_REQUEST_ANIMATIONS' }, (response) => {
+                        if (response && response.type === 'PET_ANIMATIONS_LIST') {
+                            handleAnimationsListResponse(response.animations || [], response.skins || [], startCharId);
+                        }
+                    });
+                }
+            });
         }
         updateUILanguage(settings.language || 'zh-TW');
+    }
+}
+
+// V20.15: Helper to process animations list and populate UI dryly
+function handleAnimationsListResponse(anims: string[], skins: string[], characterId: string) {
+    if (!characterSelect || characterSelect.value !== characterId) return;
+
+    const localModel = customSpineModels.find(m => m.id === characterId);
+    if (localModel) {
+        const animsChanged = JSON.stringify(localModel.animations) !== JSON.stringify(anims);
+        localModel.animations = anims;
+        localModel.skins = skins;
+        chrome.storage.local.set({ localModels: customSpineModels });
+
+        if (!animsChanged && modelSelect && !modelSelect.disabled) {
+            return;
+        }
+    }
+
+    if (modelSelect) {
+        modelSelect.innerHTML = '';
+        if (anims.length === 0) {
+            const opt = document.createElement('option');
+            opt.disabled = true;
+            opt.textContent = 'No animations found';
+            modelSelect.appendChild(opt);
+        } else {
+            anims.forEach((animName: string) => {
+                const opt = document.createElement('option');
+                opt.value = animName;
+                opt.textContent = animName;
+                modelSelect.appendChild(opt);
+            });
+            modelSelect.disabled = false;
+            
+            chrome.storage.local.get(['localAnimation'], (res) => {
+                if (res.localAnimation && anims.includes(res.localAnimation)) {
+                    modelSelect.value = res.localAnimation;
+                } else if (anims.length > 0) {
+                    modelSelect.value = anims.includes('idle') ? 'idle' : anims[0];
+                }
+                
+                // Show buttons and save settings once UI is fully ready
+                const renameBtn = document.getElementById('renameLocalModel');
+                const deleteBtn = document.getElementById('deleteLocalModel');
+                if (renameBtn) renameBtn.style.display = 'block';
+                if (deleteBtn) deleteBtn.style.display = 'block';
+                saveSettings();
+            });
+        }
     }
 }
 
@@ -886,7 +946,11 @@ chrome.storage.sync.get(['petSettings'], async (result: { petSettings?: any }) =
             modelSelect.disabled = true;
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 if (tabs[0] && tabs[0].id) {
-                    chrome.tabs.sendMessage(tabs[0].id, { type: 'PET_REQUEST_ANIMATIONS' });
+                    chrome.tabs.sendMessage(tabs[0].id, { type: 'PET_REQUEST_ANIMATIONS' }, (response) => {
+                        if (response && response.type === 'PET_ANIMATIONS_LIST') {
+                            handleAnimationsListResponse(response.animations || [], response.skins || [], characterSelect.value);
+                        }
+                    });
                 }
             });
         }
@@ -1368,49 +1432,7 @@ chrome.runtime.onMessage.addListener((message) => {
     // V20.6: Receive Animations list for local model
     if (message.type === 'PET_ANIMATIONS_LIST') {
         if (characterSelect && characterSelect.value.startsWith('local_')) {
-            const anims: string[] = message.animations || [];
-            const skins: string[] = message.skins || [];
-
-            // V20.15: Update cache in customSpineModels
-            const localModel = customSpineModels.find(m => m.id === characterSelect.value);
-            if (localModel) {
-                const animsChanged = JSON.stringify(localModel.animations) !== JSON.stringify(anims);
-                localModel.animations = anims;
-                localModel.skins = skins;
-                chrome.storage.local.set({ localModels: customSpineModels });
-
-                // V20.15: Skip dropdown rebuild if animations haven't changed (already populated from cache)
-                if (!animsChanged && modelSelect && !modelSelect.disabled) {
-                    return;
-                }
-            }
-
-            if (modelSelect) {
-                modelSelect.innerHTML = '';
-                if (anims.length === 0) {
-                    const opt = document.createElement('option');
-                    opt.disabled = true;
-                    opt.textContent = 'No animations found';
-                    modelSelect.appendChild(opt);
-                } else {
-                    anims.forEach((animName: string) => {
-                        const opt = document.createElement('option');
-                        opt.value = animName;
-                        opt.textContent = animName;
-                        modelSelect.appendChild(opt);
-                    });
-                    modelSelect.disabled = false;
-                    
-                    // V20.10: Restore saved selection if valid
-                    chrome.storage.local.get(['localAnimation'], (res) => {
-                        if (res.localAnimation && anims.includes(res.localAnimation)) {
-                            modelSelect.value = res.localAnimation;
-                        } else if (anims.length > 0) {
-                            modelSelect.value = anims.includes('idle') ? 'idle' : anims[0];
-                        }
-                    });
-                }
-            }
+            handleAnimationsListResponse(message.animations || [], message.skins || [], characterSelect.value);
         }
     }
 
