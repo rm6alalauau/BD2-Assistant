@@ -513,16 +513,18 @@ function initializeDropdowns(settings: PetSettings) {
                 } else {
                     modelSelect.value = localModel.animations!.includes('idle') ? 'idle' : localModel.animations![0];
                 }
+                
+                // V20.15: Do NOT send PET_LOAD_LOCAL_MODEL here — bridge.ts already loaded
+                // the model on page init. Sending it again causes a double-load crash.
+                // Just show the rename/delete buttons and save settings.
+                const renameBtn = document.getElementById('renameLocalModel');
+                const deleteBtn = document.getElementById('deleteLocalModel');
+                if (renameBtn) renameBtn.style.display = 'block';
+                if (deleteBtn) deleteBtn.style.display = 'block';
+                
+                // IMPORTANT: Call saveSettings AFTER modelSelect is fully populated and value is restored
+                saveSettings();
             });
-
-            // V20.15: Do NOT send PET_LOAD_LOCAL_MODEL here — bridge.ts already loaded
-            // the model on page init. Sending it again causes a double-load crash.
-            // Just show the rename/delete buttons and save settings.
-            const renameBtn = document.getElementById('renameLocalModel');
-            const deleteBtn = document.getElementById('deleteLocalModel');
-            if (renameBtn) renameBtn.style.display = 'block';
-            if (deleteBtn) deleteBtn.style.display = 'block';
-            saveSettings();
         } else {
             // No cache: show loading state and dispatch change to trigger full load
             modelSelect.innerHTML = '<option disabled selected>Loading animations...</option>';
