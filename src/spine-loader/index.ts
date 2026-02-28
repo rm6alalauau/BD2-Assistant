@@ -528,25 +528,6 @@ async function loadSpine(
             if (player.canvas) player.canvas.id = 'spine-widget';
             manualSpinner?.remove();
 
-            // DEBUG: Check player state after success
-            setTimeout(() => {
-                /* console.log('[DEBUG] Post-success player state:', {
-                    error: player.error,
-                    paused: player.paused,
-                    hasCurrentViewport: !!player.currentViewport,
-                    currentViewport: player.currentViewport,
-                    canvasWidth: player.canvas?.width,
-                    canvasHeight: player.canvas?.height,
-                    canvasDisplay: player.canvas?.style?.display,
-                    canvasParent: player.canvas?.parentElement?.id,
-                    canvasParentDisplay: player.canvas?.parentElement?.style?.display,
-                    rootDisplay: document.getElementById('pet-root')?.style?.display,
-                    rootVisibility: document.getElementById('pet-root')?.style?.visibility,
-                    rootOpacity: document.getElementById('pet-root')?.style?.opacity,
-                    currentTrack: player.animationState?.getCurrent(0)?.animation?.name
-                });
-            }, 500);
-
             // Resolution Logic
             const adjustResolution = () => {
                 const canvas = player.canvas;
