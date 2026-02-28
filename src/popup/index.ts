@@ -494,9 +494,11 @@ function initializeDropdowns(settings: PetSettings) {
     if (!startCharId.startsWith('local_')) {
         populateCostumes(characterSelect.value, settings.model, settings.language || 'zh-TW');
     } else {
+        console.log(`[DEBUG_POPUP] initializeDropdowns starts for local model: ${startCharId}`);
         // V20.15: Use cached animations if available for instant dropdown population
         const localModel = customSpineModels.find(m => m.id === startCharId);
         if (localModel?.animations && localModel.animations.length > 0) {
+            console.log(`[DEBUG_POPUP] Found cache for ${startCharId}. Animations:`, localModel.animations);
             modelSelect.innerHTML = '';
             localModel.animations.forEach(animName => {
                 const opt = document.createElement('option');
@@ -523,9 +525,11 @@ function initializeDropdowns(settings: PetSettings) {
                 if (deleteBtn) deleteBtn.style.display = 'block';
                 
                 // IMPORTANT: Call saveSettings AFTER modelSelect is fully populated and value is restored
+                console.log(`[DEBUG_POPUP] Cache flow complete. Saving settings. Final value: ${modelSelect.value}`);
                 saveSettings();
             });
         } else {
+            console.log(`[DEBUG_POPUP] No cache found for ${startCharId}. Requesting animations from active tab.`);
             // No cache: show loading state
             modelSelect.innerHTML = '<option disabled selected>Loading animations...</option>';
             modelSelect.disabled = true;
@@ -533,11 +537,17 @@ function initializeDropdowns(settings: PetSettings) {
             // V20.15: Request the current animations without triggering a model reload!
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 if (tabs[0] && tabs[0].id) {
+                    console.log(`[DEBUG_POPUP] Sending PET_REQUEST_ANIMATIONS to tab ${tabs[0].id}`);
                     chrome.tabs.sendMessage(tabs[0].id, { type: 'PET_REQUEST_ANIMATIONS' }, (response) => {
+                        console.log(`[DEBUG_POPUP] Received response from active tab:`, response);
                         if (response && response.type === 'PET_ANIMATIONS_LIST') {
                             handleAnimationsListResponse(response.animations || [], response.skins || [], startCharId);
+                        } else if (chrome.runtime.lastError) {
+                            console.error(`[DEBUG_POPUP] Runtime error sending PET_REQUEST_ANIMATIONS:`, chrome.runtime.lastError.message);
                         }
                     });
+                } else {
+                    console.warn(`[DEBUG_POPUP] No active tab to send PET_REQUEST_ANIMATIONS to.`);
                 }
             });
         }
@@ -564,11 +574,13 @@ function handleAnimationsListResponse(anims: string[], skins: string[], characte
     if (modelSelect) {
         modelSelect.innerHTML = '';
         if (anims.length === 0) {
+            console.log(`[DEBUG_POPUP] handleAnimationsListResponse received empty array.`);
             const opt = document.createElement('option');
             opt.disabled = true;
             opt.textContent = 'No animations found';
             modelSelect.appendChild(opt);
         } else {
+            console.log(`[DEBUG_POPUP] Populating dropdown with ${anims.length} animations.`);
             anims.forEach((animName: string) => {
                 const opt = document.createElement('option');
                 opt.value = animName;
@@ -578,6 +590,7 @@ function handleAnimationsListResponse(anims: string[], skins: string[], characte
             modelSelect.disabled = false;
             
             chrome.storage.local.get(['localAnimation'], (res) => {
+                console.log(`[DEBUG_POPUP] Restoring localAnimation from storage: ${res.localAnimation}`);
                 if (res.localAnimation && anims.includes(res.localAnimation)) {
                     modelSelect.value = res.localAnimation;
                 } else if (anims.length > 0) {
@@ -589,6 +602,7 @@ function handleAnimationsListResponse(anims: string[], skins: string[], characte
                 const deleteBtn = document.getElementById('deleteLocalModel');
                 if (renameBtn) renameBtn.style.display = 'block';
                 if (deleteBtn) deleteBtn.style.display = 'block';
+                console.log(`[DEBUG_POPUP] handleAnimationsListResponse flow complete. Saving settings. Final value: ${modelSelect.value}`);
                 saveSettings();
             });
         }
@@ -947,11 +961,13 @@ const saveSettings = () => {
 
 if (characterSelect) {
     characterSelect.addEventListener('change', () => {
+        console.log(`[DEBUG_POPUP] characterSelect CHANGED to: ${characterSelect.value}`);
         const lang = language.value || 'zh-TW';
         if (characterSelect.value.startsWith('local_')) {
             // Local model selected from dropdown
             const localModel = customSpineModels.find(m => m.id === characterSelect.value);
             if (localModel) {
+                console.log(`[DEBUG_POPUP] user manually selected local model. Sending PET_LOAD_LOCAL_MODEL.`);
                 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                     if (tabs[0] && tabs[0].id) {
                         chrome.tabs.sendMessage(tabs[0].id, {
@@ -965,6 +981,7 @@ if (characterSelect) {
             // V20.15: Use cached animations if available for instant dropdown
             const cachedAnims = localModel?.animations;
             if (cachedAnims && cachedAnims.length > 0) {
+                console.log(`[DEBUG_POPUP] characterSelect change found cache. Anim length: ${cachedAnims.length}`);
                 modelSelect.innerHTML = '';
                 cachedAnims.forEach(animName => {
                     const opt = document.createElement('option');

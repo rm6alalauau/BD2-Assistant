@@ -338,7 +338,7 @@ async function loadSpine(
         return;
     }
 
-    console.log('[DEBUG] loadSpine called:', { skel, atlas, animation, isJsonSkel, atlasText: atlasText ? 'present' : 'null', rawDataURIs: rawDataURIs ? Object.keys(rawDataURIs) : 'null' });
+    // console.log('[DEBUG] loadSpine called:', { skel, atlas, animation, isJsonSkel, atlasText: atlasText ? 'present' : 'null', rawDataURIs: rawDataURIs ? Object.keys(rawDataURIs) : 'null' });
 
     // Dispose previous
     if (currentPlayer) {
@@ -425,7 +425,7 @@ async function loadSpine(
             remapped[finalAtlasUrl] = `data:,${atlasText}`;
 
             finalRawDataURIs = remapped;
-            console.log('[DEBUG] R2 remapping applied. Keys:', Object.keys(remapped));
+            // console.log('[DEBUG] R2 remapping applied. Keys:', Object.keys(remapped));
         }
 
         const config: any = {
@@ -454,7 +454,7 @@ async function loadSpine(
         }
 
         config.success = (player: any) => {
-            console.log('[DEBUG] SpinePlayer SUCCESS callback fired!');
+            // console.log('[DEBUG] SpinePlayer SUCCESS callback fired!');
             currentPlayer = player;
 
             let animNames: string[] = [];
@@ -530,7 +530,7 @@ async function loadSpine(
 
             // DEBUG: Check player state after success
             setTimeout(() => {
-                console.log('[DEBUG] Post-success player state:', {
+                /* console.log('[DEBUG] Post-success player state:', {
                     error: player.error,
                     paused: player.paused,
                     hasCurrentViewport: !!player.currentViewport,
@@ -637,12 +637,12 @@ async function loadSpine(
         // V18.42: Add rawDataURIs if provided (for cloud assets)
         if (finalRawDataURIs && Object.keys(finalRawDataURIs).length > 0) {
             config.rawDataURIs = finalRawDataURIs;
-            console.log('[DEBUG] rawDataURIs added to config. Keys:', Object.keys(finalRawDataURIs));
+            // console.log('[DEBUG] rawDataURIs added to config. Keys:', Object.keys(finalRawDataURIs));
         } else {
-            console.log('[DEBUG] No rawDataURIs for config');
+            // console.log('[DEBUG] No rawDataURIs for config');
         }
 
-        console.log('[DEBUG] Final SpinePlayer config:', { atlasUrl: config.atlasUrl, binaryUrl: config.binaryUrl, jsonUrl: config.jsonUrl, animation: config.animation, hasRawDataURIs: !!config.rawDataURIs });
+        // console.log('[DEBUG] Final SpinePlayer config:', { atlasUrl: config.atlasUrl, binaryUrl: config.binaryUrl, jsonUrl: config.jsonUrl, animation: config.animation, hasRawDataURIs: !!config.rawDataURIs });
 
         try {
             new SpinePlayer(container, config);
@@ -760,7 +760,7 @@ function playAnimation(strategy: 'motion_only' | 'talk_notify' = 'motion_only') 
 window.addEventListener('message', (event) => {
     if (event.data && event.data.type === 'PET_MODEL_UPDATE') {
         const { skelUrl, atlasUrl, rawDataURIs, isJsonSkel, atlasText, isLocal, localAnimation, localSkin } = event.data.urls;
-        console.log('[DEBUG] PET_MODEL_UPDATE received:', { skelUrl, atlasUrl, isJsonSkel, isLocal, localAnimation, localSkin, atlasText: atlasText ? 'present' : 'null', rawDataURIs: rawDataURIs ? Object.keys(rawDataURIs) : 'null' });
+        // console.log('[DEBUG] PET_MODEL_UPDATE received:', { skelUrl, atlasUrl, isJsonSkel, isLocal, localAnimation, localSkin, atlasText: atlasText ? 'present' : 'null', rawDataURIs: rawDataURIs ? Object.keys(rawDataURIs) : 'null' });
         
         // V20.12: Clamp scale when switching from a custom local model back to an official model
         if (!isLocal) {
