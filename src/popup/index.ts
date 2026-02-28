@@ -907,56 +907,6 @@ chrome.storage.sync.get(['petSettings'], async (result: { petSettings?: any }) =
     }
 
     // 2. Load Models and Character Names
-    await Promise.all([loadModelsData(), loadCharacterNames(), loadCostumeNames()]);
-
-    // 3. Load Cache Status
-    loadCacheStatus();
-
-    if (modelsData) {
-        console.log('[Popup] Loaded Settings:', settings);
-        let startCharId = settings.characterId;
-
-        // Local models don't exist in modelsData — skip fallback
-        if (!startCharId.startsWith('local_')) {
-            const charExists = modelsData.characters.find((c: any) => c.id === startCharId);
-
-            if (!charExists) {
-                console.log(`[Popup] Character ID '${startCharId}' not found. Attempting recovery via Costume ID: ${settings.model}`);
-                for (const char of modelsData.characters) {
-                    if (char.costumes.find((c: any) => c.id === settings.model)) {
-                        startCharId = char.id;
-                        break;
-                    }
-                }
-            }
-
-            // Final Fallback: If still invalid, default to first in list
-            if (!modelsData.characters.find((c: any) => c.id === startCharId)) {
-                startCharId = modelsData.characters[0].id;
-            }
-        }
-
-        populateCharacters(startCharId, currentLang);
-        // For local models, populateCharacters already sets up the costume dropdown
-        if (!startCharId.startsWith('local_')) {
-            populateCostumes(characterSelect.value, settings.model, currentLang);
-        } else {
-            // V20.10: Request animations for currently active local model from bridge
-            modelSelect.innerHTML = '<option disabled selected>Loading animations...</option>';
-            modelSelect.disabled = true;
-            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                if (tabs[0] && tabs[0].id) {
-                    chrome.tabs.sendMessage(tabs[0].id, { type: 'PET_REQUEST_ANIMATIONS' }, (response) => {
-                        if (response && response.type === 'PET_ANIMATIONS_LIST') {
-                            handleAnimationsListResponse(response.animations || [], response.skins || [], characterSelect.value);
-                        }
-                    });
-                }
-            });
-        }
-    }
-});
-
 // --- Events ---
 
 const saveSettings = () => {
