@@ -1295,6 +1295,7 @@ if (!canInject()) {
                 }
 
                 if (message.type === 'PET_REQUEST_ANIMATIONS') {
+                    console.log(`[DEBUG_BRIDGE] Received PET_REQUEST_ANIMATIONS. Returning animations:`, currentAnimations);
                     // Send back the last cached animations list
                     sendResponse({ type: 'PET_ANIMATIONS_LIST', animations: currentAnimations });
                     return true;
