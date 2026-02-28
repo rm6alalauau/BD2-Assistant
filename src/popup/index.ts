@@ -514,15 +514,29 @@ function initializeDropdowns(settings: PetSettings) {
                     modelSelect.value = localModel.animations!.includes('idle') ? 'idle' : localModel.animations![0];
                 }
             });
+
+            // V20.15: Send model data directly without dispatching change (avoids redundant dropdown rebuild)
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                if (tabs[0] && tabs[0].id) {
+                    chrome.tabs.sendMessage(tabs[0].id, {
+                        type: 'PET_LOAD_LOCAL_MODEL',
+                        modelData: localModel.modelData
+                    });
+                }
+            });
+
+            // Show rename/delete buttons
+            const renameBtn = document.getElementById('renameLocalModel');
+            const deleteBtn = document.getElementById('deleteLocalModel');
+            if (renameBtn) renameBtn.style.display = 'block';
+            if (deleteBtn) deleteBtn.style.display = 'block';
         } else {
-            // No cache: show loading state
+            // No cache: show loading state and dispatch change to trigger full load
             modelSelect.innerHTML = '<option disabled selected>Loading animations...</option>';
             modelSelect.disabled = true;
+            characterSelect.dispatchEvent(new Event('change'));
         }
         updateUILanguage(settings.language || 'zh-TW');
-
-        // Trigger the change event which will re-send the model data
-        characterSelect.dispatchEvent(new Event('change'));
     }
 }
 
@@ -1365,9 +1379,15 @@ chrome.runtime.onMessage.addListener((message) => {
             // V20.15: Update cache in customSpineModels
             const localModel = customSpineModels.find(m => m.id === characterSelect.value);
             if (localModel) {
+                const animsChanged = JSON.stringify(localModel.animations) !== JSON.stringify(anims);
                 localModel.animations = anims;
                 localModel.skins = skins;
                 chrome.storage.local.set({ localModels: customSpineModels });
+
+                // V20.15: Skip dropdown rebuild if animations haven't changed (already populated from cache)
+                if (!animsChanged && modelSelect && !modelSelect.disabled) {
+                    return;
+                }
             }
 
             if (modelSelect) {
