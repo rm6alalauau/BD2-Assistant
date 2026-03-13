@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extensionName__",
-  "version": "2.1.4",
+  "version": "2.2.0",
   "description": "__MSG_extensionDescription__",
   "default_locale": "en",
   "permissions": [
@@ -10,13 +10,16 @@
     "alarms",
     "declarativeNetRequest",
     "declarativeNetRequestWithHostAccess",
-    "activeTab"
+    "activeTab",
+    "notifications"
   ],
   "host_permissions": [
     "https://thebd2pulse.com/*",
     "https://api.thebd2pulse.com/*",
     "https://loj2urwaua.execute-api.ap-northeast-1.amazonaws.com/*",
-    "https://raw.githubusercontent.com/*"
+    "https://raw.githubusercontent.com/*",
+    "https://webshop.browndust2.global/*",
+    "https://bd2-webshop-api.bd2.pmang.cloud/*"
   ],
   "background": {
     "service_worker": "src/background/index.ts",
@@ -46,6 +49,15 @@
         "src/content/sync_handler.ts"
       ],
       "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "https://webshop.browndust2.global/*"
+      ],
+      "js": [
+        "src/content/webshop_token.ts"
+      ],
+      "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [

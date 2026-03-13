@@ -289,6 +289,26 @@
     </div>
 
     <div class="control-group">
+        <label id="lbl-webshopSection" style="display: block; margin-bottom: 10px; font-size: 13px;">WebShop 簽到</label>
+        <button id="syncWebshopToken" class="glass-btn" style="width: 100%; margin-bottom: 8px;">
+            <span id="syncWebshopToken-text">同步 WebShop 登入 🔑</span>
+        </button>
+        <div id="webshopAccountList" style="margin: 8px 0; font-size: 12px;"></div>
+        <button id="manualCheckin" class="glass-btn" style="width: 100%; margin-bottom: 8px;">
+            <span id="manualCheckin-text">立即簽到 ✅</span>
+        </button>
+        <div id="checkinStatus" style="margin-top: 4px; font-size: 12px; color: #888; text-align: center;"></div>
+        <div class="divider" style="margin: 10px 0;"></div>
+        <div class="row">
+            <label id="lbl-autoCheckin" for="autoCheckin">Auto Check-in</label>
+            <label class="switch">
+                <input type="checkbox" id="autoCheckin">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <div class="control-group">
         <div class="opacity-header">
             <label id="lbl-opacity" for="opacity">Opacity</label>
             <span id="opacityValue" style="color: #e72857; font-size: 12px;">100%</span>

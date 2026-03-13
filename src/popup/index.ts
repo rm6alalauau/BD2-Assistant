@@ -16,8 +16,12 @@ const characterSearch = document.getElementById('characterSearch') as HTMLInputE
 const renameLocalModelBtn = document.getElementById('renameLocalModelBtn') as HTMLButtonElement | null;
 const deleteLocalModelBtn = document.getElementById('deleteLocalModelBtn') as HTMLButtonElement | null;
 
-// Labels
+// WebShop elements
 const autoRedeem = document.getElementById('autoRedeem') as HTMLInputElement;
+const autoCheckin = document.getElementById('autoCheckin') as HTMLInputElement;
+const syncWebshopTokenBtn = document.getElementById('syncWebshopToken') as HTMLButtonElement;
+const manualCheckinBtn = document.getElementById('manualCheckin') as HTMLButtonElement;
+const checkinStatus = document.getElementById('checkinStatus');
 
 // Labels
 const lblShow = document.getElementById('lbl-show');
@@ -53,7 +57,7 @@ const DEFAULT_SETTINGS = {
     lockZoom: false,
     opacity: 1,
     language: getDefaultLanguage(),
-    characterId: '003801',
+    characterId: '003892',
     model: '003892', // Default Costume
     autoRedeem: false
 };
@@ -95,7 +99,21 @@ const UI_STRINGS: Record<string, any> = {
         updated: '更新成功！即將重整',
         upToDate: '已是最新版本',
         updateFailed: '檢查失敗',
-        resetLayout: '重置位置與大小'
+        resetLayout: '重置位置與大小',
+        webshopSection: 'WebShop 簽到',
+        syncWebshopToken: '同步 WebShop 登入 🔑',
+        manualCheckin: '立即簽到 ✅',
+        autoCheckin: '自動簽到',
+        checkinNotSetup: '尚未設定',
+        checkinConnected: '已連結',
+        checkinDisconnected: '尚未連結',
+        checkinLastDaily: '上次每日簽到: ',
+        checkinChecking: '簽到中...',
+        checkinDone: '簽到完成！',
+        checkinFailed: '簽到失敗',
+        tokenSyncing: '正在同步...',
+        tokenSynced: 'Token 已儲存！✅',
+        tokenFailed: '未偵測到 Token ❌'
     },
     'zh-CN': {
         show: '显示 BD2 Assistant',
@@ -133,7 +151,21 @@ const UI_STRINGS: Record<string, any> = {
         updated: '更新成功！即将刷新',
         upToDate: '已是最新版本',
         updateFailed: '检查失败',
-        resetLayout: '重置位置与大小'
+        resetLayout: '重置位置与大小',
+        webshopSection: 'WebShop 签到',
+        syncWebshopToken: '同步 WebShop 登入 🔑',
+        manualCheckin: '立即签到 ✅',
+        autoCheckin: '自动签到',
+        checkinNotSetup: '尚未设定',
+        checkinConnected: '已连接',
+        checkinDisconnected: '尚未连接',
+        checkinLastDaily: '上次每日签到: ',
+        checkinChecking: '签到中...',
+        checkinDone: '签到完成！',
+        checkinFailed: '签到失败',
+        tokenSyncing: '正在同步...',
+        tokenSynced: 'Token 已储存！✅',
+        tokenFailed: '未侦测到 Token ❌'
     },
     'en': {
         show: 'Show BD2 Assistant',
@@ -171,7 +203,21 @@ const UI_STRINGS: Record<string, any> = {
         updated: 'Updated! Reloading...',
         upToDate: 'Up to date',
         updateFailed: 'Failed',
-        resetLayout: 'Reset Size & Position'
+        resetLayout: 'Reset Size & Position',
+        webshopSection: 'WebShop Check-in',
+        syncWebshopToken: 'Sync WebShop Login 🔑',
+        manualCheckin: 'Check-in Now ✅',
+        autoCheckin: 'Auto Check-in',
+        checkinNotSetup: 'Not configured',
+        checkinConnected: 'Connected',
+        checkinDisconnected: 'Not connected',
+        checkinLastDaily: 'Last daily: ',
+        checkinChecking: 'Checking in...',
+        checkinDone: 'Check-in done!',
+        checkinFailed: 'Check-in failed',
+        tokenSyncing: 'Syncing...',
+        tokenSynced: 'Token saved! ✅',
+        tokenFailed: 'Token not found ❌'
     },
     'ja-JP': {
         show: 'BD2 Assistant を表示',
@@ -209,7 +255,21 @@ const UI_STRINGS: Record<string, any> = {
         updated: '更新成功！再読み込みします',
         upToDate: '最新です',
         updateFailed: '失敗しました',
-        resetLayout: 'サイズと位置をリセット'
+        resetLayout: 'サイズと位置をリセット',
+        webshopSection: 'WebShop チェックイン',
+        syncWebshopToken: 'WebShop ログイン同期 🔑',
+        manualCheckin: '今すぐチェックイン ✅',
+        autoCheckin: '自動チェックイン',
+        checkinNotSetup: '未設定',
+        checkinConnected: '接続済み',
+        checkinDisconnected: '未接続',
+        checkinLastDaily: '前回: ',
+        checkinChecking: 'チェックイン中...',
+        checkinDone: 'チェックイン完了！',
+        checkinFailed: 'チェックイン失敗',
+        tokenSyncing: '同期中...',
+        tokenSynced: 'Token保存済み！✅',
+        tokenFailed: 'Token未検出 ❌'
     },
     'ko-KR': {
         show: 'BD2 Assistant 표시',
@@ -247,7 +307,21 @@ const UI_STRINGS: Record<string, any> = {
         updated: '업데이트 성공! 새로고침 중...',
         upToDate: '최신 버전입니다',
         updateFailed: '확인 실패',
-        resetLayout: '크기 및 위치 초기화'
+        resetLayout: '크기 및 위치 초기화',
+        webshopSection: 'WebShop 출석 체크',
+        syncWebshopToken: 'WebShop 로그인 동기화 🔑',
+        manualCheckin: '지금 체크인 ✅',
+        autoCheckin: '자동 체크인',
+        checkinNotSetup: '미설정',
+        checkinConnected: '연결됨',
+        checkinDisconnected: '미연결',
+        checkinLastDaily: '마지막 출석: ',
+        checkinChecking: '체크인 중...',
+        checkinDone: '체크인 완료!',
+        checkinFailed: '체크인 실패',
+        tokenSyncing: '동기화 중...',
+        tokenSynced: 'Token 저장됨! ✅',
+        tokenFailed: 'Token 미발견 ❌'
     }
 };
 
@@ -348,6 +422,18 @@ function updateUILanguage(lang: string) {
     const textBlacklistHint = document.getElementById('blacklistHint');
     if (textBlacklistHint) textBlacklistHint.textContent = strings.blacklistHint;
 
+    // WebShop Check-in section
+    const lblWebshopSection = document.getElementById('lbl-webshopSection');
+    if (lblWebshopSection) lblWebshopSection.textContent = strings.webshopSection || 'WebShop 簽到';
+
+    const syncWebshopTokenText = document.getElementById('syncWebshopToken-text');
+    if (syncWebshopTokenText) syncWebshopTokenText.textContent = strings.syncWebshopToken || '同步 WebShop 登入 🔑';
+
+    const manualCheckinText = document.getElementById('manualCheckin-text');
+    if (manualCheckinText) manualCheckinText.textContent = strings.manualCheckin || '立即簽到 ✅';
+
+    const lblAutoCheckin = document.getElementById('lbl-autoCheckin');
+    if (lblAutoCheckin) lblAutoCheckin.textContent = strings.autoCheckin || 'Auto Check-in';
 
     // Update Synced Status Text
     const elNickname = document.getElementById('currentNickname');
@@ -366,9 +452,7 @@ function updateUILanguage(lang: string) {
         }
     }
 }
-// ... Initialization ...
 
-// ... Initialization ...
 
 async function init() {
     // 0. Load Local Models
@@ -515,7 +599,7 @@ function initializeDropdowns(settings: PetSettings) {
                 } else {
                     modelSelect.value = localModel.animations!.includes('idle') ? 'idle' : localModel.animations![0];
                 }
-                
+
                 // V20.15: Do NOT send PET_LOAD_LOCAL_MODEL here — bridge.ts already loaded
                 // the model on page init. Sending it again causes a double-load crash.
                 // Just show the rename/delete buttons and save settings.
@@ -523,7 +607,7 @@ function initializeDropdowns(settings: PetSettings) {
                 const deleteBtn = document.getElementById('deleteLocalModel');
                 if (renameBtn) renameBtn.style.display = 'block';
                 if (deleteBtn) deleteBtn.style.display = 'block';
-                
+
                 // IMPORTANT: Call saveSettings AFTER modelSelect is fully populated and value is restored
                 console.log(`[DEBUG_POPUP] Cache flow complete. Saving settings. Final value: ${modelSelect.value}`);
                 saveSettings();
@@ -533,7 +617,7 @@ function initializeDropdowns(settings: PetSettings) {
             // No cache: show loading state
             modelSelect.innerHTML = '<option disabled selected>Loading animations...</option>';
             modelSelect.disabled = true;
-            
+
             // V20.15: Request the current animations without triggering a model reload!
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 if (tabs[0] && tabs[0].id) {
@@ -560,12 +644,12 @@ function handleAnimationsListResponse(anims: string[], skins: string[], characte
     if (!characterSelect || characterSelect.value !== characterId) return;
 
     const localModel = customSpineModels.find(m => m.id === characterId);
-    
+
     // V20.16: Defensive check to completely reject empty arrays if we already have cached animations.
     // This prevents a delayed failure from wiping out a perfectly good cache and breaking the UI.
     if (anims.length === 0 && localModel?.animations && localModel.animations.length > 0) {
         console.warn(`[DEBUG_POPUP] Dropping incoming empty animation list to preserve valid cache.`);
-        return; 
+        return;
     }
 
     if (localModel) {
@@ -597,7 +681,7 @@ function handleAnimationsListResponse(anims: string[], skins: string[], characte
                 modelSelect.appendChild(opt);
             });
             modelSelect.disabled = false;
-            
+
             chrome.storage.local.get(['localAnimation'], (res) => {
                 console.log(`[DEBUG_POPUP] Restoring localAnimation from storage: ${res.localAnimation}`);
                 if (res.localAnimation && anims.includes(res.localAnimation)) {
@@ -605,7 +689,7 @@ function handleAnimationsListResponse(anims: string[], skins: string[], characte
                 } else if (anims.length > 0) {
                     modelSelect.value = anims.includes('idle') ? 'idle' : anims[0];
                 }
-                
+
                 // Show buttons and save settings once UI is fully ready
                 const renameBtn = document.getElementById('renameLocalModel');
                 const deleteBtn = document.getElementById('deleteLocalModel');
@@ -835,7 +919,7 @@ function populateCharacters(selectedId: string, lang: string = 'en', preserveCos
 // Populate Costume Dropdown
 function populateCostumes(charId: string, selectedCostumeId: string | null, lang: string = 'en') {
     if (!modelSelect || !modelsData) return;
-    
+
     // V20.17: Prevent async callbacks (like DLC cache checking) from wiping Local Model animation dropdowns!
     if (charId.startsWith('local_')) return;
 
@@ -863,77 +947,6 @@ function populateCostumes(charId: string, selectedCostumeId: string | null, lang
 
     modelSelect.value = exists ? targetId : charData.costumes[0].id;
 }
-
-
-// --- Initialization ---
-
-chrome.storage.sync.get(['petSettings'], async (result: { petSettings?: any }) => {
-    const saved = result.petSettings || {};
-
-    // V20.9: Check for locally persisted model ID if sync model is empty
-    if (!saved.model && !saved.characterId) { // If no model or characterId is synced
-        const localModelIdRes = await chrome.storage.local.get(['localModelId']);
-        if (localModelIdRes.localModelId) {
-            saved.characterId = localModelIdRes.localModelId;
-        }
-    }
-
-    const settings: PetSettings = { ...DEFAULT_SETTINGS, ...saved };
-
-    // 1. UI Bindings
-    if (showPet) showPet.checked = settings.show;
-    if (lockMove) lockMove.checked = settings.lockMove;
-    if (lockZoom) lockZoom.checked = settings.lockZoom;
-
-    if (lockZoom) lockZoom.checked = settings.lockZoom;
-
-    // Nickname UI - Support for multi-account
-    const elNickname = document.getElementById('currentNickname') as HTMLElement | null;
-    const strings = UI_STRINGS[settings.language || 'zh-TW'] || UI_STRINGS['en'];
-
-    if (elNickname) {
-        // Check for nicknames array first (multi-account), then fallback to single nickname
-        const nicknames = (saved as any).nicknames as string[] | undefined;
-        const nickname = settings.nickname;
-
-        // Cache for saving
-        cachedNicknames = nicknames || [];
-        cachedNickname = nickname;
-
-        if (nicknames && nicknames.length > 0) {
-            elNickname.dataset.synced = 'true';
-            elNickname.dataset.accountCount = String(nicknames.length);
-            elNickname.dataset.nickname = nicknames[0]; // Primary nickname
-
-            if (nicknames.length > 1) {
-                elNickname.textContent = strings.syncedAccounts.replace('{n}', String(nicknames.length));
-                elNickname.style.color = '#e72857'; // Website accent color
-            } else {
-                elNickname.textContent = `${strings.synced}${nicknames[0]}`;
-                elNickname.style.color = '#4CAF50';
-            }
-        } else if (nickname) {
-            elNickname.dataset.synced = 'true';
-            elNickname.dataset.accountCount = '1';
-            elNickname.dataset.nickname = nickname;
-            elNickname.textContent = `${strings.synced}${nickname}`;
-            elNickname.style.color = '#4CAF50';
-        } else {
-            elNickname.textContent = strings.noSync;
-            elNickname.style.color = '#888';
-        }
-    }
-
-    const currentLang = settings.language || 'zh-TW';
-    if (language) language.value = currentLang;
-    updateUILanguage(currentLang);
-
-    if (opacity) {
-        opacity.value = String(settings.opacity * 100);
-        if (opacityValue) opacityValue.textContent = opacity.value + '%';
-    }
-
-});
 
 // --- Events ---
 
@@ -1020,14 +1033,14 @@ if (characterSelect) {
             updateUILanguage(lang);
             // Don't modify `model` in settings for local since it triggers model reload
             // We just send the layout settings if needed, but avoid reloading model
-            
+
             if (renameLocalModelBtn) renameLocalModelBtn.style.display = 'block';
             if (deleteLocalModelBtn) deleteLocalModelBtn.style.display = 'block';
         } else {
             // When character changes, update costumes using Default for that char
             populateCostumes(characterSelect.value, null, language.value);
             updateUILanguage(language.value); // Reset label to Costume
-            
+
             if (renameLocalModelBtn) renameLocalModelBtn.style.display = 'none';
             if (deleteLocalModelBtn) deleteLocalModelBtn.style.display = 'none';
         }
@@ -1061,7 +1074,7 @@ if (modelSelect) {
         if (characterSelect.value.startsWith('local_')) {
             // V20.10: Save selected animation for local models
             chrome.storage.local.set({ localAnimation: modelSelect.value });
-            
+
             // Send PET_CHANGE_ANIMATION directly to avoid full model reload
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 if (tabs[0] && tabs[0].id) {
@@ -1560,3 +1573,164 @@ if (saveBlacklistBtn && blacklistTextarea) {
         });
     });
 }
+
+// ============================================================
+// WebShop Check-in Popup Logic
+// ============================================================
+
+const webshopAccountList = document.getElementById('webshopAccountList');
+
+function updateCheckinStatus() {
+    chrome.runtime.sendMessage({ type: 'WEBSHOP_GET_STATUS' }, (response) => {
+        if (chrome.runtime.lastError || !response) return;
+
+        if (autoCheckin) autoCheckin.checked = !!response.autoCheckin;
+
+        // Render account list
+        if (webshopAccountList) {
+            const accounts = response.accounts || [];
+            if (accounts.length === 0) {
+                webshopAccountList.innerHTML = '<div style="text-align:center; color:#888; padding:4px 0;">尚未同步帳號</div>';
+            } else {
+                webshopAccountList.innerHTML = accounts.map((a: any) => {
+                    let statusText = '';
+                    let statusColor = '#4caf50';
+                    if (a.tokenExpired) {
+                        statusText = '⚠️ Token 已過期';
+                        statusColor = '#f44336';
+                    } else if (a.lastDaily) {
+                        const d = new Date(a.lastDaily);
+                        statusText = `✅ ${d.toLocaleDateString()} ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+                    } else {
+                        statusText = '🔗 已連結';
+                    }
+                    return `<div style="display:flex; align-items:center; justify-content:space-between; padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.1);">
+                        <div style="flex:1; min-width:0;">
+                            <div style="font-weight:bold; color:#e0e0e0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${a.nickname}</div>
+                            <div style="color:${statusColor}; font-size:11px;">${statusText}</div>
+                        </div>
+                        <button class="webshop-remove-btn" data-nickname="${a.nickname}" style="background:none; border:1px solid #f44336; color:#f44336; border-radius:4px; padding:2px 6px; font-size:11px; cursor:pointer; margin-left:8px; flex-shrink:0;">✕</button>
+                    </div>`;
+                }).join('');
+
+                // Attach delete handlers
+                webshopAccountList.querySelectorAll('.webshop-remove-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const nickname = (e.target as HTMLElement).getAttribute('data-nickname');
+                        if (nickname && confirm(`移除帳號「${nickname}」？`)) {
+                            chrome.runtime.sendMessage({ type: 'WEBSHOP_REMOVE_ACCOUNT', nickname }, () => {
+                                updateCheckinStatus();
+                            });
+                        }
+                    });
+                });
+            }
+        }
+    });
+}
+
+// Sync WebShop Token button
+if (syncWebshopTokenBtn) {
+    syncWebshopTokenBtn.addEventListener('click', () => {
+        const currentLang = language?.value || 'zh-TW';
+        const strings = UI_STRINGS[currentLang] || UI_STRINGS['en'];
+        const statusEl = checkinStatus;
+
+        if (statusEl) {
+            statusEl.textContent = strings.tokenSyncing || '正在同步...';
+            statusEl.style.color = '#ff9800';
+        }
+
+        // Remember current account count to detect new additions
+        chrome.runtime.sendMessage({ type: 'WEBSHOP_GET_STATUS' }, (currentStatus) => {
+            const prevCount = currentStatus?.accounts?.length || 0;
+
+            // Open the WebShop mypage so content script can capture token + nickname
+            chrome.tabs.create({ url: 'https://webshop.browndust2.global/CT/mypage/', active: true }, () => {
+                // Poll for new account in storage
+                let attempts = 0;
+                const maxAttempts = 60; // 60 seconds
+                const pollInterval = setInterval(() => {
+                    attempts++;
+                    chrome.runtime.sendMessage({ type: 'WEBSHOP_GET_STATUS' }, (newStatus) => {
+                        const newCount = newStatus?.accounts?.length || 0;
+                        if (newCount > prevCount) {
+                            // New account added
+                            clearInterval(pollInterval);
+                            if (statusEl) {
+                                statusEl.textContent = strings.tokenSynced || 'Token 已儲存！✅';
+                                statusEl.style.color = '#4caf50';
+                            }
+                            updateCheckinStatus();
+                            setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 3000);
+                        } else if (newCount === prevCount && newCount > 0) {
+                            // Might have updated existing account
+                            // Check if any account has updated token (harder to detect)
+                            // For now, continue polling
+                        }
+                        if (attempts >= maxAttempts) {
+                            clearInterval(pollInterval);
+                            if (statusEl) {
+                                statusEl.textContent = strings.tokenFailed || '未偵測到 Token ❌';
+                                statusEl.style.color = '#f44336';
+                            }
+                            updateCheckinStatus();
+                            setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 3000);
+                        }
+                    });
+                }, 1000);
+            });
+        });
+    });
+}
+
+// Manual Check-in button
+if (manualCheckinBtn) {
+    manualCheckinBtn.addEventListener('click', () => {
+        const currentLang = language?.value || 'zh-TW';
+        const strings = UI_STRINGS[currentLang] || UI_STRINGS['en'];
+        const statusEl = checkinStatus;
+
+        if (statusEl) {
+            statusEl.textContent = strings.checkinChecking || '簽到中...';
+            statusEl.style.color = '#ff9800';
+        }
+
+        manualCheckinBtn.disabled = true;
+
+        chrome.runtime.sendMessage({ type: 'WEBSHOP_MANUAL_CHECKIN' }, (response) => {
+            manualCheckinBtn.disabled = false;
+
+            if (chrome.runtime.lastError || !response) {
+                if (statusEl) {
+                    statusEl.textContent = strings.checkinFailed || '簽到失敗';
+                    statusEl.style.color = '#f44336';
+                }
+                return;
+            }
+
+            if (statusEl) {
+                statusEl.textContent = response.messages?.join(' | ') || (response.success ? (strings.checkinDone || '簽到完成！') : (strings.checkinFailed || '簽到失敗'));
+                statusEl.style.color = response.success ? '#4caf50' : '#f44336';
+            }
+
+            setTimeout(() => {
+                updateCheckinStatus();
+                if (statusEl) statusEl.textContent = '';
+            }, 3000);
+        });
+    });
+}
+
+// Auto Check-in toggle
+if (autoCheckin) {
+    autoCheckin.addEventListener('change', () => {
+        chrome.runtime.sendMessage({
+            type: 'WEBSHOP_SET_AUTO_CHECKIN',
+            enabled: autoCheckin.checked
+        });
+    });
+}
+
+// Load WebShop check-in status on popup open
+updateCheckinStatus();

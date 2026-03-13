@@ -58,6 +58,20 @@ After building, you can load the `dist/` folder via Chrome/Edge's "Load unpacked
 
 ## 📜 Changelog
 
+#### v2.2.0
+- **WebShop Auto Check-in**: Added automatic daily and event attendance for the BD2 WebShop. The extension checks in the background at configurable intervals and notifies results via pet speech bubbles.
+- **Multi-Account Support**: Sync and manage multiple WebShop accounts. Each account is identified by its in-game nickname, with individual token storage and check-in tracking.
+- **Login Verification**: Token sync now requires visiting the WebShop mypage (`/CT/mypage/`) and detecting the character nickname from the DOM, ensuring only authenticated tokens are saved.
+- **Pet Bubble Notifications**: Check-in results are displayed as styled speech bubbles above the pet character (matching the redemption code UI), replacing Chrome system notifications.
+- **API Pre-Check**: Before attempting check-in, the system queries the API to detect if today's attendance is already completed, preventing duplicate actions after extension reinstall.
+- **Account Management**: Users can remove synced accounts individually from the popup UI.
+- **Token Expiry Detection**: Expired tokens are flagged per-account with UI indicators, prompting re-sync.
+
+#### v2.1.4
+- **Local Model UI Optimization**: The popup now caches the parsed animation list of local models in `chrome.storage.local`. On subsequent popup opens, the dropdown is populated instantly from this cache, drastically improving usability.
+- **Dropdown Freeze Fix**: Fixed a critical race condition where the async callback checking for official DLC models would inadvertently wipe the local model's animation dropdown, causing it to freeze.
+- **Cache Protection**: Added defensive logic that rejects incoming empty arrays if a valid cache already exists, preventing transient failures from corrupting the saved animation list.
+
 #### v2.1.3
 - **Local Model Support**: Added the ability for users to load their own custom Spine models (`.skel`/`.json`, `.atlas`, `.png`) and freely select/play the embedded animations, bringing much greater customization flexibility (Only Spine 4.1 files are supported).
 - **Unrestricted Scaling & Layout Reset**: Removed scale limitations specifically for local custom models. Introduced a new "Reset Size & Position" button in the settings panel to quickly restore the pet to its default state if it gets too large or lost off-screen.

@@ -29,4 +29,11 @@ temp_lib_build/
 *.zip
 snippet.txt
 store_listing.md
+store_review_draft.md
 check_version.*
+release_v*.md
+
+# Pre-v2.2.0 residual files (replaced by src/popup/ and src/content/)
+src/bridge.ts
+src/index.ts
+src/index.html
