@@ -1095,7 +1095,7 @@ if (!canInject()) {
 
             const settingsResult = await chrome.storage.sync.get(['petSettings']);
             const savedSettings: any = settingsResult.petSettings || {};
-            
+
             // V20.9: Check local storage for local model ID if sync setting is empty
             let currentModelId = savedSettings.model;
             if (!currentModelId) {
@@ -1178,6 +1178,96 @@ if (!canInject()) {
                     });
 
                     // V18.53: Trigger Talk Animation
+                    window.postMessage({ type: 'PET_PLAY_ANIMATION', strategy: 'talk' }, '*');
+                }
+
+                if (message.type === 'WEBSHOP_CHECKIN_RESULT') {
+                    const root = document.getElementById('pet-root');
+                    if (!root) return;
+
+                    // Remove existing bubble
+                    const oldBubble = document.getElementById('pet-bubble');
+                    if (oldBubble) oldBubble.remove();
+
+                    const bubble = document.createElement('div');
+                    bubble.id = 'pet-bubble';
+                    bubble.className = 'pet-speech-bubble';
+
+                    // Same base style as redemption code bubble
+                    Object.assign(bubble.style, {
+                        position: 'absolute', bottom: '100%', left: '50%',
+                        transform: 'translateX(-50%)',
+                        background: 'rgba(20, 20, 20, 0.95)',
+                        backdropFilter: 'blur(12px)',
+                        border: '1px solid rgba(255, 255, 255, 0.12)',
+                        borderRadius: '12px', color: '#e7e7e7', padding: '14px',
+                        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
+                        width: '240px', pointerEvents: 'auto', zIndex: '2147483647',
+                        fontFamily: '"Roboto", "Noto Sans TC", sans-serif', marginBottom: '12px', fontSize: '13px'
+                    });
+
+                    // Close button
+                    const closeBtn = document.createElement('div');
+                    Object.assign(closeBtn.style, {
+                        position: 'absolute', top: '8px', right: '10px',
+                        color: 'rgba(255,255,255,0.5)', cursor: 'pointer', fontSize: '14px'
+                    });
+                    closeBtn.textContent = '✕';
+                    closeBtn.addEventListener('click', () => bubble.remove());
+                    bubble.appendChild(closeBtn);
+
+                    // Header
+                    const header = document.createElement('div');
+                    Object.assign(header.style, {
+                        fontWeight: '600', fontSize: '14px', color: '#e72857',
+                        marginBottom: '10px', paddingRight: '20px'
+                    });
+                    header.textContent = 'WebShop 簽到';
+                    bubble.appendChild(header);
+
+                    // Content: parse multi-line message into items
+                    const lines = (message.text || '').split('\n').filter((l: string) => l.trim());
+                    const content = document.createElement('div');
+                    content.style.marginBottom = '4px';
+
+                    if (lines.length === 0) {
+                        const item = document.createElement('div');
+                        item.textContent = '簽到完成';
+                        item.style.textAlign = 'center';
+                        content.appendChild(item);
+                    } else {
+                        lines.forEach((line: string) => {
+                            const item = document.createElement('div');
+                            Object.assign(item.style, {
+                                background: 'rgba(255,255,255,0.05)',
+                                border: '1px solid rgba(255,255,255,0.1)',
+                                borderRadius: '8px', padding: '8px 10px',
+                                marginBottom: '6px', fontSize: '12px'
+                            });
+
+                            // Colorize based on content
+                            if (line.includes('成功')) {
+                                item.style.borderColor = 'rgba(76, 175, 80, 0.3)';
+                                item.style.color = '#81c784';
+                            } else if (line.includes('失敗') || line.includes('過期')) {
+                                item.style.borderColor = 'rgba(244, 67, 54, 0.3)';
+                                item.style.color = '#ef9a9a';
+                            } else if (line.includes('已完成') || line.includes('已簽到')) {
+                                item.style.borderColor = 'rgba(255, 152, 0, 0.3)';
+                                item.style.color = '#ffcc80';
+                            }
+
+                            item.textContent = line;
+                            content.appendChild(item);
+                        });
+                    }
+                    bubble.appendChild(content);
+
+                    root.appendChild(bubble);
+
+                    // Auto-dismiss after 8 seconds
+                    setTimeout(() => bubble.remove(), 8000);
+
                     window.postMessage({ type: 'PET_PLAY_ANIMATION', strategy: 'talk' }, '*');
                 }
 

@@ -21,6 +21,12 @@ const API_KEY = 'pulse-key-abc123-xyz789-very-secret';
 const ALARM_NAME = 'checkUpdate';
 const POLL_INTERVAL_MINUTES = 60; // Standard check interval
 
+// WebShop Check-in Configuration
+const WEBSHOP_API_BASE = 'https://bd2-webshop-api.bd2.pmang.cloud';
+const WEBSHOP_CHECKIN_ALARM = 'webshopCheckin';
+const WEBSHOP_CHECKIN_INTERVAL = 60; // Check every 60 minutes
+const WEBSHOP_DAILY_RESET_HOUR = 8; // 8:00 AM local time
+
 // === DeclarativeNetRequest: Spoof Origin/Referer for AWS API ===
 const HEADER_RULE_ID = 1;
 
@@ -61,13 +67,20 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Initialize Alarm
 chrome.alarms.create(ALARM_NAME, { periodInMinutes: POLL_INTERVAL_MINUTES });
-chrome.runtime.onStartup.addListener(() => checkForUpdates());
+chrome.alarms.create(WEBSHOP_CHECKIN_ALARM, { periodInMinutes: WEBSHOP_CHECKIN_INTERVAL });
+chrome.runtime.onStartup.addListener(() => {
+    checkForUpdates();
+    initWebshopAutoCheckin();
+});
 
 // Listen for Alarms
 chrome.alarms.onAlarm.addListener(async (alarm: chrome.alarms.Alarm) => {
     if (alarm.name === ALARM_NAME) {
         console.log(`[Background] Alarm triggered: ${ALARM_NAME}`);
         await checkForUpdates();
+    } else if (alarm.name === WEBSHOP_CHECKIN_ALARM) {
+        console.log(`[Background] Alarm triggered: ${WEBSHOP_CHECKIN_ALARM}`);
+        await checkAndPerformWebshopCheckin();
     }
 });
 
@@ -795,7 +808,479 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         return true;
     }
 
+    // === WebShop Check-in Messages ===
+    if (message.type === 'WEBSHOP_TOKEN_CAPTURED') {
+        const token = message.token;
+        const nicknameFromPage = message.nickname; // Optional, from content script DOM
+        if (token && typeof token === 'string') {
+            console.log('[Background] WebShop token captured, length:', token.length);
+            (async () => {
+                // Try to fetch nickname via API
+                let nickname = nicknameFromPage || '';
+                if (!nickname) {
+                    nickname = await fetchWebshopNickname(token);
+                }
+                if (!nickname) {
+                    // Use a timestamp-based fallback name
+                    nickname = `帳號_${Date.now()}`;
+                }
+
+                // Upsert into accounts array
+                const result = await chrome.storage.local.get('webshopAccounts');
+                const accounts: WebshopAccount[] = (result.webshopAccounts as WebshopAccount[]) || [];
+                const existingIdx = accounts.findIndex(a => a.nickname === nickname);
+                if (existingIdx >= 0) {
+                    // Replace token for existing account
+                    accounts[existingIdx].token = token;
+                    accounts[existingIdx].tokenExpired = false;
+                    console.log(`[WebShop] Updated token for existing account: ${nickname}`);
+                } else {
+                    // Add new account
+                    accounts.push({
+                        nickname,
+                        token,
+                        lastDaily: null,
+                        lastEvent: null,
+                        tokenExpired: false
+                    });
+                    console.log(`[WebShop] Added new account: ${nickname}`);
+                }
+                await chrome.storage.local.set({ webshopAccounts: accounts });
+                sendResponse({ success: true, nickname });
+            })();
+            return true; // Async
+        } else {
+            sendResponse({ success: false, error: 'Invalid token' });
+        }
+        return false;
+    }
+
+    if (message.type === 'WEBSHOP_MANUAL_CHECKIN') {
+        (async () => {
+            const result = await manualWebshopCheckin();
+            sendResponse(result);
+        })();
+        return true;
+    }
+
+    if (message.type === 'WEBSHOP_SET_AUTO_CHECKIN') {
+        const enabled = !!message.enabled;
+        chrome.storage.local.set({ webshopAutoCheckin: enabled });
+        if (enabled) {
+            chrome.alarms.create(WEBSHOP_CHECKIN_ALARM, { periodInMinutes: WEBSHOP_CHECKIN_INTERVAL });
+        }
+        console.log('[Background] WebShop auto check-in:', enabled ? 'enabled' : 'disabled');
+        sendResponse({ success: true });
+        return false;
+    }
+
+    if (message.type === 'WEBSHOP_REMOVE_ACCOUNT') {
+        const nickname = message.nickname;
+        (async () => {
+            const result = await chrome.storage.local.get('webshopAccounts');
+            let accounts: WebshopAccount[] = (result.webshopAccounts as WebshopAccount[]) || [];
+            accounts = accounts.filter(a => a.nickname !== nickname);
+            await chrome.storage.local.set({ webshopAccounts: accounts });
+            console.log(`[WebShop] Removed account: ${nickname}`);
+            sendResponse({ success: true });
+        })();
+        return true;
+    }
+
+    if (message.type === 'WEBSHOP_GET_STATUS') {
+        (async () => {
+            const data = await chrome.storage.local.get(['webshopAccounts', 'webshopAutoCheckin']);
+            const accounts: WebshopAccount[] = (data.webshopAccounts as WebshopAccount[]) || [];
+            sendResponse({
+                accounts: accounts.map(a => ({
+                    nickname: a.nickname,
+                    lastDaily: a.lastDaily || null,
+                    lastEvent: a.lastEvent || null,
+                    tokenExpired: !!a.tokenExpired
+                })),
+                autoCheckin: !!data.webshopAutoCheckin
+            });
+        })();
+        return true;
+    }
+
 });
 
 // Initial check on load (for debugging/immediate feedback)
 checkForUpdates();
+initWebshopAutoCheckin();
+
+// ============================================================
+// WebShop Check-in Functions (Multi-Account)
+// ============================================================
+
+interface WebshopAccount {
+    nickname: string;
+    token: string;
+    lastDaily: string | null;
+    lastEvent: string | null;
+    tokenExpired: boolean;
+}
+
+/** Helper: Make an authenticated request to the WebShop API */
+async function webshopApiRequest(method: string, path: string, body?: any, tokenOverride?: string): Promise<{ok: boolean, status: number, data: any}> {
+    let token = tokenOverride;
+    if (!token) {
+        // Fallback: should not happen in multi-account flow
+        const result = await chrome.storage.local.get('webshopAccounts');
+        const accounts = (result.webshopAccounts as WebshopAccount[]) || [];
+        token = accounts[0]?.token;
+    }
+    if (!token) {
+        return { ok: false, status: 0, data: { error: 'No token' } };
+    }
+
+    try {
+        const options: RequestInit = {
+            method,
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'Origin': 'https://webshop.browndust2.global',
+                'Referer': 'https://webshop.browndust2.global/'
+            }
+        };
+        if (body) {
+            options.body = JSON.stringify(body);
+        }
+
+        const res = await fetch(`${WEBSHOP_API_BASE}${path}`, options);
+        const data = await res.json().catch(() => ({}));
+        return { ok: res.ok, status: res.status, data };
+    } catch (error) {
+        console.error('[WebShop] API request error:', error);
+        return { ok: false, status: 0, data: { error: String(error) } };
+    }
+}
+
+/** Fetch nickname from the WebShop API after token capture */
+async function fetchWebshopNickname(token: string): Promise<string> {
+    try {
+        // Try fetching the mypage HTML to extract nickname from the rendered page
+        // The WebShop API might have a user endpoint
+        const res = await webshopApiRequest('POST', '/api/event/event-user-info', undefined, token);
+        if (res.ok) {
+            const data = res.data?.data || res.data;
+            const name = data?.nickname || data?.userName || data?.name || data?.characterName;
+            if (name && typeof name === 'string') {
+                console.log('[WebShop] Got nickname from event-user-info:', name);
+                return name;
+            }
+        }
+
+        // Try the attend endpoint - response might contain user info
+        const attendRes = await webshopApiRequest('POST', '/api/user/attend', { type: 0 }, token);
+        if (attendRes.ok) {
+            const data = attendRes.data?.data || attendRes.data;
+            const name = data?.nickname || data?.userName || data?.name || data?.characterName;
+            if (name && typeof name === 'string') {
+                console.log('[WebShop] Got nickname from attend:', name);
+                return name;
+            }
+        }
+    } catch (e) {
+        console.warn('[WebShop] Failed to fetch nickname:', e);
+    }
+    return '';
+}
+
+/** Check if we need to perform a daily check-in based on last check-in time */
+function shouldPerformDailyCheckin(lastCheckinStr: string | null | undefined): boolean {
+    if (!lastCheckinStr) return true;
+
+    const lastCheckin = new Date(lastCheckinStr);
+    const now = new Date();
+
+    const todayReset = new Date(now.getFullYear(), now.getMonth(), now.getDate(), WEBSHOP_DAILY_RESET_HOUR, 0, 0);
+    const relevantReset = now >= todayReset ? todayReset : new Date(todayReset.getTime() - 24 * 60 * 60 * 1000);
+
+    return lastCheckin < relevantReset;
+}
+
+/** Perform daily check-in for a specific account */
+async function performDailyCheckin(token: string): Promise<{success: boolean, message: string, expired?: boolean, skipped?: boolean}> {
+    console.log('[WebShop] Attempting daily check-in...');
+
+    const res = await webshopApiRequest('POST', '/api/user/attend', { type: 0 }, token);
+    console.log('[WebShop] Daily check-in response:', JSON.stringify({ ok: res.ok, status: res.status, data: res.data }));
+
+    if (res.status === 401) {
+        return { success: false, message: 'Token 已過期', expired: true };
+    }
+
+    if (res.ok) {
+        // Check if the API response indicates already attended today
+        const data = res.data?.data || res.data;
+        const alreadyAttended = data?.isAttend === true || data?.attended === true || data?.alreadyAttend === true;
+        if (alreadyAttended) {
+            console.log('[WebShop] Daily check-in: API says already attended today.');
+            return { success: true, message: '每日簽到：今日已完成', skipped: true };
+        }
+        return { success: true, message: '每日簽到成功！' };
+    } else {
+        // Some APIs return error for "already attended" - detect common patterns
+        const errData = res.data?.data || res.data;
+        const errMsg = errData?.message || errData?.error || res.data?.message || '';
+        if (errMsg.includes('already') || errMsg.includes('已') || res.status === 409) {
+            console.log('[WebShop] Daily check-in: already done (from error response).');
+            return { success: true, message: '每日簽到：今日已完成', skipped: true };
+        }
+        return { success: false, message: `每日簽到失敗: ${errMsg || `狀態碼: ${res.status}`}` };
+    }
+}
+
+/** Perform event check-in for a specific account */
+async function performEventCheckin(token: string): Promise<{success: boolean, message: string, skipped?: boolean, expired?: boolean}> {
+    console.log('[WebShop] Checking event attendance...');
+
+    const eventInfoRes = await webshopApiRequest('GET', '/api/event/event-info', undefined, token);
+
+    if (!eventInfoRes.ok) {
+        if (eventInfoRes.status === 404 || eventInfoRes.status === 400) {
+            return { success: true, message: '目前沒有進行中的活動', skipped: true };
+        }
+        if (eventInfoRes.status === 401) {
+            return { success: false, message: 'Token 已過期', expired: true };
+        }
+        return { success: false, message: `無法取得活動資訊: ${eventInfoRes.status}` };
+    }
+
+    const eventInfo = eventInfoRes.data?.data || eventInfoRes.data;
+    const eventScheduleId = eventInfo?.scheduleInfo?.eventScheduleId || eventInfo?.eventScheduleId;
+
+    if (!eventScheduleId) {
+        return { success: true, message: '目前沒有進行中的活動', skipped: true };
+    }
+
+    const userInfoRes = await webshopApiRequest('POST', '/api/event/event-user-info', undefined, token);
+    if (!userInfoRes.ok) {
+        return { success: false, message: `無法取得活動用戶資訊: ${userInfoRes.status}` };
+    }
+
+    const userInfo = userInfoRes.data?.data || userInfoRes.data;
+    const attendanceCount = userInfo?.attendanceCount ?? -1;
+    const isLastAttendance = userInfo?.isLastAttendance ?? false;
+
+    if (attendanceCount >= 7 || isLastAttendance) {
+        return { success: true, message: `活動簽到已完成 (${attendanceCount}/7)`, skipped: true };
+    }
+
+    if (attendanceCount < 0) {
+        return { success: true, message: '活動簽到狀態未知', skipped: true };
+    }
+
+    const attendRes = await webshopApiRequest('POST', '/api/event/attend-reward', { eventScheduleId }, token);
+
+    if (attendRes.ok) {
+        return { success: true, message: `活動簽到成功！(第 ${attendanceCount + 1} 天)` };
+    } else {
+        return { success: false, message: `活動簽到失敗: ${attendRes.status}` };
+    }
+}
+
+/** Show a pet bubble notification for check-in results (broadcast to all active tabs) */
+async function notifyCheckinResult(_title: string, message: string) {
+    const tabs = await chrome.tabs.query({ active: true });
+    for (const tab of tabs) {
+        if (tab.id) {
+            chrome.tabs.sendMessage(tab.id, {
+                type: 'WEBSHOP_CHECKIN_RESULT',
+                text: message
+            }).catch(() => { });
+        }
+    }
+}
+
+/** Helper: get and save accounts */
+async function getWebshopAccounts(): Promise<WebshopAccount[]> {
+    const result = await chrome.storage.local.get('webshopAccounts');
+    return (result.webshopAccounts as WebshopAccount[]) || [];
+}
+async function saveWebshopAccounts(accounts: WebshopAccount[]) {
+    await chrome.storage.local.set({ webshopAccounts: accounts });
+}
+
+/** Main orchestrator: auto check-in all accounts */
+async function checkAndPerformWebshopCheckin() {
+    const settings = await chrome.storage.local.get(['webshopAutoCheckin']);
+    if (!settings.webshopAutoCheckin) {
+        console.log('[WebShop] Auto check-in is disabled.');
+        return;
+    }
+
+    const accounts = await getWebshopAccounts();
+    if (accounts.length === 0) {
+        console.log('[WebShop] No WebShop accounts, skipping.');
+        return;
+    }
+
+    const results: string[] = [];
+    let hasError = false;
+    let changed = false;
+
+    for (const account of accounts) {
+        if (account.tokenExpired) continue;
+
+        const needsDaily = shouldPerformDailyCheckin(account.lastDaily);
+        const needsEvent = shouldPerformDailyCheckin(account.lastEvent);
+
+        if (!needsDaily && !needsEvent) {
+            console.log(`[WebShop] ${account.nickname}: all done today.`);
+            continue;
+        }
+
+        const acctResults: string[] = [];
+
+        if (needsDaily) {
+            const r = await performDailyCheckin(account.token);
+            if (r.expired) { account.tokenExpired = true; changed = true; continue; }
+            if (r.skipped) {
+                // Already attended via API — save to avoid re-checking
+                account.lastDaily = new Date().toISOString();
+                changed = true;
+            } else if (r.success) {
+                acctResults.push(r.message);
+                account.lastDaily = new Date().toISOString();
+                changed = true;
+            } else {
+                acctResults.push(r.message);
+                hasError = true;
+            }
+        }
+
+        if (needsEvent) {
+            const r = await performEventCheckin(account.token);
+            if (r.expired) { account.tokenExpired = true; changed = true; continue; }
+            if (!r.skipped) {
+                acctResults.push(r.message);
+                if (r.success) { account.lastEvent = new Date().toISOString(); changed = true; }
+                else hasError = true;
+            } else {
+                // Save lastEvent even on skip to avoid re-checking today
+                account.lastEvent = new Date().toISOString();
+                changed = true;
+            }
+        }
+
+        if (acctResults.length > 0) {
+            results.push(`[${account.nickname}] ${acctResults.join(' | ')}`);
+        }
+    }
+
+    if (changed) await saveWebshopAccounts(accounts);
+
+    if (results.length > 0) {
+        notifyCheckinResult(
+            hasError ? '簽到結果' : '簽到成功',
+            results.join('\n')
+        );
+    }
+
+    // Notify about expired tokens
+    const expired = accounts.filter(a => a.tokenExpired);
+    if (expired.length > 0) {
+        notifyCheckinResult('Token 已過期', expired.map(a => a.nickname).join(', ') + ' 的 Token 已過期，請重新同步');
+    }
+}
+
+/** Manual check-in (triggered from popup) - all accounts */
+async function manualWebshopCheckin(): Promise<{success: boolean, messages: string[]}> {
+    const accounts = await getWebshopAccounts();
+
+    if (accounts.length === 0) {
+        return { success: false, messages: ['尚未同步任何 WebShop 帳號，請先點選「同步 WebShop 登入」'] };
+    }
+
+    const messages: string[] = [];
+    let allSuccess = true;
+    let anyAttempted = false;
+    let changed = false;
+
+    for (const account of accounts) {
+        if (account.tokenExpired) {
+            messages.push(`[${account.nickname}] Token 已過期，請重新同步`);
+            allSuccess = false;
+            continue;
+        }
+
+        const needsDaily = shouldPerformDailyCheckin(account.lastDaily);
+        const needsEvent = shouldPerformDailyCheckin(account.lastEvent);
+
+        if (!needsDaily && !needsEvent) {
+            messages.push(`[${account.nickname}] 今日已簽到完成`);
+            continue;
+        }
+
+        const acctMsgs: string[] = [];
+
+        if (needsDaily) {
+            const r = await performDailyCheckin(account.token);
+            if (r.expired) { account.tokenExpired = true; changed = true; allSuccess = false; continue; }
+            if (r.skipped) {
+                // Already attended via API — save to avoid re-checking
+                account.lastDaily = new Date().toISOString();
+                changed = true;
+            } else if (r.success) {
+                anyAttempted = true;
+                acctMsgs.push(r.message);
+                account.lastDaily = new Date().toISOString();
+                changed = true;
+            } else {
+                anyAttempted = true;
+                acctMsgs.push(r.message);
+                allSuccess = false;
+            }
+        }
+
+        if (needsEvent) {
+            const r = await performEventCheckin(account.token);
+            if (r.expired) { account.tokenExpired = true; changed = true; allSuccess = false; continue; }
+            if (r.skipped) {
+                // No active event or already done — save to avoid re-checking
+                account.lastEvent = new Date().toISOString();
+                changed = true;
+            } else if (r.success) {
+                anyAttempted = true;
+                acctMsgs.push(r.message);
+                account.lastEvent = new Date().toISOString();
+                changed = true;
+            } else {
+                anyAttempted = true;
+                acctMsgs.push(r.message);
+                allSuccess = false;
+            }
+        }
+
+        if (acctMsgs.length > 0) {
+            messages.push(`[${account.nickname}] ${acctMsgs.join(' | ')}`);
+        }
+    }
+
+    if (changed) await saveWebshopAccounts(accounts);
+
+    // Only send Chrome notification if something was actually attempted
+    if (anyAttempted) {
+        notifyCheckinResult(
+            allSuccess ? '手動簽到完成' : '簽到結果',
+            messages.join('\n')
+        );
+    }
+
+    return { success: allSuccess, messages };
+}
+
+/** Initialize auto check-in alarm on startup */
+async function initWebshopAutoCheckin() {
+    const settings = await chrome.storage.local.get(['webshopAutoCheckin']);
+    const accounts = await getWebshopAccounts();
+    if (settings.webshopAutoCheckin && accounts.length > 0) {
+        console.log('[WebShop] Auto check-in enabled, scheduling...');
+        await checkAndPerformWebshopCheckin();
+    }
+}
