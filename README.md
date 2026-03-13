@@ -62,7 +62,6 @@ After building, you can load the `dist/` folder via Chrome/Edge's "Load unpacked
 - **WebShop Auto Check-in**: Added automatic daily and event attendance for the BD2 WebShop. The extension checks in the background at configurable intervals and notifies results via pet speech bubbles.
 - **Multi-Account Support**: Sync and manage multiple WebShop accounts. Each account is identified by its in-game nickname, with individual token storage and check-in tracking.
 - **Login Verification**: Token sync now requires visiting the WebShop mypage (`/CT/mypage/`) and detecting the character nickname from the DOM, ensuring only authenticated tokens are saved.
-- **Pet Bubble Notifications**: Check-in results are displayed as styled speech bubbles above the pet character (matching the redemption code UI), replacing Chrome system notifications.
 - **API Pre-Check**: Before attempting check-in, the system queries the API to detect if today's attendance is already completed, preventing duplicate actions after extension reinstall.
 - **Account Management**: Users can remove synced accounts individually from the popup UI.
 - **Token Expiry Detection**: Expired tokens are flagged per-account with UI indicators, prompting re-sync.
