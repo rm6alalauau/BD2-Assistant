@@ -209,17 +209,6 @@ async function checkForUpdates() {
                 }
 
                 broadcastAutoRedeemStatus('COMPLETE', { count: redeemCount });
-
-                // System Notification
-                if (redeemCount > 0) {
-                    chrome.notifications.create({
-                        type: 'basic',
-                        iconUrl: 'icons/icon128.png',
-                        title: 'BD2 Auto-Redeem',
-                        message: `Auto-redeemed ${redeemCount} codes!`,
-                        priority: 2
-                    });
-                }
             }
 
             // Update seenCodes for fallback mechanism
