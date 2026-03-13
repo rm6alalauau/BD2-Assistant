@@ -10,8 +10,7 @@
     "alarms",
     "declarativeNetRequest",
     "declarativeNetRequestWithHostAccess",
-    "activeTab",
-    "notifications"
+    "activeTab"
   ],
   "host_permissions": [
     "https://thebd2pulse.com/*",
