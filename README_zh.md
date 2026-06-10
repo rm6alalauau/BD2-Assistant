@@ -5,8 +5,8 @@
   [🇹🇼 繁體中文](./README_zh.md) | [🇬🇧 English](./README.md)
   <br><br>
 
-  [![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-BD2%20Assistant-blue)](https://chromewebstore.google.com/detail/oehoeoilhngfbkblpbflljckfphdgphg)
-  [![Edge Add-ons](https://img.shields.io/badge/Edge%20Add--ons-BD2%20Assistant-blue)](https://microsoftedge.microsoft.com/addons/detail/bd2-assistant/famjnidglcmgfleijneljeobkipndkaf)
+  [![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-BD2%20Assistant-4285F4?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/oehoeoilhngfbkblpbflljckfphdgphg)
+  [![Edge Add-ons](https://img.shields.io/badge/Edge%20Add--ons-BD2%20Assistant-0078D7?logo=microsoftedge&logoColor=white)](https://microsoftedge.microsoft.com/addons/detail/bd2-assistant/famjnidglcmgfleijneljeobkipndkaf)
 </div>
 
 ---
@@ -57,6 +57,12 @@ npm run build
 編譯完成後，請前往瀏覽器的「擴充功能管理」頁面並開啟「開發人員模式」，接著點擊「載入未打包項目」，選擇專案內的 `dist/` 目錄即可完成本地安裝。
 
 ## 📜 版本紀錄
+
+#### v2.3.0
+- **WebShop 憑證自動刷新**：於登入 Iframe 內建 Firebase Token 攔截與自動更新機制，無需手動干預即可維持 WebShop 背景簽到狀態。
+- **意圖導向帳號同步**：重構同步流程，使用者造訪 WebShop「我的頁面」時能即時完成身份驗證與多帳號自動同步。
+- **隱私聲明與告知**：新增多語系（支援 5 種語言）的隱私警告通知面板，確保帳號憑證本地儲存的透明度與安全性。
+- **錯誤自動修復**：導入 401 錯誤自動重試與多階段 Token 偽造流程（Firebase -> NEON -> WebShop），能自動修復過期或失效的登入階段。
 
 #### v2.2.0
 - **WebShop 自動簽到**：新增 BD2 WebShop 每日簽到與活動簽到自動執行功能，於背景定時檢查並簽到，結果透過寵物氣泡通知顯示。

@@ -5,8 +5,8 @@
   [🇹🇼 繁體中文](./README_zh.md) | [🇬🇧 English](./README.md)
   <br><br>
 
-  [![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-BD2%20Assistant-blue)](https://chromewebstore.google.com/detail/oehoeoilhngfbkblpbflljckfphdgphg)
-  [![Edge Add-ons](https://img.shields.io/badge/Edge%20Add--ons-BD2%20Assistant-blue)](https://microsoftedge.microsoft.com/addons/detail/bd2-assistant/famjnidglcmgfleijneljeobkipndkaf)
+  [![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-BD2%20Assistant-4285F4?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/oehoeoilhngfbkblpbflljckfphdgphg)
+  [![Edge Add-ons](https://img.shields.io/badge/Edge%20Add--ons-BD2%20Assistant-0078D7?logo=microsoftedge&logoColor=white)](https://microsoftedge.microsoft.com/addons/detail/bd2-assistant/famjnidglcmgfleijneljeobkipndkaf)
 </div>
 
 ---
@@ -57,6 +57,12 @@ npm run build
 After building, you can load the `dist/` folder via Chrome/Edge's "Load unpacked" option in the Extension Developer Mode.
 
 ## 📜 Changelog
+
+#### v2.3.0
+- **WebShop Auto Token Refresh**: Implemented a fully automatic Firebase token refresh interceptor inside the sign-in iframe, keeping WebShop sessions authenticated seamlessly in the background.
+- **Intent-based Account Synchronization**: Refactored the synchronization logic to verify identities and sync accounts instantly upon visiting the WebShop mypage.
+- **Privacy Notice & Consent**: Added a localized, user-friendly privacy warning panel (supporting 5 languages) to ensure transparency regarding local credential storage.
+- **Robust Failure Recovery**: Added automatic 401 error detection and multi-stage token forging (Firebase -> NEON -> WebShop) to gracefully handle expired session tokens.
 
 #### v2.2.0
 - **WebShop Auto Check-in**: Added automatic daily and event attendance for the BD2 WebShop. The extension checks in the background at configurable intervals and notifies results via pet speech bubbles.
