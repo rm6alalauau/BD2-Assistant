@@ -2,6 +2,18 @@
 
 ---
 
+## v2.3.0 - 2026-06-10
+### Added
+- 🔄 **WebShop 登入狀態自動刷新機制**: 當官方 Access Token 過期時，擴充功能會自動透過後台進行多階段憑證交換，無縫取得新 Token 並完成簽到。
+- 🎣 **Token 攔截器**: 引入 `hook.js` 網路攔截器，於使用者在 WebShop 登入頁登入時，安全捕獲 Firebase Auth `refreshToken` 與 `apiKey`。
+- 🖼️ **Signin Iframe 支援**: 新增 `signin_iframe.ts` Content Script，專門用於在官方登入 iframe (`signin.browndust2.global`) 載入時注入攔截腳本。
+
+### Changed
+- ♻️ **WebShop 同步邏輯重構**: 現在點擊「同步 WebShop 登入」時，若已存在登入狀態，擴充功能會清除舊 session 並自動重新整理，引導使用者進行一次乾淨的登入以捕獲刷新憑證。
+- ⚡ **優化 Token 捕獲流程**: 移除了不穩定且會造成網頁循環導向的舊 Token 寫回 (restore) 機制，全面交由官方原生登入流程處理。
+- 🧹 **Console 清理**: 移除了所有冗餘的 Debug 流量日誌輸出，保持網頁主控台 (Console) 整潔。
+
+
 ## v2.2.0 - WebShop Auto Check-in & Multi-Account Support
 ### What's New
 - 🎯 **WebShop Auto Check-in**: Added automatic daily and event attendance for the BD2 WebShop. The extension checks in the background at configurable intervals and notifies results via pet speech bubbles.

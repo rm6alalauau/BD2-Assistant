@@ -797,6 +797,16 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         return true;
     }
 
+    if (message.type === 'WEBSHOP_FIREBASE_AUTH_EXTRACTED') {
+        const { refreshToken, apiKey } = message;
+        console.log('[Background] Captured Firebase Auth from sign-in page, storing to local storage. ApiKey:', apiKey);
+        chrome.storage.local.set({ pendingFirebaseAuth: { refreshToken, apiKey } }, () => {
+            sendResponse({ success: true });
+        });
+        return true; // Async because of storage callback
+    }
+
+
     // === WebShop Check-in Messages ===
     if (message.type === 'WEBSHOP_TOKEN_CAPTURED') {
         const token = message.token;
@@ -814,28 +824,45 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
                     nickname = `帳號_${Date.now()}`;
                 }
 
+                // Retrieve pending firebase auth from storage
+                const storageRes = await chrome.storage.local.get('pendingFirebaseAuth');
+                const pendingAuth = storageRes.pendingFirebaseAuth;
+
                 // Upsert into accounts array
                 const result = await chrome.storage.local.get('webshopAccounts');
                 const accounts: WebshopAccount[] = (result.webshopAccounts as WebshopAccount[]) || [];
-                const existingIdx = accounts.findIndex(a => a.nickname === nickname);
-                if (existingIdx >= 0) {
-                    // Replace token for existing account
-                    accounts[existingIdx].token = token;
-                    accounts[existingIdx].tokenExpired = false;
+                const existing = accounts.find(a => a.nickname === nickname);
+                if (existing) {
+                    existing.token = token;
+                    existing.tokenExpired = false;
+                    if (pendingAuth) {
+                        existing.refreshToken = pendingAuth.refreshToken;
+                        existing.apiKey = pendingAuth.apiKey;
+                        console.log(`[WebShop] Attached new refresh token to existing account: ${nickname}`);
+                    }
                     console.log(`[WebShop] Updated token for existing account: ${nickname}`);
                 } else {
-                    // Add new account
-                    accounts.push({
-                        nickname,
-                        token,
-                        lastDaily: null,
-                        lastEvent: null,
-                        tokenExpired: false
-                    });
+                    const newAccount: WebshopAccount = { 
+                        nickname: nickname, 
+                        token, 
+                        lastDaily: null, 
+                        lastEvent: null, 
+                        tokenExpired: false 
+                    };
+                    if (pendingAuth) {
+                        newAccount.refreshToken = pendingAuth.refreshToken;
+                        newAccount.apiKey = pendingAuth.apiKey;
+                        console.log(`[WebShop] Attached new refresh token to new account: ${nickname}`);
+                    }
+                    accounts.push(newAccount);
                     console.log(`[WebShop] Added new account: ${nickname}`);
                 }
+
+                // Clear pending auth after it's been consumed
+                await chrome.storage.local.remove('pendingFirebaseAuth');
+
                 await chrome.storage.local.set({ webshopAccounts: accounts });
-                sendResponse({ success: true, nickname });
+                sendResponse({ success: true, nickname: nickname });
             })();
             return true; // Async
         } else {
@@ -906,10 +933,14 @@ initWebshopAutoCheckin();
 interface WebshopAccount {
     nickname: string;
     token: string;
+    tokenExpired?: boolean;
     lastDaily: string | null;
     lastEvent: string | null;
-    tokenExpired: boolean;
+    refreshToken?: string;
+    apiKey?: string;
 }
+
+
 
 /** Helper: Make an authenticated request to the WebShop API */
 async function webshopApiRequest(method: string, path: string, body?: any, tokenOverride?: string): Promise<{ok: boolean, status: number, data: any}> {
@@ -1114,7 +1145,16 @@ async function checkAndPerformWebshopCheckin() {
     let changed = false;
 
     for (const account of accounts) {
-        if (account.tokenExpired) continue;
+        if (account.tokenExpired) {
+            const newToken = await refreshWebshopToken(account.nickname, account.token);
+            if (newToken) {
+                account.token = newToken;
+                account.tokenExpired = false;
+                changed = true;
+            } else {
+                continue; // 真的無法刷新
+            }
+        }
 
         const needsDaily = shouldPerformDailyCheckin(account.lastDaily);
         const needsEvent = shouldPerformDailyCheckin(account.lastEvent);
@@ -1127,7 +1167,16 @@ async function checkAndPerformWebshopCheckin() {
         const acctResults: string[] = [];
 
         if (needsDaily) {
-            const r = await performDailyCheckin(account.token);
+            let r = await performDailyCheckin(account.token);
+            if (r.expired) {
+                const newToken = await refreshWebshopToken(account.nickname, account.token);
+                if (newToken) {
+                    account.token = newToken;
+                    account.tokenExpired = false;
+                    r = await performDailyCheckin(account.token);
+                }
+            }
+
             if (r.expired) { account.tokenExpired = true; changed = true; continue; }
             if (r.skipped) {
                 // Already attended via API — save to avoid re-checking
@@ -1144,7 +1193,16 @@ async function checkAndPerformWebshopCheckin() {
         }
 
         if (needsEvent) {
-            const r = await performEventCheckin(account.token);
+            let r = await performEventCheckin(account.token);
+            if (r.expired) {
+                const newToken = await refreshWebshopToken(account.nickname, account.token);
+                if (newToken) {
+                    account.token = newToken;
+                    account.tokenExpired = false;
+                    r = await performEventCheckin(account.token);
+                }
+            }
+
             if (r.expired) { account.tokenExpired = true; changed = true; continue; }
             if (!r.skipped) {
                 acctResults.push(r.message);
@@ -1193,10 +1251,18 @@ async function manualWebshopCheckin(): Promise<{success: boolean, messages: stri
 
     for (const account of accounts) {
         if (account.tokenExpired) {
-            messages.push(`[${account.nickname}] Token 已過期，請重新同步`);
-            allSuccess = false;
-            continue;
+            const newToken = await refreshWebshopToken(account.nickname, account.token);
+            if (newToken) {
+                account.token = newToken;
+                account.tokenExpired = false;
+                changed = true;
+            } else {
+                messages.push(`[${account.nickname}] Token 已過期，無法自動刷新，請重新登入`);
+                allSuccess = false;
+                continue;
+            }
         }
+
 
         const needsDaily = shouldPerformDailyCheckin(account.lastDaily);
         const needsEvent = shouldPerformDailyCheckin(account.lastEvent);
@@ -1209,7 +1275,16 @@ async function manualWebshopCheckin(): Promise<{success: boolean, messages: stri
         const acctMsgs: string[] = [];
 
         if (needsDaily) {
-            const r = await performDailyCheckin(account.token);
+            let r = await performDailyCheckin(account.token);
+            if (r.expired) {
+                const newToken = await refreshWebshopToken(account.nickname, account.token);
+                if (newToken) {
+                    account.token = newToken;
+                    account.tokenExpired = false;
+                    r = await performDailyCheckin(account.token);
+                }
+            }
+
             if (r.expired) { account.tokenExpired = true; changed = true; allSuccess = false; continue; }
             if (r.skipped) {
                 // Already attended via API — save to avoid re-checking
@@ -1228,7 +1303,16 @@ async function manualWebshopCheckin(): Promise<{success: boolean, messages: stri
         }
 
         if (needsEvent) {
-            const r = await performEventCheckin(account.token);
+            let r = await performEventCheckin(account.token);
+            if (r.expired) {
+                const newToken = await refreshWebshopToken(account.nickname, account.token);
+                if (newToken) {
+                    account.token = newToken;
+                    account.tokenExpired = false;
+                    r = await performEventCheckin(account.token);
+                }
+            }
+
             if (r.expired) { account.tokenExpired = true; changed = true; allSuccess = false; continue; }
             if (r.skipped) {
                 // No active event or already done — save to avoid re-checking
@@ -1273,3 +1357,153 @@ async function initWebshopAutoCheckin() {
         await checkAndPerformWebshopCheckin();
     }
 }
+
+// ============================================================
+// Route A: Firebase API Token Refresh Function (Man-in-the-Middle)
+// ============================================================
+function parseJwt(token: string): any {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (e) {
+        console.error('[WebShop] Failed to parse JWT:', e);
+        return null;
+    }
+}
+
+async function refreshWebshopToken(accountNickname: string, oldToken: string): Promise<string | null> {
+    const data = await chrome.storage.local.get('webshopAccounts');
+    const accounts: WebshopAccount[] = data.webshopAccounts || [];
+    const account = accounts.find(a => a.nickname === accountNickname);
+    
+    if (!account || !account.apiKey || !account.refreshToken) {
+        console.log(`[WebShop] No Firebase Auth info available for ${accountNickname}. Please login manually once to capture it.`);
+        return null;
+    }
+    
+    console.log(`[WebShop] Attempting to refresh token for ${accountNickname} using stolen Firebase Refresh Token...`);
+    try {
+        const url = `https://securetoken.googleapis.com/v1/token?key=${account.apiKey}`;
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `grant_type=refresh_token&refresh_token=${account.refreshToken}`
+        });
+        const json = await res.json();
+        
+        if (json.id_token) {
+            console.log(`[WebShop] ✅ Successfully forged a new Firebase ID token for ${accountNickname}!`);
+            
+            // Save the new refresh token if it rotated
+            let refreshTokenRotated = false;
+            if (json.refresh_token && json.refresh_token !== account.refreshToken) {
+                account.refreshToken = json.refresh_token;
+                refreshTokenRotated = true;
+            }
+
+            // Parse JWT to extract identity provider values dynamically
+            const decoded = parseJwt(json.id_token);
+            if (!decoded) {
+                console.error('[WebShop] ❌ Failed to decode Firebase ID token');
+                return null;
+            }
+
+            const provider_user_srl = decoded.sub; // Firebase user ID
+            const sign_in_provider = decoded.firebase?.sign_in_provider || '';
+            let provider_sns = 'GOOGLE';
+            let provider_sns_srl = '';
+
+            if (sign_in_provider.includes('google')) {
+                provider_sns = 'GOOGLE';
+                provider_sns_srl = decoded.firebase?.identities?.['google.com']?.[0] || '';
+            } else if (sign_in_provider.includes('apple')) {
+                provider_sns = 'APPLE';
+                provider_sns_srl = decoded.firebase?.identities?.['apple.com']?.[0] || '';
+            } else {
+                // Fallback search inside identities key
+                const identities = decoded.firebase?.identities || {};
+                const keys = Object.keys(identities);
+                if (keys.length > 0) {
+                    provider_sns = keys[0].split('.')[0].toUpperCase();
+                    provider_sns_srl = identities[keys[0]]?.[0] || '';
+                }
+            }
+
+            // 1. Exchange Firebase ID Token for Neowiz NEON ID Token
+            console.log(`[WebShop] Exchanging Firebase ID token for NEON ID token via NEON API...`);
+            const neonRes = await fetch('https://www.neonapi.com/api/accounts/v3/weblogin/account', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    provider: 'FIREBASE',
+                    provider_user_srl,
+                    provider_sns,
+                    provider_sns_srl,
+                    app_id: '5063',
+                    provider_user_jwt: json.id_token,
+                    mob_svc_yn: 'N',
+                    privacy_yn: 'N',
+                    ad_yn: 'N',
+                    ad_night_yn: 'N',
+                    release_ymd: '251118'
+                })
+            });
+
+            const neonJson = await neonRes.json();
+            const neonToken = neonJson?.value;
+
+            if (!neonToken) {
+                console.error('[WebShop] ❌ Failed to get NEON token from NEON API:', neonJson);
+                return null;
+            }
+            console.log(`[WebShop] ✅ Successfully obtained NEON ID token!`);
+            
+            // 2. Exchange NEON ID Token for actual WebShop Access Token
+            console.log(`[WebShop] Exchanging NEON ID token for WebShop access token...`);
+            const loginRes = await fetch(`${WEBSHOP_API_BASE}/api/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Origin': 'https://webshop.browndust2.global',
+                    'Referer': 'https://webshop.browndust2.global/'
+                },
+                body: JSON.stringify({
+                    token: neonToken,
+                    nationCode: ''
+                })
+            });
+            
+            const loginJson = await loginRes.json();
+            const webshopToken = loginJson?.data?.accessToken;
+            
+            if (webshopToken && typeof webshopToken === 'string') {
+                console.log(`[WebShop] ✅ Successfully exchanged and obtained WebShop access token for ${accountNickname}!`);
+                
+                // Update account in accounts array and save
+                account.token = webshopToken;
+                account.tokenExpired = false;
+                await chrome.storage.local.set({ webshopAccounts: accounts });
+                
+                return webshopToken;
+            } else {
+                console.error('[WebShop] ❌ Failed to exchange WebShop token:', loginJson);
+                return null;
+            }
+        } else {
+            console.error('[WebShop] ❌ Firebase API rejected refresh token:', json);
+            return null;
+        }
+    } catch (e) {
+        console.error('[WebShop] ❌ Error calling Firebase API or WebShop Login:', e);
+        return null;
+    }
+}
+

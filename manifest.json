@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extensionName__",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "__MSG_extensionDescription__",
   "default_locale": "en",
   "permissions": [
@@ -18,7 +18,9 @@
     "https://loj2urwaua.execute-api.ap-northeast-1.amazonaws.com/*",
     "https://raw.githubusercontent.com/*",
     "https://webshop.browndust2.global/*",
-    "https://bd2-webshop-api.bd2.pmang.cloud/*"
+    "https://bd2-webshop-api.bd2.pmang.cloud/*",
+    "https://signin.browndust2.global/*",
+    "https://securetoken.googleapis.com/*"
   ],
   "background": {
     "service_worker": "src/background/index.ts",
@@ -57,6 +59,16 @@
         "src/content/webshop_token.ts"
       ],
       "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://signin.browndust2.global/*"
+      ],
+      "js": [
+        "src/content/signin_iframe.ts"
+      ],
+      "all_frames": true,
+      "run_at": "document_start"
     }
   ],
   "web_accessible_resources": [
@@ -69,7 +81,8 @@
         "live2d_models/*/*",
         "live2d_models/*/*/*",
         "models.json",
-        "icons/*"
+        "icons/*",
+        "hook.js"
       ],
       "matches": [
         "<all_urls>"

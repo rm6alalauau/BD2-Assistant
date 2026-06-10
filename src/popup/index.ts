@@ -113,7 +113,9 @@ const UI_STRINGS: Record<string, any> = {
         checkinFailed: '簽到失敗',
         tokenSyncing: '正在同步...',
         tokenSynced: 'Token 已儲存！✅',
-        tokenFailed: '未偵測到 Token ❌'
+        tokenFailed: '未偵測到 Token ❌',
+        webshopPrivacySummary: '隱私與安全說明',
+        webshopPrivacyContent: '本功能會在您登入時，於本機捕獲您的 WebShop Token 與 Firebase 刷新憑證，僅用于實作本機自動簽到。所有憑證皆儲存在您本機的瀏覽器內部儲存空間 (chrome.storage.local)，絕對不會上傳到任何第三方伺服器。所有簽到請求均直接從您的本機發送至官方伺服器。您可隨時至瀏覽器開發者工具的 Network 面板檢查所有網路流量。'
     },
     'zh-CN': {
         show: '显示 BD2 Assistant',
@@ -165,7 +167,9 @@ const UI_STRINGS: Record<string, any> = {
         checkinFailed: '签到失败',
         tokenSyncing: '正在同步...',
         tokenSynced: 'Token 已储存！✅',
-        tokenFailed: '未侦测到 Token ❌'
+        tokenFailed: '未侦测到 Token ❌',
+        webshopPrivacySummary: '隐私与安全说明',
+        webshopPrivacyContent: '本功能会在您登录时，于本地捕获您的 WebShop Token 与 Firebase 刷新凭证，仅用于实现本地自动签到。所有凭证皆储存在您本地的浏览器内部储存空间 (chrome.storage.local)，绝对不会上传到任何第三方服务器。所有签到请求均直接从您的本地发送至官方服务器。您可随时至浏览器开发者工具的 Network 面板检查所有网络流量。'
     },
     'en': {
         show: 'Show BD2 Assistant',
@@ -217,7 +221,9 @@ const UI_STRINGS: Record<string, any> = {
         checkinFailed: 'Check-in failed',
         tokenSyncing: 'Syncing...',
         tokenSynced: 'Token saved! ✅',
-        tokenFailed: 'Token not found ❌'
+        tokenFailed: 'Token not found ❌',
+        webshopPrivacySummary: 'Privacy & Data Security',
+        webshopPrivacyContent: 'This feature captures your WebShop Token and Firebase Refresh Token locally when you sign in, strictly for enabling local automatic check-ins. All credentials are saved securely in your browser\'s local storage (chrome.storage.local) and are never sent to any external server. Check-in requests are made directly from your computer to the official servers. You can inspect the Network tab in developer tools at any time to verify.'
     },
     'ja-JP': {
         show: 'BD2 Assistant を表示',
@@ -269,7 +275,9 @@ const UI_STRINGS: Record<string, any> = {
         checkinFailed: 'チェックイン失敗',
         tokenSyncing: '同期中...',
         tokenSynced: 'Token保存済み！✅',
-        tokenFailed: 'Token未検出 ❌'
+        tokenFailed: 'Token未検出 ❌',
+        webshopPrivacySummary: 'プライバシーとセキュリティについて',
+        webshopPrivacyContent: 'この機能は、ローカルでの自動チェックインを可能にするため、ログイン時にお使いの WebShop トークンと Firebase リフレッシュトークンをローカルで取得します。すべての資格情報はブラウザのローカルストレージ (chrome.storage.local) に安全に保存され、外部サーバーに送信されることはありません。チェックインリクエストは、お客様のコンピュータから直接公式サーバーへ送信されます。デベロッパーツールの Network タブでいつでも通信内容を確認できます。'
     },
     'ko-KR': {
         show: 'BD2 Assistant 표시',
@@ -321,7 +329,9 @@ const UI_STRINGS: Record<string, any> = {
         checkinFailed: '체크인 실패',
         tokenSyncing: '동기화 중...',
         tokenSynced: 'Token 저장됨! ✅',
-        tokenFailed: 'Token 미발견 ❌'
+        tokenFailed: 'Token 미발견 ❌',
+        webshopPrivacySummary: '개인 정보 및 데이터 보안',
+        webshopPrivacyContent: '이 기능은 로컬 자동 출석 체크를 구현하기 위해 로그인 시 WebShop 토큰 및 Firebase 리프레시 토큰을 로컬에서 수집합니다. 모든 인증 정보는 브라우저의 로컬 스토리지(chrome.storage.local)에 안전하게 저장되며, 어떠한 외부 서버로도 전송되지 않습니다. 출석 체크 요청은 사용자 컴퓨터에서 공식 서버로 직접 전송됩니다. 브라우저 개발자 도구의 Network 탭에서 언제든지 네트워크 트래픽을 검증할 수 있습니다.'
     }
 };
 
@@ -434,6 +444,12 @@ function updateUILanguage(lang: string) {
 
     const lblAutoCheckin = document.getElementById('lbl-autoCheckin');
     if (lblAutoCheckin) lblAutoCheckin.textContent = strings.autoCheckin || 'Auto Check-in';
+
+    const webshopPrivacySummary = document.getElementById('webshopPrivacy-summary');
+    if (webshopPrivacySummary) webshopPrivacySummary.textContent = strings.webshopPrivacySummary || '隱私與安全說明';
+
+    const webshopPrivacyContent = document.getElementById('webshopPrivacy-content');
+    if (webshopPrivacyContent) webshopPrivacyContent.textContent = strings.webshopPrivacyContent || '';
 
     // Update Synced Status Text
     const elNickname = document.getElementById('currentNickname');
@@ -1641,47 +1657,52 @@ if (syncWebshopTokenBtn) {
             statusEl.style.color = '#ff9800';
         }
 
-        // Remember current account count to detect new additions
-        chrome.runtime.sendMessage({ type: 'WEBSHOP_GET_STATUS' }, (currentStatus) => {
-            const prevCount = currentStatus?.accounts?.length || 0;
+        // Remember current account state. A sync can update an existing account, not only add a new one.
+        const accountSignature = (accounts: any[] = []) => accounts
+            .map((a: any) => `${a.nickname}:${a.updatedAt || ''}:${a.tokenExpired ? 'expired' : 'active'}`)
+            .join('|');
 
-            // Open the WebShop mypage so content script can capture token + nickname
-            chrome.tabs.create({ url: 'https://webshop.browndust2.global/CT/mypage/', active: true }, () => {
-                // Poll for new account in storage
-                let attempts = 0;
-                const maxAttempts = 60; // 60 seconds
-                const pollInterval = setInterval(() => {
-                    attempts++;
-                    chrome.runtime.sendMessage({ type: 'WEBSHOP_GET_STATUS' }, (newStatus) => {
-                        const newCount = newStatus?.accounts?.length || 0;
-                        if (newCount > prevCount) {
-                            // New account added
-                            clearInterval(pollInterval);
-                            if (statusEl) {
-                                statusEl.textContent = strings.tokenSynced || 'Token 已儲存！✅';
-                                statusEl.style.color = '#4caf50';
+        chrome.runtime.sendMessage({ type: 'WEBSHOP_GET_STATUS' }, (currentStatus) => {
+            const prevAccounts = currentStatus?.accounts || [];
+            const prevCount = prevAccounts.length || 0;
+            const prevSignature = accountSignature(prevAccounts);
+
+            chrome.storage.local.set({ webshop_intent_sync: true }, () => {
+                chrome.tabs.create({ url: 'https://webshop.browndust2.global/CT/mypage/', active: true }, () => {
+                    let attempts = 0;
+                    const maxAttempts = 60;
+                    const pollInterval = setInterval(() => {
+                        attempts++;
+                        chrome.runtime.sendMessage({ type: 'WEBSHOP_GET_STATUS' }, (newStatus) => {
+                            const nextAccounts = newStatus?.accounts || [];
+                            const newCount = nextAccounts.length || 0;
+                            const signatureChanged = accountSignature(nextAccounts) !== prevSignature;
+
+                            if (newCount > prevCount || signatureChanged) {
+                                clearInterval(pollInterval);
+                                if (statusEl) {
+                                    statusEl.textContent = strings.tokenSynced || 'Token saved!';
+                                    statusEl.style.color = '#4caf50';
+                                }
+                                updateCheckinStatus();
+                                setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 3000);
+                                return;
                             }
-                            updateCheckinStatus();
-                            setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 3000);
-                        } else if (newCount === prevCount && newCount > 0) {
-                            // Might have updated existing account
-                            // Check if any account has updated token (harder to detect)
-                            // For now, continue polling
-                        }
-                        if (attempts >= maxAttempts) {
-                            clearInterval(pollInterval);
-                            if (statusEl) {
-                                statusEl.textContent = strings.tokenFailed || '未偵測到 Token ❌';
-                                statusEl.style.color = '#f44336';
+
+                            if (attempts >= maxAttempts) {
+                                clearInterval(pollInterval);
+                                if (statusEl) {
+                                    statusEl.textContent = strings.tokenFailed || 'Token not found';
+                                    statusEl.style.color = '#f44336';
+                                }
+                                updateCheckinStatus();
+                                setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 3000);
                             }
-                            updateCheckinStatus();
-                            setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 3000);
-                        }
-                    });
-                }, 1000);
+                        });
+                    }, 1000);
+                });
             });
-        });
-    });
+        });    });
 }
 
 // Manual Check-in button

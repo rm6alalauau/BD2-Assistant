@@ -1263,10 +1263,30 @@ if (!canInject()) {
                     }
                     bubble.appendChild(content);
 
+                    // Optional Action Button (e.g., RENEW_TOKEN)
+                    if (message.action === 'RENEW_TOKEN') {
+                        const actionBtn = document.createElement('button');
+                        actionBtn.textContent = '前往補簽 🔗';
+                        Object.assign(actionBtn.style, {
+                            marginTop: '8px', width: '100%', padding: '6px',
+                            background: '#e72857', border: 'none', borderRadius: '6px',
+                            color: 'white', fontWeight: 'bold', cursor: 'pointer', fontSize: '13px',
+                            fontFamily: 'inherit'
+                        });
+                        actionBtn.addEventListener('click', () => {
+                            chrome.runtime.sendMessage({ type: 'WEBSHOP_OPEN_RENEW_TAB' });
+                            bubble.remove();
+                        });
+                        actionBtn.addEventListener('mouseover', () => actionBtn.style.background = '#ff3b6d');
+                        actionBtn.addEventListener('mouseout', () => actionBtn.style.background = '#e72857');
+                        bubble.appendChild(actionBtn);
+                    }
+
                     root.appendChild(bubble);
 
-                    // Auto-dismiss after 8 seconds
-                    setTimeout(() => bubble.remove(), 8000);
+                    // Auto-dismiss after 8 seconds (or 15 seconds if actionable)
+                    const timeoutMs = message.action ? 15000 : 8000;
+                    setTimeout(() => bubble.remove(), timeoutMs);
 
                     window.postMessage({ type: 'PET_PLAY_ANIMATION', strategy: 'talk' }, '*');
                 }

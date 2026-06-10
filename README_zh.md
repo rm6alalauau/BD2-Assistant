@@ -5,7 +5,7 @@
   [🇹🇼 繁體中文](./README_zh.md) | [🇬🇧 English](./README.md)
   <br><br>
 
-  [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/oehoeoilhngfbkblpbflljckfphdgphg?label=Chrome%20Web%20Store&color=blue)](https://chromewebstore.google.com/detail/oehoeoilhngfbkblpbflljckfphdgphg)
+  [![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-BD2%20Assistant-blue)](https://chromewebstore.google.com/detail/oehoeoilhngfbkblpbflljckfphdgphg)
   [![Edge Add-ons](https://img.shields.io/badge/Edge%20Add--ons-BD2%20Assistant-blue)](https://microsoftedge.microsoft.com/addons/detail/bd2-assistant/famjnidglcmgfleijneljeobkipndkaf)
 </div>
 
